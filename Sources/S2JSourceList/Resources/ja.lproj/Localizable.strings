@@ -1,0 +1,15 @@
+/* SourceList Localizable Strings - Japanese */
+
+/* Search */
+"SourceList.Search.Placeholder" = "検索";
+
+/* Edit */
+"SourceList.Edit.Rename" = "名前を変更";
+"SourceList.Edit.Delete" = "削除";
+
+/* Expand/Collapse */
+"SourceList.Expand" = "展開";
+"SourceList.Collapse" = "折りたたみ";
+
+/* Empty State */
+"SourceList.Empty" = "項目がありません";

@@ -1,0 +1,15 @@
+/* SourceList Localizable Strings - Base */
+
+/* Search */
+"SourceList.Search.Placeholder" = "Search";
+
+/* Edit */
+"SourceList.Edit.Rename" = "Rename";
+"SourceList.Edit.Delete" = "Delete";
+
+/* Expand/Collapse */
+"SourceList.Expand" = "Expand";
+"SourceList.Collapse" = "Collapse";
+
+/* Empty State */
+"SourceList.Empty" = "No items";
