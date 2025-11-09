@@ -1,5 +1,8 @@
 # s2j-source-list
 
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-3.0.en.html)
+[![React](https://img.shields.io/badge/Swift-5.9-blue?logo=Swift&logoColor=white)](https://www.swift.org)
+
 ## Description
 
 <!-- 
