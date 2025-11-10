@@ -45,22 +45,22 @@
     * 階層構造の表示 (展開/折り畳み) (✅ 実装済み)
     * 項目の選択 (単一選択/複数選択) (✅ 実装済み)
     * アイコン・バッジの表示 (✅ 実装済み)
-    * ドラッグ＆ドロップ (⚠️ 未実装 - パラメータは用意されているが実装未完了)
+    * ドラッグ & ドロップ (⚠️ 未実装 - パラメータは用意されているが実装未完了)
     * コンテキストメニュー (✅ 実装済み)
     * インライン編集 (ラベルのリネーム) (✅ 実装済み)
     * カスタム行表示 (✅ 実装済み)
     * 検索機能 (✅ 実装済み)
 * ホスト・アプリケーションは、macOS アプリケーション (または iPadOS アプリケーション) を想定します。
-    * macOS の場合は、`SidebarListStyle()` を基本にし、選択時のフォーカスやアクセントカラーを AppKit に近づけます。 (✅ 実装済み)
-    * iPadOS の場合は、SwiftUI のネイティブ `List` API のみで構成します。 (✅ 実装済み)
+    * macOS の場合は、`SidebarListStyle()` を基本にし、選択時のフォーカスやアクセントカラーを AppKit に近付けます。(✅ 実装済み)
+    * iPadOS の場合は、SwiftUI のネイティブ `List` API のみで構成します。(✅ 実装済み)
 
 ### プラットフォーム固有 API 利用方針
 
 **実装状況**: ✅ **実装済み** - プラットフォーム固有 API の実装完了
 
-* macOS 向けでは、必要に応じて `NSOutlineView` の挙動を参考にしつつ、SwiftUI の `List` / `OutlineGroup` を基本とします。 (✅ 実装済み - `AppKitBridge.swift` で AppKit カラーを取得)
-* iPadOS 向けでは、`UIViewControllerRepresentable` を利用せず、SwiftUI のネイティブ API のみで構成します。 (✅ 実装済み - `iPadOptimizations.swift` で最適化)
-* 共有ロジック (ViewModel / モデル) は、すべて `#if canImport(SwiftUI)` ベースで共通化します。 (✅ 実装済み)
+* macOS 向けでは、必要に応じて `NSOutlineView` の挙動を参考にしつつ、SwiftUI の `List` / `OutlineGroup` を基本とします。(✅ 実装済み - `AppKitBridge.swift` で AppKit カラーを取得)
+* iPadOS 向けでは、`UIViewControllerRepresentable` を利用せず、SwiftUI のネイティブ API のみで構成します。(✅ 実装済み - `iPadOptimizations.swift` で最適化)
+* 共有ロジック (ViewModel / モデル) は、すべて `#if canImport(SwiftUI)` ベースで共通化します。(✅ 実装済み)
 
 ### プロジェクト構成
 
@@ -134,17 +134,17 @@
 
 **実装状況**: ✅ **実装済み** - ローカライゼーション対応完了
 
-* ローカライズ対応は、必須 (英語・日本語) の為、Base、English、Japanese を初期追加します。 (✅ 実装済み)
-* `Bundle.module` 経由で `Localizable.strings` を読み込んでください (SwiftPM の `resources: [.process("Resources")]`)。 (✅ 実装済み)
+* ローカライズ対応は、必須 (英語・日本語) の為、Base、English、Japanese を初期追加します。(✅ 実装済み)
+* `Bundle.module` 経由で `Localizable.strings` を読み込んでください (SwiftPM の `resources: [.process("Resources")]`)。(✅ 実装済み)
 * 文字列キー例: `"SourceList.Empty"`、`"SourceList.Search.Placeholder"`、`"SourceList.Edit.Rename"`、`"SourceList.Edit.Delete"` (✅ 実装済み)
 
 ### デザイン規約
 
 **実装状況**: ✅ **実装済み** - デザイン規約の実装完了
 
-* ダークモード対応は、必須です。 (✅ 実装済み - SwiftUI の標準カラーを使用)
-* macOS では `SidebarListStyle()` を基本とし、選択時のフォーカスやアクセントカラーを AppKit に近づけます。 (✅ 実装済み - `SidebarView` で `.listStyle(.sidebar)` を使用)
-* iPadOS では、SwiftUI のネイティブ `List` API のみで構成します。 (✅ 実装済み - `SidebarView` で `.listStyle(.insetGrouped)` を使用)
+* ダークモード対応は、必須です。(✅ 実装済み - SwiftUI の標準カラーを使用)
+* macOS では `SidebarListStyle()` を基本とし、選択時のフォーカスやアクセントカラーを AppKit に近付けます。(✅ 実装済み - `SidebarView` で `.listStyle(.sidebar)` を使用)
+* iPadOS では、SwiftUI のネイティブ `List` API のみで構成します。(✅ 実装済み - `SidebarView` で `.listStyle(.insetGrouped)` を使用)
 
 ### 使用方法
 
@@ -173,13 +173,13 @@ struct ContentView: View {
 
 **実装状況**: ✅ **部分実装** - ユニットテストは実装済み、UI テストは未実装
 
-* テスト: モデル (SourceItem)、SelectionManager、Service ロジックのユニットテストを実施します。 (✅ 実装済み - `SourceItemTests.swift`、`SelectionManagerTests.swift`、`SourceListServiceTests.swift`)
-* UI テスト: 主要なユーザー操作 (選択、展開/折り畳み、ドラッグ＆ドロップ、編集) を XCTest / UI Test で検証します。 (⚠️ 未実装)
-* スナップショットテスト: SwiftUI レンダリングの一貫性を SnapshotTesting で検証します。 (⚠️ 未実装)
+* テスト: モデル (SourceItem)、SelectionManager、Service ロジックのユニットテストを実施します。(✅ 実装済み - `SourceItemTests.swift`、`SelectionManagerTests.swift`、`SourceListServiceTests.swift`)
+* UI テスト: 主要なユーザー操作 (選択、展開/折り畳み、ドラッグ & ドロップ、編集) を XCTest / UI Test で検証します。(⚠️ 未実装)
+* スナップショットテスト: SwiftUI レンダリングの一貫性を SnapshotTesting で検証します。(⚠️ 未実装)
 
 **UI テスト環境**:
-* macOS: `List` を表示し、選択、展開/折り畳み、ドラッグ＆ドロップを SnapshotTesting。 (⚠️ 未実装)
-* iPadOS: `.sheet` 表示を `XCTest` + `ViewInspector` で検証可能とする。 (⚠️ 未実装)
+* macOS: `List` を表示し、選択、展開/折り畳み、ドラッグ & ドロップを SnapshotTesting。(⚠️ 未実装)
+* iPadOS: `.sheet` 表示を `XCTest` + `ViewInspector` で検証可能とする。(⚠️ 未実装)
 
 ### ビルド出力ポリシー
 
@@ -242,7 +242,7 @@ struct ContentView: View {
 
 ### 未実装機能
 
-* ドラッグ＆ドロップ (⚠️ 未実装 - `SidebarView` に `allowsDragAndDrop` パラメータはあるが、実装未完了)
+* ドラッグ & ドロップ (⚠️ 未実装 - `SidebarView` に `allowsDragAndDrop` パラメータはあるが、実装未完了)
 * UI テスト・スナップショットテストの実装 (⚠️ 未実装)
 
 ### 将来の拡張機能

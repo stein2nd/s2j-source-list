@@ -55,9 +55,9 @@ For support, feature requests, or bug reports, please visit the [GitHub Issues](
 
 ### Requirements
 
-- macOS 12.0+ / iPadOS 15.0+
-- Swift 5.8+
-- Xcode 14.0+
+* macOS v12.0+ / iPadOS v15.0+
+* Swift v5.8+
+* Xcode v14.0+
 
 <!-- 
 ### Swift Package Manager
