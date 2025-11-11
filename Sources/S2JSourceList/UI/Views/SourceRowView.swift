@@ -7,8 +7,11 @@
 
 import SwiftUI
 
-/// View for rendering a single row in the source list.
+/** 
+ * ソースリストのアイテムの行コンテンツを表示するためのビュー
+ */
 public struct SourceRowView: View {
+
     let item: SourceItem
     let isSelected: Bool
     let isEditing: Bool
@@ -19,9 +22,22 @@ public struct SourceRowView: View {
     let onEdit: (String) -> Void
     let onCancelEdit: () -> Void
     let customContent: ((SourceItem) -> AnyView)?
-    
+
     @State private var editedTitle: String
-    
+
+    /** 
+     * ソースリストのアイテムの行コンテンナのイニシャライザー
+     * - Parameter item: ソースリストのアイテム
+     * - Parameter isSelected: 選択されているかどうか
+     * - Parameter isEditing: 編集中かどうか
+     * - Parameter indentationLevel: インデントのレベル
+     * - Parameter indentationWidth: インデントの幅
+     * - Parameter iconSize: アイコンのサイズ
+     * - Parameter onSelect: 選択時のアクション
+     * - Parameter onEdit: 編集時のアクション
+     * - Parameter onCancelEdit: キャンセル時のアクション
+     * - Parameter customContent: カスタムコンテンツ
+     */
     public init(
         item: SourceItem,
         isSelected: Bool,
@@ -46,7 +62,11 @@ public struct SourceRowView: View {
         self.customContent = customContent
         self._editedTitle = State(initialValue: item.title)
     }
-    
+
+    /** 
+     * ソースリストのアイテムの行コンテンツを返します。
+     * - Returns: ソースリストのアイテムの行コンテンツ
+     */
     public var body: some View {
         HStack(spacing: 6) {
             // Indentation
@@ -102,8 +122,12 @@ public struct SourceRowView: View {
         .accessibilityValue(item.badge ?? "")
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
-    
+
     @ViewBuilder
+    /** 
+     * デフォルトのコンテンツを返します。
+     * - Returns: デフォルトのコンテンツ
+     */
     private var defaultContent: some View {
         if isEditing && item.isEditable {
             InlineEditorView(

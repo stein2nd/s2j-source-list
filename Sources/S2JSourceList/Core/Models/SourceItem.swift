@@ -8,50 +8,69 @@
 import Foundation
 import SwiftUI
 
-/// Represents an item in the source list hierarchy.
-///
-/// Each item can have a title, icon, badge, children items, and metadata.
-/// Items can be editable, selectable, and support custom content rendering.
+/** 
+ * ソースリスト階層内の項目を表す構造体
+ * アイテムにはタイトル、アイコン、バッジ、子アイテム、メタデータがあります。
+ * アイテムは編集可能、選択可能であり、カスタム・コンテンツのレンダリングをサポートします。
+ */
 public struct SourceItem: Identifiable, Equatable, Hashable {
-    /// Unique identifier for the item
+
+    /** 
+     * アイテムの ID
+     */
     public let id: UUID
-    
-    /// Display title of the item
+
+    /** 
+     * アイテムのタイトル
+     */
     public var title: String
-    
-    /// Optional icon name (system name or asset name)
+
+    /** 
+     * アイコンの名前
+     */
     public var icon: String?
-    
-    /// Optional badge text to display
+
+    /** 
+     * バッジのテキスト
+     */
     public var badge: String?
-    
-    /// Child items for hierarchical structure
+
+    /** 
+     * 子アイテムの配列
+     */
     public var children: [SourceItem]?
-    
-    /// Whether the item can be edited (e.g., renamed)
+
+    /** 
+     * アイテムが編集可能かどうか
+     */
     public var isEditable: Bool
-    
-    /// Whether the item can be selected
+
+    /** 
+     * アイテムが選択可能かどうか
+     */
     public var isSelectable: Bool
-    
-    /// Custom metadata associated with the item
+
+    /** 
+     * アイテムのメタデータ
+     */
     public var metadata: [String: Any]?
-    
-    /// Whether the item is expanded (for groups)
+
+    /** 
+     * アイテムが展開されているかどうか
+     */
     public var isExpanded: Bool
-    
-    /// Initializes a new source item.
-    ///
-    /// - Parameters:
-    ///   - id: Unique identifier (defaults to new UUID)
-    ///   - title: Display title
-    ///   - icon: Optional icon name
-    ///   - badge: Optional badge text
-    ///   - children: Optional child items
-    ///   - isEditable: Whether the item can be edited
-    ///   - isSelectable: Whether the item can be selected
-    ///   - metadata: Optional custom metadata
-    ///   - isExpanded: Whether the item is expanded (for groups)
+
+    /** 
+     * 新しいソースアイテムを作成します。
+     * - Parameter id: アイテムの ID
+     * - Parameter title: アイテムのタイトル
+     * - Parameter icon: アイコンの名前
+     * - Parameter badge: バッジのテキスト
+     * - Parameter children: 子アイテムの配列
+     * - Parameter isEditable: アイテムが編集可能かどうか
+     * - Parameter isSelectable: アイテムが選択可能かどうか
+     * - Parameter metadata: アイテムのメタデータ
+     */
     public init(
         id: UUID = UUID(),
         title: String,
@@ -73,26 +92,42 @@ public struct SourceItem: Identifiable, Equatable, Hashable {
         self.metadata = metadata
         self.isExpanded = isExpanded
     }
-    
-    /// Checks if the item has children
+
+    /** 
+     * アイテムが子要素を持つかどうかを判定します。
+     * - Returns: 子要素を持つかどうか
+     */
     public var hasChildren: Bool {
         guard let children = children else { return false }
         return !children.isEmpty
     }
-    
-    /// Checks if the item is a group (has children)
+
+    /** 
+     * アイテムが子要素を持つかどうかを判定します。
+     * - Returns: 子要素を持つかどうか
+     */
     public var isGroup: Bool {
         hasChildren
     }
-    
+
     // MARK: - Equatable
-    
+
+    /** 
+     * アイテムが等しいかどうかを判定します。
+     * - Parameter lhs: 左辺のアイテム
+     * - Parameter rhs: 右辺のアイテム
+     * - Returns: 等しいかどうか
+     */
     public static func == (lhs: SourceItem, rhs: SourceItem) -> Bool {
         lhs.id == rhs.id
     }
     
     // MARK: - Hashable
-    
+
+    /** 
+     * アイテムのハッシュ値を計算します。
+     * - Parameter hasher: ハッシュ値を計算するためのハッシュ
+     */
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
@@ -101,7 +136,14 @@ public struct SourceItem: Identifiable, Equatable, Hashable {
 // MARK: - Convenience Initializers
 
 extension SourceItem {
-    /// Creates a group item with children
+    /** 
+     * 子アイテムを持つグループアイテムを作成します。
+     * - Parameter id: アイテムの ID
+     * - Parameter title: アイテムのタイトル
+     * - Parameter icon: アイコンの名前
+     * - Parameter children: 子アイテムの配列
+     * - Parameter isExpanded: アイテムが展開されているかどうか
+     */
     public static func group(
         id: UUID = UUID(),
         title: String,
@@ -118,8 +160,16 @@ extension SourceItem {
             isExpanded: isExpanded
         )
     }
-    
-    /// Creates a simple item without children
+
+    /** 
+     * 子アイテムなしのシンプルなアイテムを作成します。
+     * - Parameter id: アイテムの ID
+     * - Parameter title: アイテムのタイトル
+     * - Parameter icon: アイコンの名前
+     * - Parameter badge: バッジのテキスト
+     * - Parameter isEditable: アイテムが編集可能かどうか
+     * - Parameter metadata: アイテムのメタデータ
+     */
     public static func item(
         id: UUID = UUID(),
         title: String,

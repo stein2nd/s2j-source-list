@@ -7,11 +7,14 @@
 
 import SwiftUI
 
-/// Main sidebar component for displaying hierarchical source list.
+/** 
+ * 階層的なソースリストを表示するための、サイドバーのメイン・コンポーネント
+ */
 public struct SidebarView: View {
+
     @ObservedObject var service: SourceListService
     @ObservedObject var selectionManager: SelectionManager
-    
+
     // Configuration
     let allowsMultipleSelection: Bool
     let allowsDragAndDrop: Bool
@@ -20,13 +23,15 @@ public struct SidebarView: View {
     let iconSize: CGFloat
     let customRowContent: ((SourceItem) -> AnyView)?
     let contextMenuBuilder: ((SourceItem) -> [ContextMenuAction])?
-    
+
     // State
     @State private var searchText: String = ""
     @State private var editingItemId: UUID?
     @State private var expandedItemIds: Set<UUID> = []
-    
-    /// Context menu action
+
+    /** 
+     * コンテキストメニュー・アクション
+     */
     public struct ContextMenuAction: Identifiable {
         public let id = UUID()
         public let title: String
@@ -39,7 +44,18 @@ public struct SidebarView: View {
             self.isDestructive = isDestructive
         }
     }
-    
+
+    /** 
+     * サイドバーのイニシャライザー
+     * - Parameter service: サイドバーのサービス
+     * - Parameter selectionManager: サイドバーの選択マネージャー
+     * - Parameter allowsMultipleSelection: 複数選択を許可するかどうか
+     * - Parameter allowsDragAndDrop: ドラッグアンドドロップを許可するかどうか
+     * - Parameter showsSearchBar: 検索バーを表示するかどうか
+     * - Parameter indentationWidth: インデントの幅
+     * - Parameter iconSize: アイコンのサイズ
+     * - Parameter customRowContent: カスタム行コンテンツ
+     */
     public init(
         service: SourceListService,
         selectionManager: SelectionManager,
@@ -64,7 +80,11 @@ public struct SidebarView: View {
         // Sync selection mode
         selectionManager.selectionMode = allowsMultipleSelection ? .multiple : .single
     }
-    
+
+    /** 
+     * サイドバーのボディを返します。
+     * - Returns: サイドバーのボディ
+     */
     public var body: some View {
         VStack(spacing: 0) {
             // Search bar
@@ -85,8 +105,12 @@ public struct SidebarView: View {
             updateExpandedItems()
         }
     }
-    
+
     @ViewBuilder
+    /** 
+     * 検索バーを返します。
+     * - Returns: 検索バー
+     */
     private var searchBarView: some View {
         HStack {
             Image(systemName: "magnifyingglass")
@@ -110,8 +134,12 @@ public struct SidebarView: View {
                 .fill(Color.secondary.opacity(0.1))
         )
     }
-    
+
     @ViewBuilder
+    /** 
+     * リストビューを返します。
+     * - Returns: リストビュー
+     */
     private var listView: some View {
         List {
             ForEach(filteredItems) { item in
@@ -124,7 +152,13 @@ public struct SidebarView: View {
         .listStyle(.insetGrouped)
         #endif
     }
-    
+
+    /** 
+     * アイテムの行コンテンツを返します。
+     * - Parameter item: アイテム
+     * - Parameter level: レベル
+     * - Returns: 行コンテンツ
+     */
     private func itemRow(_ item: SourceItem, level: Int) -> AnyView {
         let isSelected = selectionManager.isSelected(item.id)
         let isEditing = editingItemId == item.id
@@ -149,8 +183,16 @@ public struct SidebarView: View {
             )
         }
     }
-    
+
     @ViewBuilder
+    /** 
+     * アイテムの行コンテンツを返します。
+     * - Parameter item: アイテム
+     * - Parameter isSelected: 選択されているかどうか
+     * - Parameter isEditing: 編集中かどうか
+     * - Parameter level: レベル
+     * - Returns: 行コンテンツ
+     */
     private func rowContent(for item: SourceItem, isSelected: Bool, isEditing: Bool, level: Int) -> some View {
         SourceRowView(
             item: item,
@@ -194,8 +236,13 @@ public struct SidebarView: View {
             }
         }
     }
-    
+
     @ViewBuilder
+    /** 
+     * デフォルトのコンテキストメニューを返します。
+     * - Parameter item: アイテム
+     * - Returns: コンテキストメニュー
+     */
     private func defaultContextMenu(for item: SourceItem) -> some View {
         if item.isEditable {
             Button(action: {
@@ -215,16 +262,26 @@ public struct SidebarView: View {
             }
         }
     }
-    
+
     // MARK: - Helper Methods
-    
+
+    /** 
+     * フィルタリングされたアイテムの配列を返します。
+     * - Returns: フィルタリングされたアイテムの配列
+     */
     private var filteredItems: [SourceItem] {
         if searchText.isEmpty {
             return service.rootItems
         }
         return filterItems(service.rootItems, searchText: searchText)
     }
-    
+
+    /** 
+     * アイテムをフィルタリングします。
+     * - Parameter items: アイテムの配列
+     * - Parameter searchText: 検索テキスト
+     * - Returns: フィルタリングされたアイテムの配列
+     */
     private func filterItems(_ items: [SourceItem], searchText: String) -> [SourceItem] {
         let lowercased = searchText.lowercased()
         return items.compactMap { item in
@@ -242,11 +299,20 @@ public struct SidebarView: View {
             return nil
         }
     }
-    
+
+    /** 
+     * アイテムが展開されているかどうかを返します。
+     * - Parameter item: アイテム
+     * - Returns: 展開されているかどうか
+     */
     private func isItemExpanded(_ item: SourceItem) -> Bool {
         expandedItemIds.contains(item.id) || item.isExpanded
     }
-    
+
+    /** 
+     * アイテムの展開状態を切り替えます。
+     * - Parameter itemId: アイテムの ID
+     */
     private func toggleExpansion(_ itemId: UUID) {
         if expandedItemIds.contains(itemId) {
             expandedItemIds.remove(itemId)
@@ -256,7 +322,10 @@ public struct SidebarView: View {
             service.expandItem(id: itemId)
         }
     }
-    
+
+    /** 
+     * 展開されたアイテムを更新します。
+     */
     private func updateExpandedItems() {
         var expanded: Set<UUID> = []
         func collectExpanded(_ items: [SourceItem]) {

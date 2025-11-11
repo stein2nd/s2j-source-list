@@ -9,33 +9,44 @@ import Foundation
 import Combine
 import SwiftUI
 
-/// Service for managing source list data and persistence.
-///
-/// Provides data to the source list view and handles persistence operations.
+/** 
+ * ソースリストデータの管理と永続化のためのサービス
+ */
 public final class SourceListService: ObservableObject {
-    /// Root items of the source list
+
+    /** 
+     * ルートアイテムの配列
+     */
     @Published public var rootItems: [SourceItem]
-    
-    /// Publisher for item changes
+
+    /** 
+     * アイテム変更イベントのパブリッシャー
+     */
     public let itemsChanged = PassthroughSubject<[SourceItem], Never>()
-    
-    /// Publisher for item rename events
+
+    /** 
+     * アイテムリネームイベントのパブリッシャー
+     */
     public let itemRenamed = PassthroughSubject<(UUID, String), Never>()
-    
-    /// Publisher for item deletion events
+
+    /** 
+     * アイテム削除イベントのパブリッシャー
+     */
     public let itemDeleted = PassthroughSubject<UUID, Never>()
-    
-    /// Initializes a new source list service.
-    ///
-    /// - Parameter rootItems: Initial root items (defaults to empty array)
+
+    /** 
+     * 新しいソースリストサービスを初期化します。
+     * - Parameter rootItems: 初期のルートアイテム (デフォルトは空の配列)
+     */
     public init(rootItems: [SourceItem] = []) {
         self.rootItems = rootItems
     }
-    
-    /// Finds an item by ID in the hierarchy.
-    ///
-    /// - Parameter id: ID of the item to find
-    /// - Returns: Found item and its parent, or nil if not found
+
+    /** 
+     * アイテムを検索します。
+     * - Parameter id: アイテムの ID
+     * - Returns: 見つかったアイテムとその親
+     */
     public func findItem(id: UUID) -> (item: SourceItem, parent: SourceItem?)? {
         for rootItem in rootItems {
             if rootItem.id == id {
@@ -47,7 +58,14 @@ public final class SourceListService: ObservableObject {
         }
         return nil
     }
-    
+
+    /** 
+     * 子アイテムを検索します。
+     * - Parameter id: アイテムの ID
+     * - Parameter parent: 親アイテム
+     * - Parameter children: 子アイテムの配列
+     * - Returns: 見つかったアイテムとその親
+     */
     private func findItemInChildren(id: UUID, parent: SourceItem, children: [SourceItem]?) -> (item: SourceItem, parent: SourceItem)? {
         guard let children = children else { return nil }
         for child in children {
@@ -60,10 +78,11 @@ public final class SourceListService: ObservableObject {
         }
         return nil
     }
-    
-    /// Updates an item in the hierarchy.
-    ///
-    /// - Parameter item: Updated item
+
+    /** 
+     * アイテムを更新します。
+     * - Parameter item: 更新するアイテム
+     */
     public func updateItem(_ item: SourceItem) {
         if let index = rootItems.firstIndex(where: { $0.id == item.id }) {
             rootItems[index] = item
@@ -73,7 +92,13 @@ public final class SourceListService: ObservableObject {
         _ = updateItemInChildren(item, children: &rootItems)
         itemsChanged.send(rootItems)
     }
-    
+
+    /** 
+     * 子アイテムを更新します。
+     * - Parameter item: 更新するアイテム
+     * - Parameter children: 子アイテムの配列
+     * - Returns: 更新が成功したかどうか
+     */
     private func updateItemInChildren(_ item: SourceItem, children: inout [SourceItem]) -> Bool {
         for index in children.indices {
             if children[index].id == item.id {
@@ -89,22 +114,23 @@ public final class SourceListService: ObservableObject {
         }
         return false
     }
-    
-    /// Renames an item.
-    ///
-    /// - Parameters:
-    ///   - id: ID of the item to rename
-    ///   - newTitle: New title for the item
+
+    /** 
+     * アイテムをリネームします。
+     * - Parameter id: アイテムの ID
+     * - Parameter newTitle: 新しいタイトル
+     */
     public func renameItem(id: UUID, newTitle: String) {
         guard var item = findItem(id: id)?.item else { return }
         item.title = newTitle
         updateItem(item)
         itemRenamed.send((id, newTitle))
     }
-    
-    /// Deletes an item from the hierarchy.
-    ///
-    /// - Parameter id: ID of the item to delete
+
+    /** 
+     * アイテムを削除します。
+     * - Parameter id: アイテムの ID
+     */
     public func deleteItem(id: UUID) {
         if let index = rootItems.firstIndex(where: { $0.id == id }) {
             rootItems.remove(at: index)
@@ -116,7 +142,13 @@ public final class SourceListService: ObservableObject {
         itemsChanged.send(rootItems)
         itemDeleted.send(id)
     }
-    
+
+    /** 
+     * 子アイテムを削除します。
+     * - Parameter id: 子アイテムの ID
+     * - Parameter children: 子アイテムの配列
+     * - Returns: 削除が成功したかどうか
+     */
     private func deleteItemFromChildren(id: UUID, children: inout [SourceItem]) -> Bool {
         for index in children.indices {
             if children[index].id == id {
@@ -132,39 +164,42 @@ public final class SourceListService: ObservableObject {
         }
         return false
     }
-    
-    /// Toggles expansion state of a group item.
-    ///
-    /// - Parameter id: ID of the group item
+
+    /** 
+     * グループアイテムの展開状態を切り替えます。
+     * - Parameter id: グループアイテムの ID
+     */
     public func toggleExpansion(id: UUID) {
         guard var item = findItem(id: id)?.item, item.hasChildren else { return }
         item.isExpanded.toggle()
         updateItem(item)
     }
-    
-    /// Expands a group item.
-    ///
-    /// - Parameter id: ID of the group item
+
+    /** 
+     * グループアイテムを展開します。
+     * - Parameter id: グループアイテムの ID
+     */
     public func expandItem(id: UUID) {
         guard var item = findItem(id: id)?.item, item.hasChildren, !item.isExpanded else { return }
         item.isExpanded = true
         updateItem(item)
     }
-    
-    /// Collapses a group item.
-    ///
-    /// - Parameter id: ID of the group item
+
+    /** 
+     * グループアイテムを折りたたみます。
+     * - Parameter id: グループアイテムの ID
+     */
     public func collapseItem(id: UUID) {
         guard var item = findItem(id: id)?.item, item.hasChildren, item.isExpanded else { return }
         item.isExpanded = false
         updateItem(item)
     }
-    
-    /// Adds a new item as a child of the specified parent.
-    ///
-    /// - Parameters:
-    ///   - item: Item to add
-    ///   - parentId: ID of the parent item (nil for root level)
+
+    /** 
+     * 新しいアイテムを親アイテムに追加します。
+     * - Parameter item: 子アイテム
+     * - Parameter parentId: 親アイテムの ID
+     */
     public func addItem(_ item: SourceItem, parentId: UUID? = nil) {
         if let parentId = parentId {
             _ = addItemToParent(item, parentId: parentId, children: &rootItems)
@@ -173,7 +208,14 @@ public final class SourceListService: ObservableObject {
         }
         itemsChanged.send(rootItems)
     }
-    
+
+    /** 
+     * 親アイテムに子アイテムを追加します。
+     * - Parameter item: 子アイテム
+     * - Parameter parentId: 親アイテムの ID
+     * - Parameter children: 子アイテムの配列
+     * - Returns: 追加が成功したかどうか
+     */
     private func addItemToParent(_ item: SourceItem, parentId: UUID, children: inout [SourceItem]) -> Bool {
         for index in children.indices {
             if children[index].id == parentId {

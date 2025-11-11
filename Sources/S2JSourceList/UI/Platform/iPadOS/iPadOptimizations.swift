@@ -8,15 +8,27 @@
 #if os(iOS)
 import SwiftUI
 
-/// iPadOS-specific optimizations and utilities.
+/** 
+ * iPadOS 固有の最適化とユーティリティクラス
+ */
 public struct iPadOptimizations {
-    /// Default row height for iPadOS
+
+    /** 
+     * デフォルトの行高を取得します。
+     * - Returns: デフォルトの行高
+     */
     public static let defaultRowHeight: CGFloat = 44
-    
-    /// Default indentation width for iPadOS
+
+    /** 
+     * デフォルトのインデント幅を取得します。
+     * - Returns: デフォルトのインデント幅
+     */
     public static let defaultIndentationWidth: CGFloat = 20
-    
-    /// Default icon size for iPadOS
+
+    /** 
+     * デフォルトのアイコンサイズを取得します。
+     * - Returns: デフォルトのアイコンサイズ
+     */
     public static let defaultIconSize: CGFloat = 20
 }
 #endif

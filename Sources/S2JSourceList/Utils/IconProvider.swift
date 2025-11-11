@@ -14,12 +14,15 @@ import UIKit
 import AppKit
 #endif
 
-/// Provides icon images for source list items.
+/** 
+ * Sourcelist アイテム向けのアイコン提供ユーティリティクラス
+ */
 public struct IconProvider {
-    /// Gets an image for the given icon name.
-    ///
-    /// - Parameter iconName: Icon name (system name or asset name)
-    /// - Returns: Image view, or nil if icon name is invalid
+    /**
+     * 指定されたアイコン名の画像を取得します。
+     * - Parameter iconName: アイコン名 (システム名またはアセット名)
+     * - Returns: Image ビュー、アイコン名が無効な場合は nil を返します。
+     */
     public static func image(for iconName: String?) -> Image? {
         guard let iconName = iconName, !iconName.isEmpty else { return nil }
         
@@ -46,13 +49,13 @@ public struct IconProvider {
         
         return nil
     }
-    
-    /// Gets an image for the given icon name with a default fallback.
-    ///
-    /// - Parameters:
-    ///   - iconName: Icon name (system name or asset name)
-    ///   - defaultIcon: Default icon name to use if iconName is invalid
-    /// - Returns: Image view
+
+    /** 
+     * 指定されたアイコン名が無効な場合は、デフォルトのアイコンを使用します。
+     * - Parameter iconName: アイコン名
+     * - Parameter defaultIcon: デフォルトのアイコン名
+     * - Returns: Image ビュー
+     */
     public static func image(for iconName: String?, defaultIcon: String = "folder") -> Image {
         if let image = image(for: iconName) {
             return image
@@ -63,10 +66,11 @@ public struct IconProvider {
 
 #if canImport(AppKit)
 extension IconProvider {
-    /// Gets an NSImage for macOS (for AppKit bridge if needed).
-    ///
-    /// - Parameter iconName: Icon name
-    /// - Returns: NSImage, or nil if icon name is invalid
+    /**
+     * 必要に応じて AppKit ブリッジ用に、macOS 向けの NSImage を取得します。
+     * - Parameter iconName: アイコン名
+     * - Returns: NSImage、アイコン名が無効な場合は nil を返します。
+     */
     public static func nsImage(for iconName: String?) -> NSImage? {
         guard let iconName = iconName, !iconName.isEmpty else { return nil }
         

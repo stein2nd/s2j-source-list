@@ -9,24 +9,38 @@
 import AppKit
 import SwiftUI
 
-/// AppKit bridge utilities for macOS-specific functionality.
+/** 
+ * macOS 固有の機能を提供するための、AppKit ブリッジ用のユーティリティクラス
+ */
 public struct AppKitBridge {
-    /// Gets the current accent color from AppKit.
+    /** 
+     * AppKit から現在のアクセントカラーを取得します。
+     * - Returns: アクセントカラー
+     */
     public static var accentColor: Color {
         Color(NSColor.controlAccentColor)
     }
-    
-    /// Gets the current window background color.
+
+    /** 
+     * ウィンドウ背景色を取得します。
+     * - Returns: ウィンドウ背景色
+     */
     public static var windowBackgroundColor: Color {
         Color(NSColor.windowBackgroundColor)
     }
-    
-    /// Gets the current text color.
+
+    /** 
+     * テキストカラーを取得します。
+     * - Returns: テキストカラー
+     */
     public static var textColor: Color {
         Color(NSColor.textColor)
     }
-    
-    /// Gets the current secondary text color.
+
+    /** 
+     * セカンダリー・テキストカラーを取得します。
+     * - Returns: セカンダリー・テキストカラー
+     */
     public static var secondaryTextColor: Color {
         Color(NSColor.secondaryLabelColor)
     }
