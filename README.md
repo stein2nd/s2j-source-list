@@ -1,4 +1,4 @@
-# s2j-source-list
+# S2J Source List
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-3.0.en.html)
 [![React](https://img.shields.io/badge/Swift-5.9-blue?logo=Swift&logoColor=white)](https://www.swift.org)
@@ -6,10 +6,10 @@
 ## Description
 
 <!-- 
-S2J Source List is a SwiftUI-based hierarchical sidebar component for macOS and iPadOS. It provides a modern, declarative API for displaying tree-structured data with support for selection, editing, icons, badges, and more.
+S2J Source List is a SwiftUI-based hierarchical sidebar component for macOS and iPadOS. This library has been ported from the popular PXSourceList project, bringing its functionality to the SwiftUI ecosystem. It provides a modern, declarative API for displaying tree-structured data with support for such as selection, editing, icons, badges, and more.
  -->
 
-S2J Source List は、macOS および iPadOS 向けの SwiftUI ベースの階層型サイドバーコンポーネントです。選択、編集、アイコン、バッジなどの機能をサポートし、ツリー構造のデータを表示するためのモダンで宣言的な API を提供します。
+S2J Source List は、macOS および iPadOS 向けの SwiftUI ベースの階層型サイドバーコンポーネントです。本ライブラリは、人気の [PXSourceList](https://github.com/alexrozanski/PXSourceList) プロジェクトから移植され、その機能を SwiftUI エコシステムにもたらします。ツリー構造のデータを表示するためのモダンな宣言型 API を提供し、選択、編集、アイコン、バッジなどの機能をサポートします。
 
 ## Features
 
@@ -226,6 +226,63 @@ selectionManager.isSelected(itemId)
 selectionManager.clearSelection()
 ```
 
-## Credits
+## Contributing
 
-Based on [PXSourceList](https://github.com/alexrozanski/PXSourceList) by Alex Rozanski.
+<!-- 
+We look forward to your contributions. Please follow the steps below.
+ -->
+
+貢献をお待ちしています。以下の手順に従ってください。
+
+<!-- 
+1. Fork the repository.
+3. Create a feature branch (`git checkout -b feature/amazing-feature`).
+4. Commit your changes (`git commit -m 'Add some amazing feature'`).
+5. Push to the feature branch (`git push origin feature/amazing-feature`).
+6. Open a Pull Request.
+ -->
+
+1. リポジトリをフォークしてください。
+3. 機能ブランチを作成してください (`git checkout -b feature/amazing-feature`)。
+4. 変更をコミットしてください (`git commit -m 'Add some amazing feature'`)。
+5. 機能ブランチにプッシュしてください (`git push origin feature/amazing-feature`)。
+6. Pull Request を開いてください。
+
+<!-- 
+*For detailed information, refer to the [SPEC.md](SPEC.md) file.*
+ -->
+
+*詳細な情報については、[SPEC.md](SPEC.md) ファイルを参照してください。*
+
+<!-- 
+ -->
+
+### 開発ガイドライン
+
+<!-- 
+* Follow the existing code style.
+* Add Swift types for new features.
+* Include tests for new features.
+* Update documentation as needed.
+ -->
+
+* 既存のコードスタイルに従ってください。
+* 新機能には、Swift 型を追加しましょう。
+* 新機能には、テストを含めましょう。
+* 必要に応じて、ドキュメントを更新してください。
+
+## Contributors & Developers
+
+**"S2J Source List"** はオープンソース・ソフトウェアです。以下の皆様がこのツールに貢献しています。
+
+* **開発者**: Koutarou ISHIKAWA
+
+## Acknowledgments
+
+<!-- 
+* Based on [PXSourceList](https://github.com/alexrozanski/PXSourceList) by Alex Rozanski
+* Built with SwiftUI and Swift Package Manager
+ -->
+
+* Alex Rozanski 制作 [PXSourceList](https://github.com/alexrozanski/PXSourceList) をもとに作成
+* SwiftUI および Swift Package Manager で構築
