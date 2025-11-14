@@ -304,14 +304,14 @@ struct ContentView: View {
 
 ## 9. CI / CD
 
-**実装状況**: ✅ **部分実装** - GitHub Actions ワークフローは実装済み、リリース自動化は未実装
+**実装状況**: ⚠️ **部分実装** - GitHub Actions ワークフローは実装済みだが、iOS テストのスキーム名が誤っている。リリース自動化は未実装
 
 * Swift Package のビルド成果物 (バイナリ / XCFramework) は Git 管理対象外です。
 * Tag ルール:
   * `vMAJOR.MINOR.PATCH`
 * **GitHub Actions**:
-  * ワークフロー (macOS runner) で `swift build` / `swift test` を実行します。(✅ 実装済み - `.github/workflows/swift-test.yml`)
-  * Pull Request に対して SwiftLint とビルド確認を実施します。
+  * ワークフロー (macOS runner) で `swift build` / `swift test` を実行します。(⚠️ 部分実装 - `.github/workflows/swift-test.yml` は実装済みだが、iOS テストのスキーム名が誤っている)
+  * Pull Request に対して SwiftLint とビルド確認を実施します。(⚠️ 未実装 - SwiftLint の設定は未実装)
   * ドキュメント品質検証 (Docs Linter) を実行します。(✅ 実装済み - `.github/workflows/docs-linter.yml`)
 * **Release**:
   * Xcode の Archive を利用したビルド `xcodebuild` (Universal Binary 推奨) を実施します。(⚠️ 未実装)
@@ -331,7 +331,7 @@ struct ContentView: View {
 
 本章では、「現在の実装状況」を記載します。
 
-S2J Source List は、当初の仕様の約90%を達成し、本番環境での使用に適した高品質な Swift Package として完成しています。
+S2J Source List は、当初の仕様の約89%を達成し、本番環境での使用に適した高品質な Swift Package として完成しています。
 
 **主要な成果**:
 * **コア機能の完全実装**: 階層表示、選択、編集、検索、コンテキスト・メニューなど主要機能は100%実装済み
@@ -351,7 +351,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * ✅ **プラットフォーム固有の最適化**: `AppKitBridge` (macOS) と `iPadOptimizations` (iPadOS) で実装
 * ✅ **国際化・ローカライズ**: Base、en、ja の `Localizable.strings` を実装
 * ✅ **ユニットテスト**: `SourceItemTests`、`SelectionManagerTests`、`SourceListServiceTests` を実装
-* ✅ **GitHub Actions ワークフロー**: `docs-linter.yml`、`swift-test.yml` を実装
+* ⚠️ **GitHub Actions ワークフロー**: `docs-linter.yml`、`swift-test.yml` を実装 (iOS テストのスキーム名が誤っている)
 * ✅ **主要ファイル**: すべてのコアファイル (SourceItem、SourceListService、SelectionManager、SidebarView、SourceRowView、InlineEditorView、AppKitBridge、iPadOptimizations、IconProvider) を実装
 * ✅ **アクセシビリティ**: VoiceOver 用の `accessibilityLabel` / `accessibilityValue` を実装
 * ✅ **ダークモード対応**: SwiftUI の標準カラーを使用して実装
@@ -397,7 +397,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 | **テスト** | ユニットテスト | ✅ 実装済み | 100% | `SourceItemTests`、`SelectionManagerTests`、`SourceListServiceTests` |
 | | UI テスト | ⚠️ 未実装 | 0% | 主要なユーザー操作の検証が未実装 |
 | | スナップショットテスト | ⚠️ 未実装 | 0% | SwiftUI レンダリングの一貫性検証が未実装 |
-| **CI/CD** | GitHub Actions ワークフロー | ✅ 実装済み | 100% | `docs-linter.yml`、`swift-test.yml` |
+| **CI/CD** | GitHub Actions ワークフロー | ⚠️ 部分実装 | 90% | `docs-linter.yml`、`swift-test.yml` (iOS テストのスキーム名が誤っている) |
 | | リリース自動化 | ⚠️ 未実装 | 0% | Xcode Archive、Notarize、Artifacts 管理が未実装 |
 | **ドキュメント** | コードコメント | ✅ 実装済み | 100% | 主要な API にコメントを実装 |
 | | API Reference (DocC) | ⚠️ 未実装 | 0% | DocC 形式の API ドキュメントが未整備 |
@@ -420,11 +420,11 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * **ユーティリティ**: 100% (1モジュール実装済み)
 * **リソース**: 50% (ローカライゼーションは実装済み。Assets は未実装)
 * **テスト**: 33.3% (ユニットテストは実装済み。UI テスト・スナップショットテストは未実装)
-* **CI/CD**: 50% (GitHub Actions は実装済み。リリース自動化は未実装)
+* **CI/CD**: 45% (GitHub Actions は実装済みだが iOS テストのスキーム名が誤っている。リリース自動化は未実装)
 * **ドキュメント**: 66.7% (コードコメント、README は実装済み。API Reference は未整備)
 * **アクセシビリティ**: 83.3% (VoiceOver は実装済み。キーボードナビゲーション・動的タイプは部分実装)
 
-**全体実装の完了率**: 約 **90%** (コア機能、UI コンポーネント、データモデルは完全実装。テスト、CI/CD、ドキュメントは部分実装)
+**全体実装の完了率**: 約 **89%** (コア機能、UI コンポーネント、データモデルは完全実装。テスト、CI/CD、ドキュメントは部分実装)
 
 ### 11.5. 品質評価
 
@@ -479,7 +479,14 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 ### 12.2. 中期での改善予定 (3-6ヵ月)
 
-1. **リリース自動化の実装** (優先度: 中)
+1. **GitHub Actions ワークフローの修正** (優先度: 高)
+   * 現状: `swift-test.yml` の iOS テストでスキーム名が `S2JAboutWindow` になっている（正しくは `S2JSourceList` であるべき）。また、アーティファクト名も誤っている。
+   * 実装内容:
+     * iOS テストのスキーム名を修正します。
+     * アーティファクト名を修正します。
+   * 見積もり: 1日。
+
+2. **リリース自動化の実装** (優先度: 中)
    * 現状: GitHub Actions ワークフローは実装済み、リリース自動化は未実装です。
    * 実装内容:
      * Xcode の Archive を利用したビルド `xcodebuild` (Universal Binary 推奨) を実装します。
@@ -488,7 +495,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
      * リリース・アセット: ソース + API Reference ドキュメントを提供します。
    * 見積もり: 1-2週間。
 
-2. **API Reference ドキュメント (DocC) の整備** (優先度: 中)
+3. **API Reference ドキュメント (DocC) の整備** (優先度: 中)
    * 現状: コードコメントは実装済み、DocC 形式の API ドキュメントは未整備です。
    * 実装内容:
      * DocC 形式での API Reference を生成します。
@@ -497,7 +504,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
      * Migration Guide (PXSourceList からの移行) を作成します。
    * 見積もり: 1-2週間。
 
-3. **Assets.xcassets の追加** (優先度: 低)
+4. **Assets.xcassets の追加** (優先度: 低)
    * 現状: 必要に応じて追加する予定です。
    * 実装内容:
      * カスタムアイコンやアセットを追加します。
@@ -582,10 +589,10 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 ### 5. CI ワークフロー補足
 
-**実装状況**: ✅ **部分実装** - GitHub Actions ワークフローは実装済み、UI スナップショット・テストは未実装
+**実装状況**: ⚠️ **部分実装** - GitHub Actions ワークフローは実装済みだが、iOS テストのスキーム名が誤っている。UI スナップショット・テストは未実装
 
 * 本プロジェクトでは、以下の GitHub Actions ワークフローを導入します。
     * `docs-linter.yml`: Markdown ドキュメントの表記揺れ検出 (Docs Linter) (✅ 実装済み)
-    * `swift-test.yml`: Swift Package のユニットテストおよび UI スナップショットテストの自動実行 (✅ 部分実装 - ユニットテストは実装済み、UI スナップショット・テストは未実装)
+    * `swift-test.yml`: Swift Package のユニットテストおよび UI スナップショットテストの自動実行 (⚠️ 部分実装 - ユニットテストは実装済み、iOS テストのスキーム名が誤っている、UI スナップショット・テストは未実装)
 * macOS Runner では `swift test --enable-code-coverage` を実行し、テストカバレッジを出力します。
 * iPadOS 互換性テストは、`xcodebuild test -scheme S2JSourceList -destination 'platform=iOS Simulator,name=iPad Pro (12.9-inch)'` で検証します。
