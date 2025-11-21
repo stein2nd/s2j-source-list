@@ -1,8 +1,7 @@
 {
   "name": "s2j-source-list",
   "version": "1.0.0",
-  "description": "Using SwiftUI, reimplementing the AppKit-based “PXSourceList”.",
-  "main": "README.md",
+  "description": "Using SwiftUI, reimplementing the AppKit-based \"PXSourceList\".",
   "directories": {
     "doc": "docs"
   },

@@ -44,7 +44,7 @@ jobs:
     
     - name: Run tests on iOS Simulator
       run: |
-        xcodebuild test -scheme S2JAboutWindow -destination 'platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)'
+        xcodebuild test -scheme S2JSourceList -destination 'platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)'
     
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
@@ -73,5 +73,5 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: s2j-about-window-build
+        name: s2j-source-list-build
         path: .build/release/
