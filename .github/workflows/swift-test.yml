@@ -42,9 +42,43 @@ jobs:
       with:
         xcode-version: latest-stable
     
+    - name: List available simulators
+      run: |
+        xcrun simctl list devices available | grep -i "iPad Pro"
+
+    - name: Boot iOS Simulator
+      run: |
+        # 利用可能な iPad Pro シミュレーターを取得
+        DEVICE=$(xcrun simctl list devices available | grep -i "iPad Pro" | head -1 | sed -E 's/.*\(([^)]+)\)/\1/' | xargs)
+        if [ -z "$DEVICE" ]; then
+          echo "iPad Pro シミュレーターが見つかりません。デフォルトのデバイスを使用します。"
+          DEVICE=$(xcrun simctl list devices available | grep -i "iPad" | head -1 | sed -E 's/.*\(([^)]+)\)/\1/' | xargs)
+        fi
+        if [ -n "$DEVICE" ]; then
+          echo "シミュレーターを起動: $DEVICE"
+          xcrun simctl boot "$DEVICE" || true
+        fi
+
     - name: Run tests on iOS Simulator
       run: |
-        xcodebuild test -scheme S2JSourceList -destination 'platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)'
+        # 利用可能な iPad Pro シミュレーターを取得
+        DEVICE_NAME=$(xcrun simctl list devices available | grep -i "iPad Pro" | head -1 | sed -E 's/^[[:space:]]*([^(]+).*/\1/' | xargs)
+        DEVICE_UDID=$(xcrun simctl list devices available | grep -i "iPad Pro" | head -1 | sed -E 's/.*\(([^)]+)\)/\1/' | xargs)
+
+        if [ -z "$DEVICE_NAME" ] || [ -z "$DEVICE_UDID" ]; then
+          echo "iPad Pro シミュレーターが見つかりません。デフォルトのデバイスを使用します。"
+          DEVICE_NAME=$(xcrun simctl list devices available | grep -i "iPad" | head -1 | sed -E 's/^[[:space:]]*([^(]+).*/\1/' | xargs)
+          DEVICE_UDID=$(xcrun simctl list devices available | grep -i "iPad" | head -1 | sed -E 's/.*\(([^)]+)\)/\1/' | xargs)
+        fi
+
+        if [ -z "$DEVICE_NAME" ] || [ -z "$DEVICE_UDID" ]; then
+          echo "エラー: 利用可能な iOS シミュレーターが見つかりません"
+          xcrun simctl list devices available
+          exit 1
+        fi
+
+        echo "使用するデバイス: $DEVICE_NAME ($DEVICE_UDID)"
+        xcodebuild test -package . -scheme S2JSourceList -destination "platform=iOS Simulator,id=$DEVICE_UDID"
     
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3

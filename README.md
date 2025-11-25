@@ -271,6 +271,33 @@ We look forward to your contributions. Please follow the steps below.
 * 新機能には、テストを含めましょう。
 * 必要に応じて、ドキュメントを更新してください。
 
+### ローカルでのテスト実行
+
+コミット前に CI/CD と同じテストをローカルで実行して、問題を早期に発見できます。
+
+```zsh
+# 基本的な使用方法 (Package.swift から自動検出)
+./scripts/test-local.sh
+
+# npm スクリプトからの引数でカスタマイズ (最優先)
+npm run test:local -- --scheme-name S2JSourceList --ios-device "iPad Pro" --ios-version "15.0"
+
+# コマンドライン引数でカスタマイズ
+./scripts/test-local.sh --scheme-name S2JSourceList --ios-device "iPad Pro" --ios-version "15.0"
+
+# 環境変数でカスタマイズ (引数と自動検出が優先されない場合に使用)
+SCHEME_NAME=S2JSourceList IOS_DEVICE="iPad Pro" IOS_VERSION="15.0" ./scripts/test-local.sh
+```
+
+**優先順位**: 1. npm スクリプトからの引数 (コマンドライン引数) > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値
+
+このスクリプトは以下を実行します：
+* macOS でのテスト実行
+* iOS シミュレーターでのテスト実行（Xcode が必要）
+* テストカバレッジの有効化
+
+**注意**: iOS テストを実行するには、Xcode がインストールされている必要があります。
+
 ## Contributors & Developers
 
 **"S2J Source List"** はオープンソース・ソフトウェアです。以下の皆様がこのツールに貢献しています。

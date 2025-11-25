@@ -1,0 +1,100 @@
+name: S2JSourceList
+options:
+  bundleIdPrefix: com.s2j
+  deploymentTarget:
+    macOS: "12.0"
+    iOS: "15.0"
+  developmentLanguage: en
+  defaultLocalization: en
+
+targets:
+  S2JSourceList-macOS:
+    type: framework
+    platform: macOS
+    sources:
+      - path: Sources/S2JSourceList
+    resources:
+      - path: Sources/S2JSourceList/Resources
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceList-macOS
+      PRODUCT_NAME: S2JSourceList
+      SWIFT_VERSION: "5.8"
+      GENERATE_INFOPLIST_FILE: YES
+      DEFINES_MODULE: YES
+      CURRENT_PROJECT_VERSION: "1"
+      MARKETING_VERSION: "1.0"
+
+  S2JSourceList-iOS:
+    type: framework
+    platform: iOS
+    sources:
+      - path: Sources/S2JSourceList
+    resources:
+      - path: Sources/S2JSourceList/Resources
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceList-iOS
+      PRODUCT_NAME: S2JSourceList
+      SWIFT_VERSION: "5.8"
+      GENERATE_INFOPLIST_FILE: YES
+      DEFINES_MODULE: YES
+      CURRENT_PROJECT_VERSION: "1"
+      MARKETING_VERSION: "1.0"
+
+  S2JSourceListTests-macOS:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests/S2JSourceListTests
+    dependencies:
+      - target: S2JSourceList-macOS
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceListTests-macOS
+      PRODUCT_NAME: S2JSourceListTests
+      SWIFT_VERSION: "5.8"
+      GENERATE_INFOPLIST_FILE: YES
+      CURRENT_PROJECT_VERSION: "1"
+      MARKETING_VERSION: "1.0"
+
+  S2JSourceListTests-iOS:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests/S2JSourceListTests
+    dependencies:
+      - target: S2JSourceList-iOS
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceListTests-iOS
+      PRODUCT_NAME: S2JSourceListTests
+      CODE_SIGN_STYLE: Automatic
+      DEVELOPMENT_TEAM: ""
+      SWIFT_VERSION: "5.8"
+      GENERATE_INFOPLIST_FILE: YES
+      CURRENT_PROJECT_VERSION: "1"
+      MARKETING_VERSION: "1.0"
+
+schemes:
+  S2JSourceList:
+    build:
+      targets:
+        S2JSourceList-macOS: all
+        S2JSourceList-iOS: all
+    test:
+      targets:
+        - S2JSourceListTests-macOS
+        - S2JSourceListTests-iOS
+
+  S2JSourceList-macOS:
+    build:
+      targets:
+        S2JSourceList-macOS: all
+    test:
+      targets:
+        - S2JSourceListTests-macOS
+
+  S2JSourceList-iOS:
+    build:
+      targets:
+        S2JSourceList-iOS: all
+    test:
+      targets:
+        - S2JSourceListTests-iOS

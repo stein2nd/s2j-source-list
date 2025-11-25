@@ -129,8 +129,11 @@
 │└┬─ workflows/
 │　├─ docs-linter.yml (✅ 実装済み)
 │　└─ swift-test.yml (✅ 実装済み)
+├┬─ scripts/  # スクリプト
+│└─ test-local.sh  # ローカル・テスト実行スクリプト (✅ 実装済み)
 ├── SampleApp.swift  # エントリー・ポイント (⚠️ 未実装)
 ├── Package.swift  # Swift Package 定義 (プロジェクト・ファイル兼用) (✅ 実装済み)
+├── project.yml  # XcodeGen 設定ファイル
 ├┬─ Sources/
 │└┬─ S2JSourceList/  # メイン・ソースコード
 │　├┬─ Core/
@@ -151,12 +154,14 @@
 │　│　└┬─ iPadOS/
 │　│　　└─ iPadOptimizations.swift  # iPadOS 最適化 (✅ 実装済み)
 │　├┬─ Utils/
-│　│└─ IconProvider.swift  # アイコン提供ユーティリティ (✅ 実装済み)
-│　├┬─ Resources/  # リソースファイル
-│　│├─ Base.lproj/Localizable.strings  # ローカライゼーション (✅ 実装済み)
-│　│├─ en.lproj/Localizable.strings  # ローカライゼーション (✅ 実装済み)
-│　│├─ ja.lproj/Localizable.strings  # ローカライゼーション (✅ 実装済み)
-│　│└─ Assets.xcassets/  # アセット (⚠️ 未実装 - 必要に応じて追加)
+│　│├─ IconProvider.swift  # アイコン提供ユーティリティ (✅ 実装済み)
+│　│└─ Bundle+Module.swift  # Bundle.module の代替実装 (Xcode プロジェクト用) (✅ 実装済み)
+│　└┬─ Resources/  # リソースファイル
+│　　├┬─ Assets.xcassets/  # アセット (⚠️ 未実装 - 必要に応じて追加)
+│　　│└─ Contents.json
+│　　├─ Base.lproj/Localizable.strings  # ローカライゼーション (✅ 実装済み)
+│　　├─ en.lproj/Localizable.strings  # ローカライゼーション (✅ 実装済み)
+│　　└─ ja.lproj/Localizable.strings  # ローカライゼーション (✅ 実装済み)
 ├┬─ Tests/
 │└┬─ S2JSourceListTests/  # テストコード
 │　├─ SelectionManagerTests.swift (✅ 実装済み)
@@ -221,7 +226,17 @@
 ### 4.8. 主要ファイルの実装状況
 
 * `Package.swift`: Swift Package 定義、リソース設定 (✅ 実装済み)
-* `SourceItem.swift`: データモデル (title, icon, badge, children, isEditable, metadata) (✅ 実装済み)
+* `project.yml` : XcodeGen 設定ファイル、macOS/iOS ターゲット定義、プラットフォーム専用スキーム定義
+  * **ターゲット構成**:
+    * `S2JSourceList-macOS`: macOS 向けフレームワーク
+    * `S2JSourceList-iOS`: iOS 向けフレームワーク
+    * `S2JSourceListTests-macOS`: macOS 向けテストバンドル
+    * `S2JSourceListTests-iOS`: iOS 向けテストバンドル (署名設定: `CODE_SIGN_STYLE: Automatic`、`DEVELOPMENT_TEAM: ""`)
+  * **スキーム構成**:
+    * `S2JSourceList`: 統合スキーム (macOS + iOS)
+    * `S2JSourceList-macOS`: macOS 専用スキーム (macOS ターゲットのみ)
+    * `S2JSourceList-iOS`: iOS 専用スキーム (iOS ターゲットのみ)
+* `SourceItem.swift`: データモデル (title、icon、badge、children、isEditable、metadata) (✅ 実装済み)
 * `SourceListService.swift`: データ供給と永続化用インターフェース、`@Published var rootItems: [SourceItem]` (✅ 実装済み)
 * `SelectionManager.swift`: 選択状態 (単一／複数選択)、選択履歴、プログラム的選択 (✅ 実装済み)
 * `SidebarView.swift`: メインのサイドバーコンポーネント、カスタマイズポイント (✅ 実装済み)
@@ -230,6 +245,7 @@
 * `AppKitBridge.swift`: AppKit ブリッジ (必要に応じて) (✅ 実装済み)
 * `iPadOptimizations.swift`: iPadOS 最適化 (✅ 実装済み)
 * `IconProvider.swift`: アイコン提供ユーティリティ (✅ 実装済み)
+* `Bundle+Module.swift`: Bundle.module の代替実装 (Xcode プロジェクト用) (✅ 実装済み)
 * `Resources/Localizable.strings`: 英語・日本語ローカライゼーション (✅ 実装済み)
 
 ### 4.9. セキュリティ / プライバシー
@@ -242,6 +258,7 @@
 
 * ローカライズ対応は、必須 (英語・日本語) の為、Base、English、Japanese を初期追加します。(✅ 実装済み)
 * `Bundle.module` 経由で `Localizable.strings` を読み込みます (SwiftPM の `resources: [.process("Resources")]`)。(✅ 実装済み)
+* Xcode プロジェクトで使用する場合、`Bundle+Module.swift` が `Bundle.module` の代替実装を提供します。(✅ 実装済み)
 * 文字列キー例: `"SourceList.Empty"`、`"SourceList.Search.Placeholder"`、`"SourceList.Edit.Rename"`、`"SourceList.Edit.Delete"` (✅ 実装済み)
 * VoiceOver 用の `accessibilityLabel` / `accessibilityValue` を各行コンポーネントで提供します。(✅ 実装済み - `SourceRowView` で `accessibilityLabel`、`accessibilityValue`、`accessibilityAddTraits` を実装)
 * `Localizable.strings` を含め、API Reference のローカライズを想定します。
@@ -304,15 +321,27 @@ struct ContentView: View {
 
 ## 9. CI / CD
 
-**実装状況**: ⚠️ **部分実装** - GitHub Actions ワークフローは実装済み。リリース自動化は未実装です。
+**実装状況**: ✅ **実装済み** - GitHub Actions ワークフローは実装済み。リリース自動化は未実装です。
 
 * Swift Package のビルド成果物 (バイナリ / XCFramework) は Git 管理対象外です。
 * Tag ルール:
   * `vMAJOR.MINOR.PATCH`
 * **GitHub Actions**:
   * ワークフロー (macOS runner) で `swift build` / `swift test` を実行します。(✅ 実装済み - `.github/workflows/swift-test.yml`)
+    * macOS テスト: `swift test --enable-code-coverage` を実行
+    * iOS/iPadOS テスト: シミュレーターを動的に検出・起動し、`xcodebuild test -package . -scheme S2JSourceList` を実行
+    * Swift Package Manager プロジェクトに対応するため、`-package .` フラグを使用
+    * デバイス UDID を使用することで、環境に依存しないテスト実行を実現
   * Pull Request に対して SwiftLint とビルド確認を実施します。(⚠️ 未実装 - SwiftLint の設定は未実装)
   * ドキュメント品質検証 (Docs Linter) を実行します。(✅ 実装済み - `.github/workflows/docs-linter.yml`)
+* **ローカル・テストスクリプト**:
+  * `scripts/test-local.sh`: コミット前に CI/CD と同じテストをローカルで実行可能 (✅ 実装済み)
+    * macOS テスト、iOS/iPadOS シミュレーターテストを実行
+    * 優先順位: 1. npm スクリプトからの引数 (コマンドライン引数) > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値
+    * 環境変数でカスタマイズ可能（`SCHEME_NAME`、`IOS_DEVICE`、`IOS_VERSION`、`SKIP_IOS_TESTS` など）
+    * Xcode プロジェクト生成とテストもサポート（`project.yml` が存在する場合、`ENABLE_XCODE_PROJECT=true` で有効化）
+    * パッケージ名とスキーム名を `Package.swift` から自動検出
+    * 使用方法: `./scripts/test-local.sh [オプション]` または `npm run test:local -- [オプション]`
 * **Release**:
   * Xcode の Archive を利用したビルド `xcodebuild` (Universal Binary 推奨) を実施します。(⚠️ 未実装)
   * Notarize / Notarization ステップは手順化します (可能なら自動化スクリプトを提供します)。(⚠️ 未実装)
@@ -331,7 +360,7 @@ struct ContentView: View {
 
 本章では、「現在の実装状況」を記載します。
 
-S2J Source List は、当初の仕様の約89%を達成し、本番環境での使用に適した高品質な Swift Package として完成しています。
+S2J Source List は、当初の仕様の約90%を達成し、本番環境での使用に適した高品質な Swift Package として完成しています。
 
 **主要な成果**:
 * **コア機能の完全実装**: 階層表示、選択、編集、検索、コンテキスト・メニューなど主要機能は100%実装済み
@@ -352,7 +381,8 @@ S2J Source List は、当初の仕様の約89%を達成し、本番環境での�
 * ✅ **国際化・ローカライズ**: Base、en、ja の `Localizable.strings` を実装
 * ✅ **ユニットテスト**: `SourceItemTests`、`SelectionManagerTests`、`SourceListServiceTests` を実装
 * ✅ **GitHub Actions ワークフロー**: `docs-linter.yml`、`swift-test.yml` を実装。
-* ✅ **主要ファイル**: すべてのコアファイル (SourceItem、SourceListService、SelectionManager、SidebarView、SourceRowView、InlineEditorView、AppKitBridge、iPadOptimizations、IconProvider) を実装
+* ✅ **ローカル・テストスクリプト**: `scripts/test-local.sh` を実装 (コミット前に CI/CD と同じテストをローカルで実行可能)。優先順位: 1. npm スクリプトからの引数 > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値。
+* ✅ **主要ファイル**: すべてのコアファイル (SourceItem、SourceListService、SelectionManager、SidebarView、SourceRowView、InlineEditorView、AppKitBridge、iPadOptimizations、IconProvider、Bundle+Module) を実装
 * ✅ **アクセシビリティ**: VoiceOver 用の `accessibilityLabel` / `accessibilityValue` を実装
 * ✅ **ダークモード対応**: SwiftUI の標準カラーを使用して実装
 
@@ -392,12 +422,14 @@ S2J Source List は、当初の仕様の約89%を達成し、本番環境での�
 | | `SourceListService` | ✅ 実装済み | 100% | データ供給と永続化用インターフェース |
 | | `SelectionManager` | ✅ 実装済み | 100% | 選択状態の管理 (単一/複数選択、選択履歴)  |
 | **ユーティリティ** | `IconProvider` | ✅ 実装済み | 100% | アイコン提供ユーティリティ |
+| | `Bundle+Module` | ✅ 実装済み | 100% | Bundle.module の代替実装 (Xcode プロジェクト用) |
 | **リソース** | ローカライゼーション (Base/en/ja)  | ✅ 実装済み | 100% | `Localizable.strings` を実装 |
 | | `Assets.xcassets` | ⚠️ 未実装 | 0% | 必要に応じて追加予定 |
 | **テスト** | ユニットテスト | ✅ 実装済み | 100% | `SourceItemTests`、`SelectionManagerTests`、`SourceListServiceTests` |
 | | UI テスト | ⚠️ 未実装 | 0% | 主要なユーザー操作の検証が未実装 |
 | | スナップショットテスト | ⚠️ 未実装 | 0% | SwiftUI レンダリングの一貫性検証が未実装 |
 | **CI/CD** | GitHub Actions ワークフロー | ✅ 実装済み | 100% | `docs-linter.yml`、`swift-test.yml` |
+| | ローカル・テストスクリプト | ✅ 実装済み | 100% | `scripts/test-local.sh` - 優先順位: 1. npm スクリプトからの引数 > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値 |
 | | リリース自動化 | ⚠️ 未実装 | 0% | Xcode Archive、Notarize、Artifacts 管理が未実装 |
 | **ドキュメント** | コードコメント | ✅ 実装済み | 100% | 主要な API にコメントを実装 |
 | | API Reference (DocC) | ⚠️ 未実装 | 0% | DocC 形式の API ドキュメントが未整備 |
@@ -420,11 +452,11 @@ S2J Source List は、当初の仕様の約89%を達成し、本番環境での�
 * **ユーティリティ**: 100% (1モジュール実装済み)
 * **リソース**: 50% (ローカライゼーションは実装済み。Assets は未実装)
 * **テスト**: 33.3% (ユニットテストは実装済み。UI テスト・スナップショットテストは未実装)
-* **CI/CD**: 50% (GitHub Actions は実装済み。リリース自動化は未実装)
+* **CI/CD**: 75% (GitHub Actions とローカル・テストスクリプトは実装済み。リリース自動化は未実装)
 * **ドキュメント**: 66.7% (コードコメント、README は実装済み。API Reference は未整備)
 * **アクセシビリティ**: 83.3% (VoiceOver は実装済み。キーボードナビゲーション・動的タイプは部分実装)
 
-**全体実装の完了率**: 約 **89%** (コア機能、UI コンポーネント、データモデルは完全実装。テスト、CI/CD、ドキュメントは部分実装)
+**全体実装の完了率**: 約 **90%** (コア機能、UI コンポーネント、データモデルは完全実装。テスト、CI/CD、ドキュメントは部分実装)
 
 ### 11.5. 品質評価
 
@@ -480,13 +512,27 @@ S2J Source List は、当初の仕様の約89%を達成し、本番環境での�
 ### 12.2. 中期での改善予定 (3-6ヵ月)
 
 1. **GitHub Actions ワークフローの修正** (優先度: 高) (✅ 完了)
-   * 現状: `swift-test.yml` の iOS テストでスキーム名が `S2JAboutWindow` になっていた (正しくは `S2JSourceList` であるべきでした)。また、アーティファクト名も誤っていました。
+   * 現状: `swift-test.yml` の iOS テストでスキーム名が `S2JAboutWindow` になっていた (正しくは `S2JSourceList` であるべきでした)。また、Swift Package Manager プロジェクトで `xcodebuild test` を使用する際に `-package .` フラグが必要でした。
    * 実装内容:
      * iOS テストのスキーム名を修正しました。
-     * アーティファクト名を修正しました。
+     * Swift Package Manager プロジェクトに対応するため、`xcodebuild test -package . -scheme S2JSourceList` に変更しました。
+     * シミュレーターを動的に検出・起動するステップを追加しました。
+     * デバイス UDID を使用することで、環境に依存しないテスト実行を実現しました。
+   * 見積もり: 1日。
+   
+2. **ローカル・テストスクリプトの実装** (優先度: 高) (✅ 完了)
+   * 現状: コミット前に CI/CD と同じテストをローカルで実行する仕組みがありませんでした。
+   * 実装内容:
+     * `scripts/test-local.sh` を実装し、コミット前に CI/CD と同じテストをローカルで実行可能にしました。
+     * macOS テスト、iOS/iPadOS シミュレーターテストを実行します。
+     * 優先順位: 1. npm スクリプトからの引数 (コマンドライン引数) > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値
+     * 環境変数でカスタマイズ可能 (`SCHEME_NAME`、`IOS_DEVICE`、`IOS_VERSION`、`SKIP_IOS_TESTS` など)。
+     * Xcode プロジェクト生成とテストもサポート (`project.yml` が存在する場合)。
+     * パッケージ名とスキーム名を `Package.swift` から自動検出します。
+     * 使用方法: `./scripts/test-local.sh [オプション]` または `npm run test:local -- [オプション]`
    * 見積もり: 1日。
 
-2. **リリース自動化の実装** (優先度: 中)
+3. **リリース自動化の実装** (優先度: 中)
    * 現状: GitHub Actions ワークフローは実装済み、リリース自動化は未実装です。
    * 実装内容:
      * Xcode の Archive を利用したビルド `xcodebuild` (Universal Binary 推奨) を実装します。
@@ -495,7 +541,7 @@ S2J Source List は、当初の仕様の約89%を達成し、本番環境での�
      * リリース・アセット: ソース + API Reference ドキュメントを提供します。
    * 見積もり: 1-2週間。
 
-3. **API Reference ドキュメント (DocC) の整備** (優先度: 中)
+4. **API Reference ドキュメント (DocC) の整備** (優先度: 中)
    * 現状: コードコメントは実装済み、DocC 形式の API ドキュメントは未整備です。
    * 実装内容:
      * DocC 形式での API Reference を生成します。
@@ -504,7 +550,7 @@ S2J Source List は、当初の仕様の約89%を達成し、本番環境での�
      * Migration Guide (PXSourceList からの移行) を作成します。
    * 見積もり: 1-2週間。
 
-4. **Assets.xcassets の追加** (優先度: 低)
+5. **Assets.xcassets の追加** (優先度: 低)
    * 現状: 必要に応じて追加する予定です。
    * 実装内容:
      * カスタムアイコンやアセットを追加します。
@@ -585,14 +631,25 @@ S2J Source List は、当初の仕様の約89%を達成し、本番環境での�
 | プラットフォーム | 実行確認ターゲット | 理由 |
 |---|---|---|
 | macOS | macOS v13 (Ventura) 以降 | `List` / `OutlineGroup` の動作確認 |
-| iPadOS | iPadOS v16以降 (iPad Pro シミュレータ) | `List` の UI 挙動確認 |
+| iPadOS | iPadOS v16以降 (iPad Pro シミュレーター) | `List` の UI 挙動確認 |
 
 ### 5. CI ワークフロー補足
 
-**実装状況**: ⚠️ **部分実装** - GitHub Actions ワークフローは実装済み。UI スナップショット・テストは未実装です。
+**実装状況**: ✅ **実装済み** - GitHub Actions ワークフローは実装済み。UI スナップショット・テストは未実装です。
 
 * 本プロジェクトでは、以下の GitHub Actions ワークフローを導入します。
     * `docs-linter.yml`: Markdown ドキュメントの表記揺れ検出 (Docs Linter) (✅ 実装済み)
-    * `swift-test.yml`: Swift Package のユニットテストおよび UI スナップショット・テストの自動実行 (⚠️ 部分実装 - ユニットテストは実装済み、UI スナップショット・テストは未実装)
+    * `swift-test.yml`: Swift Package のユニットテストおよび UI スナップショット・テストの自動実行 (✅ 実装済み - ユニットテストは実装済み、UI スナップショット・テストは未実装)
 * macOS Runner では `swift test --enable-code-coverage` を実行し、テストカバレッジを出力します。
-* iPadOS 互換性テストは、`xcodebuild test -scheme S2JSourceList -destination 'platform=iOS Simulator,name=iPad Pro (12.9-inch)'` で検証します。
+* iPadOS 互換性テストは、以下の手順で検証します：
+    * 利用可能な iOS シミュレーターを動的に検出
+    * シミュレーターを起動
+    * `xcodebuild test -package . -scheme S2JSourceList -destination "platform=iOS Simulator,id=$DEVICE_UDID"` でテストを実行
+    * Swift Package Manager プロジェクトに対応するため、`-package .` フラグを使用
+    * デバイス UDID を使用することで、環境に依存しないテスト実行を実現
+* **ローカル・テストスクリプト**: `scripts/test-local.sh` を提供し、コミット前に CI/CD と同じテストをローカルで実行可能 (✅ 実装済み)
+    * macOS テスト、iOS/iPadOS シミュレーターテストを実行
+    * 優先順位: 1. npm スクリプトからの引数 (コマンドライン引数) > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値
+    * 環境変数でカスタマイズ可能 (スキーム名、デバイス名、iOS バージョンなど)
+    * Xcode プロジェクト生成とテストもサポート (`project.yml` が存在する場合)
+    * 使用方法: `./scripts/test-local.sh [オプション]` または `npm run test:local -- [オプション]`
