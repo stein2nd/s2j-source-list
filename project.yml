@@ -39,6 +39,7 @@ targets:
       DEFINES_MODULE: YES
       CURRENT_PROJECT_VERSION: "1"
       MARKETING_VERSION: "1.0"
+      SUPPORTS_MACCATALYST: NO
 
   S2JSourceListTests-macOS:
     type: bundle.unit-test
@@ -71,6 +72,7 @@ targets:
       GENERATE_INFOPLIST_FILE: YES
       CURRENT_PROJECT_VERSION: "1"
       MARKETING_VERSION: "1.0"
+      SUPPORTS_MACCATALYST: NO
 
 schemes:
   S2JSourceList:
@@ -98,3 +100,5 @@ schemes:
     test:
       targets:
         - S2JSourceListTests-iOS
+      destination:
+        platform: iOS Simulator
