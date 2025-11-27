@@ -6,6 +6,7 @@
 * 本ツールの設計は、以下の共通 SPEC に準拠します。
     * [Swift/SwiftUI 共通仕様](https://github.com/stein2nd/xcode-common-specs/blob/main/docs/COMMON_SPEC.md)
 * 以下は、本ツール固有の仕様をまとめたものです。
+* CI/CD 関連の仕様については、[SPEC_CICD.md](SPEC_CICD.md) で規定します。
 
 ## 1. プロジェクト概要
 
@@ -31,7 +32,7 @@
 
 * 言語: Swift v5.8+ (プロジェクト開始時の最新安定版に合わせる)
 * SwiftUI: Xcode v13+/SwiftUI v3+ 相当の API を利用可能
-* ビルド: Xcode Cloud / GitHub Actions サポート
+* ビルド: Xcode Cloud / GitHub Actions サポート (詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照)
 * ライセンス: 元リポジトリに準じる (要確認、互換性がなければ MIT を推奨)
 * ドキュメント: README + API ドキュメント (API Reference 形式推奨)
 
@@ -60,6 +61,7 @@
 ### 3.6. テスト方針
 
 * [COMMON_SPEC.md](https://github.com/stein2nd/xcode-common-specs/blob/main/docs/COMMON_SPEC.md) に準拠します。
+* CI/CD でのテスト実行に関する詳細な仕様は、[SPEC_CICD.md](./SPEC_CICD.md) で規定します。
 
 ## 4. 個別要件
 
@@ -319,34 +321,23 @@ struct ContentView: View {
 * macOS: `List` を表示し、選択、展開/折り畳み、ドラッグ & ドロップを SnapshotTesting で検証します。(⚠️ 未実装)
 * iPadOS: `.sheet` 表示を `XCTest` + `ViewInspector` で検証可能にします。(⚠️ 未実装)
 
+**CI/CD でのテスト実行**:
+
+* CI/CD パイプラインで自動的にテストを実行し、テスト・カバレッジを収集します。
+* CI/CD でのテスト実行に関する詳細な仕様は、[SPEC_CICD.md](./SPEC_CICD.md) で規定します。
+
 ## 9. CI / CD
 
-**実装状況**: ✅ **実装済み** - GitHub Actions ワークフローは実装済み。リリース自動化は未実装です。
+CI/CD に関する詳細な仕様は、[SPEC_CICD.md](./SPEC_CICD.md) を参照してください。
 
-* Swift Package のビルド成果物 (バイナリ / XCFramework) は Git 管理対象外です。
-* Tag ルール:
-  * `vMAJOR.MINOR.PATCH`
-* **GitHub Actions**:
-  * ワークフロー (macOS runner) で `swift build` / `swift test` を実行します。(✅ 実装済み - `.github/workflows/swift-test.yml`)
-    * macOS テスト: `swift test --enable-code-coverage` を実行
-    * iOS/iPadOS テスト: シミュレーターを動的に検出・起動し、`xcodebuild test -package . -scheme S2JSourceList` を実行
-    * Swift Package Manager プロジェクトに対応するため、`-package .` フラグを使用
-    * デバイス UDID を使用することで、環境に依存しないテスト実行を実現
-  * Pull Request に対して SwiftLint とビルド確認を実施します。(⚠️ 未実装 - SwiftLint の設定は未実装)
-  * ドキュメント品質検証 (Docs Linter) を実行します。(✅ 実装済み - `.github/workflows/docs-linter.yml`)
-* **ローカル・テストスクリプト**:
-  * `scripts/test-local.sh`: コミット前に CI/CD と同じテストをローカルで実行可能 (✅ 実装済み)
-    * macOS テスト、iOS/iPadOS シミュレーターテストを実行
-    * 優先順位: 1. npm スクリプトからの引数 (コマンドライン引数) > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値
-    * 環境変数でカスタマイズ可能（`SCHEME_NAME`、`IOS_DEVICE`、`IOS_VERSION`、`SKIP_IOS_TESTS` など）
-    * Xcode プロジェクト生成とテストもサポート（`project.yml` が存在する場合、`ENABLE_XCODE_PROJECT=true` で有効化）
-    * パッケージ名とスキーム名を `Package.swift` から自動検出
-    * 使用方法: `./scripts/test-local.sh [オプション]` または `npm run test:local -- [オプション]`
-* **Release**:
-  * Xcode の Archive を利用したビルド `xcodebuild` (Universal Binary 推奨) を実施します。(⚠️ 未実装)
-  * Notarize / Notarization ステップは手順化します (可能なら自動化スクリプトを提供します)。(⚠️ 未実装)
-  * 生成されたリリース用ビルドは、Artifacts として管理します。(⚠️ 未実装)
-  * リリース・アセット: ソース + API Reference ドキュメントを提供します。(⚠️ 未実装)
+本セクションでは、CI/CD の概要のみを記載します。
+
+* 主な機能:
+    * GitHub Actions ワークフロー (`.github/workflows/swift-test.yml`): macOS および iOS/iPadOS 向けテスト実行 (✅ テスト成功)
+    * ローカルテスト・スクリプト (`scripts/test-local.sh`): コミット前に CI/CD と同じテストをローカルで実行可能 (✅ 実装済み)
+    * ドキュメント品質検証 (`.github/workflows/docs-linter.yml`): Docs Linter による表記揺れ検出 (✅ 実装済み)
+
+**実装状況**: ✅ **完全実装済み・テスト成功** - GitHub Actions ワークフローは実装済み、GitHub Actions「Swift Test」ワークフローが正常に動作し、すべてのテストが成功。リリース自動化は未実装です。
 
 ## 10. 開発スケジュール (提案) 
 
@@ -380,8 +371,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * ✅ **プラットフォーム固有の最適化**: `AppKitBridge` (macOS) と `iPadOptimizations` (iPadOS) で実装
 * ✅ **国際化・ローカライズ**: Base、en、ja の `Localizable.strings` を実装
 * ✅ **ユニットテスト**: `SourceItemTests`、`SelectionManagerTests`、`SourceListServiceTests` を実装
-* ✅ **GitHub Actions ワークフロー**: `docs-linter.yml`、`swift-test.yml` を実装。
-* ✅ **ローカル・テストスクリプト**: `scripts/test-local.sh` を実装 (コミット前に CI/CD と同じテストをローカルで実行可能)。優先順位: 1. npm スクリプトからの引数 > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値。
+* ✅ **CI/CD**: GitHub Actions ワークフローとローカルテスト・スクリプトを実装、GitHub Actions「Swift Test」ワークフローが正常に動作し、すべてのテストが成功 (詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照)
 * ✅ **主要ファイル**: すべてのコアファイル (SourceItem、SourceListService、SelectionManager、SidebarView、SourceRowView、InlineEditorView、AppKitBridge、iPadOptimizations、IconProvider、Bundle+Module) を実装
 * ✅ **アクセシビリティ**: VoiceOver 用の `accessibilityLabel` / `accessibilityValue` を実装
 * ✅ **ダークモード対応**: SwiftUI の標準カラーを使用して実装
@@ -428,8 +418,8 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 | **テスト** | ユニットテスト | ✅ 実装済み | 100% | `SourceItemTests`、`SelectionManagerTests`、`SourceListServiceTests` |
 | | UI テスト | ⚠️ 未実装 | 0% | 主要なユーザー操作の検証が未実装 |
 | | スナップショットテスト | ⚠️ 未実装 | 0% | SwiftUI レンダリングの一貫性検証が未実装 |
-| **CI/CD** | GitHub Actions ワークフロー | ✅ 実装済み | 100% | `docs-linter.yml`、`swift-test.yml` |
-| | ローカル・テストスクリプト | ✅ 実装済み | 100% | `scripts/test-local.sh` - 優先順位: 1. npm スクリプトからの引数 > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値 |
+| **CI/CD** | GitHub Actions ワークフロー | ✅ 実装済み・テスト成功 | 100% | GitHub Actions「Swift Test」ワークフローが正常に動作、詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照 |
+| | ローカルテスト・スクリプト | ✅ 実装済み | 100% | 詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照 |
 | | リリース自動化 | ⚠️ 未実装 | 0% | Xcode Archive、Notarize、Artifacts 管理が未実装 |
 | **ドキュメント** | コードコメント | ✅ 実装済み | 100% | 主要な API にコメントを実装 |
 | | API Reference (DocC) | ⚠️ 未実装 | 0% | DocC 形式の API ドキュメントが未整備 |
@@ -452,7 +442,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * **ユーティリティ**: 100% (1モジュール実装済み)
 * **リソース**: 50% (ローカライゼーションは実装済み。Assets は未実装)
 * **テスト**: 33.3% (ユニットテストは実装済み。UI テスト・スナップショットテストは未実装)
-* **CI/CD**: 75% (GitHub Actions とローカル・テストスクリプトは実装済み。リリース自動化は未実装)
+* **CI/CD**: 75% (GitHub Actions ワークフローとローカルテスト・スクリプトは実装済み・テスト成功。リリース自動化は未実装)
 * **ドキュメント**: 66.7% (コードコメント、README は実装済み。API Reference は未整備)
 * **アクセシビリティ**: 83.3% (VoiceOver は実装済み。キーボードナビゲーション・動的タイプは部分実装)
 
@@ -512,25 +502,12 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 ### 12.2. 中期での改善予定 (3-6ヵ月)
 
 1. **GitHub Actions ワークフローの修正** (優先度: 高) (✅ 完了)
-   * 現状: `swift-test.yml` の iOS テストでスキーム名が `S2JAboutWindow` になっていた (正しくは `S2JSourceList` であるべきでした)。また、Swift Package Manager プロジェクトで `xcodebuild test` を使用する際に `-package .` フラグが必要でした。
-   * 実装内容:
-     * iOS テストのスキーム名を修正しました。
-     * Swift Package Manager プロジェクトに対応するため、`xcodebuild test -package . -scheme S2JSourceList` に変更しました。
-     * シミュレーターを動的に検出・起動するステップを追加しました。
-     * デバイス UDID を使用することで、環境に依存しないテスト実行を実現しました。
-   * 見積もり: 1日。
+   * GitHub Actions ワークフローとローカルテスト・スクリプトの実装を完了しました。
+   * 詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照してください。
    
 2. **ローカル・テストスクリプトの実装** (優先度: 高) (✅ 完了)
-   * 現状: コミット前に CI/CD と同じテストをローカルで実行する仕組みがありませんでした。
-   * 実装内容:
-     * `scripts/test-local.sh` を実装し、コミット前に CI/CD と同じテストをローカルで実行可能にしました。
-     * macOS テスト、iOS/iPadOS シミュレーターテストを実行します。
-     * 優先順位: 1. npm スクリプトからの引数 (コマンドライン引数) > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値
-     * 環境変数でカスタマイズ可能 (`SCHEME_NAME`、`IOS_DEVICE`、`IOS_VERSION`、`SKIP_IOS_TESTS` など)。
-     * Xcode プロジェクト生成とテストもサポート (`project.yml` が存在する場合)。
-     * パッケージ名とスキーム名を `Package.swift` から自動検出します。
-     * 使用方法: `./scripts/test-local.sh [オプション]` または `npm run test:local -- [オプション]`
-   * 見積もり: 1日。
+   * ローカルテスト・スクリプトの実装を完了しました。
+   * 詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照してください。
 
 3. **リリース自動化の実装** (優先度: 中)
    * 現状: GitHub Actions ワークフローは実装済み、リリース自動化は未実装です。
@@ -637,19 +614,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 **実装状況**: ✅ **実装済み** - GitHub Actions ワークフローは実装済み。UI スナップショット・テストは未実装です。
 
-* 本プロジェクトでは、以下の GitHub Actions ワークフローを導入します。
-    * `docs-linter.yml`: Markdown ドキュメントの表記揺れ検出 (Docs Linter) (✅ 実装済み)
-    * `swift-test.yml`: Swift Package のユニットテストおよび UI スナップショット・テストの自動実行 (✅ 実装済み - ユニットテストは実装済み、UI スナップショット・テストは未実装)
-* macOS Runner では `swift test --enable-code-coverage` を実行し、テストカバレッジを出力します。
-* iPadOS 互換性テストは、以下の手順で検証します：
-    * 利用可能な iOS シミュレーターを動的に検出
-    * シミュレーターを起動
-    * `xcodebuild test -package . -scheme S2JSourceList -destination "platform=iOS Simulator,id=$DEVICE_UDID"` でテストを実行
-    * Swift Package Manager プロジェクトに対応するため、`-package .` フラグを使用
-    * デバイス UDID を使用することで、環境に依存しないテスト実行を実現
-* **ローカル・テストスクリプト**: `scripts/test-local.sh` を提供し、コミット前に CI/CD と同じテストをローカルで実行可能 (✅ 実装済み)
-    * macOS テスト、iOS/iPadOS シミュレーターテストを実行
-    * 優先順位: 1. npm スクリプトからの引数 (コマンドライン引数) > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値
-    * 環境変数でカスタマイズ可能 (スキーム名、デバイス名、iOS バージョンなど)
-    * Xcode プロジェクト生成とテストもサポート (`project.yml` が存在する場合)
-    * 使用方法: `./scripts/test-local.sh [オプション]` または `npm run test:local -- [オプション]`
+* **重要**: CI/CD 関連の仕様は、[SPEC_CICD.md](SPEC_CICD.md) で規定します。本セクションでは概要のみを記載します。
+* 主な機能:
+    * GitHub Actions ワークフロー: `docs-linter.yml` (Docs Linter)、`swift-test.yml` (Swift Package テスト)
+    * ローカルテスト・スクリプト: `scripts/test-local.sh` (コミット前に CI/CD と同じテストをローカルで実行可能)
