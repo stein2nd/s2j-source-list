@@ -14,7 +14,7 @@
 
 ### 1.1. 実装状況
 
-**実装状況**: ✅ **完全実装済み・テスト成功** - CI/CD ワークフローとローカルテスト・スクリプトの実装完了、GitHub Actions「Swift Test」ワークフローが正常に動作し、すべてのテストが成功
+**実装状況**: ✅ **完全実装済み・テスト成功** - CI/CD ワークフローとローカルテスト・スクリプトの実装完了、GitHub Actions「Swift Test」および「Docs Linter」ワークフローが正常に動作し、直近の実行で成功を確認済み
 
 ### 1.2. 基本方針
 
@@ -29,7 +29,7 @@
 * **トリガー**: `push` および `pull_request` イベント (`main`、`develop` ブランチ)
 * **実行環境**: `macos-latest` (GitHub Actions の macOS Runner)
 * **その他のワークフロー**:
-    * `docs-linter.yml`: Markdown ドキュメントの表記揺れ検出 (Docs Linter)
+    * `docs-linter.yml`: Markdown ドキュメントの表記揺れ検出 (Docs Linter) (✅ 直近の実行で成功)
 
 ### 1.4. ジョブ構成
 
@@ -395,6 +395,7 @@
         * テスト実行の優先順位の最適化 (SDK を指定せずに実行を優先) (✅実装完了)
         * 診断情報の常時アップロード (`if: always()` を追加) (✅実装完了)
     * `build-release` ジョブ: リリース・ビルド生成 (✅テスト成功)
+    * `docs-linter.yml`: Docs Linter による Markdown 表記揺れ検出 (✅直近の実行で成功)
 * **ローカルテスト・スクリプト**:
     * `scripts/test-local.sh`: コミット前に CI/CD と同じテストをローカルで実行 (✅100% 実装完了)
     * 汎用的で、他の Swift Package Manager プロジェクトでも使用可能
@@ -406,7 +407,7 @@
 **CI/CD**: 100% 実装完了・テスト成功
 
 * GitHub Actions ワークフローとローカルテスト・スクリプトの実装完了
-* GitHub Actions「Swift Test」ワークフローが正常に動作し、すべてのテストが成功
+* GitHub Actions「Swift Test」「Docs Linter」ワークフローが正常に動作し、直近実行で成功
 
 ## 8. 今後の改善予定
 

@@ -333,11 +333,11 @@ CI/CD に関する詳細な仕様は、[SPEC_CICD.md](./SPEC_CICD.md) を参照�
 本セクションでは、CI/CD の概要のみを記載します。
 
 * 主な機能:
-    * GitHub Actions ワークフロー (`.github/workflows/swift-test.yml`): macOS および iOS/iPadOS 向けテスト実行 (✅ テスト成功)
+    * GitHub Actions ワークフロー (`.github/workflows/swift-test.yml`): macOS および iOS/iPadOS 向けテスト実行 (✅ 直近の実行で成功)
     * ローカルテスト・スクリプト (`scripts/test-local.sh`): コミット前に CI/CD と同じテストをローカルで実行可能 (✅ 実装済み)
-    * ドキュメント品質検証 (`.github/workflows/docs-linter.yml`): Docs Linter による表記揺れ検出 (✅ 実装済み)
+    * ドキュメント品質検証 (`.github/workflows/docs-linter.yml`): Docs Linter による表記揺れ検出 (✅ 直近の実行で成功)
 
-**実装状況**: ✅ **完全実装済み・テスト成功** - GitHub Actions ワークフローは実装済み、GitHub Actions「Swift Test」ワークフローが正常に動作し、すべてのテストが成功。リリース自動化は未実装です。
+**実装状況**: ✅ **完全実装済み・テスト成功** - GitHub Actions ワークフローは実装済み、GitHub Actions「Swift Test」「Docs Linter」ワークフローが直近の実行で成功。リリース自動化は未実装です。
 
 ## 10. 開発スケジュール (提案) 
 
