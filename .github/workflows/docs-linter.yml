@@ -75,7 +75,7 @@ jobs:
         fi
         if [ -n "$TARGET_FILE" ]; then
           echo "=== Debug extends resolving ==="
-          CONFIG_PATH="./swift/.textlintrc.swift.json"
+          CONFIG_PATH="./presets/swift/.textlintrc.swift.json"
           NODE_PATH=./node_modules npx textlint --print-config --config "$CONFIG_PATH" "$TARGET_FILE" 2>&1 | head -100 || true
         fi
       working-directory: ${{ env.DOCS_LINTER_DIR }}
@@ -106,11 +106,11 @@ jobs:
         
         # 設定ファイルの存在確認
         echo "=== Checking config file ==="
-        if [ -f ./swift/.textlintrc.swift.json ]; then
-          echo "Config file exists: ./swift/.textlintrc.swift.json"
-          cat ./swift/.textlintrc.swift.json
+        if [ -f ./presets/swift/.textlintrc.swift.json ]; then
+          echo "Config file exists: ./presets/swift/.textlintrc.swift.json"
+          cat ./presets/swift/.textlintrc.swift.json
         else
-          echo "ERROR: Config file not found: ./swift/.textlintrc.swift.json"
+          echo "ERROR: Config file not found: ./presets/swift/.textlintrc.swift.json"
           exit 1
         fi
         
@@ -133,7 +133,7 @@ jobs:
         # textlintの設定解決を確認
         echo "=== Testing textlint config resolution ==="
         # NODE_PATHは絶対パスで指定する必要がある
-        CONFIG_PATH="./swift/.textlintrc.swift.json"
+        CONFIG_PATH="./presets/swift/.textlintrc.swift.json"
         export NODE_PATH="$NODE_MODULES_PATH"
         # node_modules/.bin/textlintを直接実行することで、NODE_PATHが正しく機能する
         TEXTLINT_BIN="./node_modules/.bin/textlint"
