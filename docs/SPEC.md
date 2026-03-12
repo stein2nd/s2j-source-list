@@ -2,6 +2,7 @@
 
 ## はじめに
 
+* **仕様の入口**: 各仕様の一覧・クイック参照は [specs.md](specs.md) を参照してください。
 * 本ドキュメントでは、Swift Package「S2J Source List」の専用仕様を定義します。
 * 本ツールの設計は、以下の共通 SPEC に準拠します。
     * [Swift/SwiftUI 共通仕様](https://github.com/stein2nd/xcode-common-specs/blob/main/docs/COMMON_SPEC.md)
@@ -9,6 +10,8 @@
 * CI/CD 関連の仕様については、[SPEC_CICD.md](SPEC_CICD.md) で規定します。
 
 ## 1. プロジェクト概要
+
+詳細は [overview.md](overview.md) を参照してください。
 
 * 名称: S2J Source List
 * Swift Package 名: s2j-source-list
@@ -119,6 +122,8 @@
 
 ### 4.5. プロジェクト構成
 
+コード構造と各ファイルの責務の詳細は [architecture.md](architecture.md) を参照してください。
+
 ```
 `s2j-source-list`/
 ├── LICENSE
@@ -192,6 +197,7 @@
 
 **実装状況**: ✅ **実装済み** - `SelectionManager` で単一選択・複数選択を実装
 
+* 詳細は [selection_spec.md](selection_spec.md) を参照してください。
 * `SelectionManager` 経由で `.listSelection()` 互換の API を提供します。
 * macOS: Command/Shift 多重選択サポート。iPadOS: 編集モードで複数選択をサポートします。
 
@@ -199,6 +205,7 @@
 
 **実装状況**: ⚠️ **未実装** - `SidebarView` に `allowsDragAndDrop` パラメータは用意されていますが、実際の `onDrag` / `onDrop` 実装は未完了です。
 
+* 詳細は [drag_drop_spec.md](drag_drop_spec.md) を参照してください。
 * `onDrag` / `onDrop` をラップした高レベル API を提供します。
 * 必要に応じて AppKit ブリッジを用い、より細かいドロップ挙動を実現します。
 
@@ -212,6 +219,7 @@
 
 **実装状況**: ✅ **実装済み** - `InlineEditorView` で実装
 
+* 詳細は [selection_spec.md](selection_spec.md) を参照してください。
 * `TextField` と `isEditing` フラグで行内編集を実装します。
 * 編集のコミット/キャンセルは `SelectionManager` 経由で通知します。
 
@@ -223,7 +231,7 @@
   * `rowContent: (SourceItem) -> AnyView` (カスタム行レンダラー) (✅ 実装済み - `customRowContent` パラメータ)
   * `indentationWidth`, `iconSize`, `rowHeight` (✅ 実装済み - `indentationWidth`, `iconSize` パラメータ)
   * `allowsMultipleSelection`, `allowsDragAndDrop` (✅ 実装済み - パラメータとして実装、ただしドラッグ & ドロップ機能は未実装)
-  * `searchBar: Bool` (組込み検索) (✅ 実装済み - `showsSearchBar` パラメータ)
+  * `searchBar: Bool` (組込み検索) (✅ 実装済み - `showsSearchBar` パラメータ) — 検索のマッチングルールは [search_spec.md](search_spec.md) を参照
 
 ### 4.8. 主要ファイルの実装状況
 
