@@ -2,14 +2,14 @@
 
 ## 1. はじめに
 
-本ドキュメントでは、[lead-validation-assist](https://github.com/stein2nd/lead-validation-assist) で採用した「仕様の細分化」を、Swift アプリケーション（および S2J About Window）にどう適用するかを整理します。
+本ドキュメントでは、[lead-validation-assist](https://github.com/stein2nd/lead-validation-assist) で採用した「仕様の細分化」を、Swift アプリケーション (および S2J About Window) にどう適用するかを整理します。
 目的は **AI 伴走開発** と **後日のメンテナンス** の両方を考慮した、ほどよい粒度の仕様構成です。
 
 ---
 
-## 2. なぜ細分化するか（Python と共通の考え方）
+## 2. なぜ細分化するか (Python と共通の考え方)
 
-* **検索性**: 変更したいトピック（例: スコア式・住所正規化・API 契約）が 1 ファイルに集約され、AI も人間も「どこを読むか」が明確になる。
+* **検索性**: 変更したいトピック (例: スコア式・住所正規化・API 契約) が1ファイルに集約され、AI も人間も「どこを読むか」が明確になる。
 * **責務の分離**: 「なぜこのプロジェクトがあるか」「何を入力/出力とするか」「コードはどこに書くか」を別ファイルに分けると、仕様の更新が衝突しにくい。
 * **テスト・検証との対応**: 数式・ルール・データ定義が独立したドキュメントになっていると、実装やテストを「その仕様に合わせる」形で書きやすい。
 * **AI のコンテキスト効率**: 大きな SPEC を毎回渡すより、必要な spec だけを指定して渡すほうがトークン効率も良く、タスクに直結した指示を出しやすい。
@@ -18,7 +18,7 @@ Python の lead-validation-assist では、例えば次のように分けてい�
 
 | ファイル | 役割 |
 |----------|------|
-| `specs.md` | 仕様の起点（目次・参照先） |
+| `specs.md` | 仕様の起点 (目次・参照先) |
 | `overview.md` | プロジェクトの存在理由の明文化 |
 | `scoring_spec.md` | スコア算出ロジックの数式化 |
 | `kenall_import_spec.md` | 郵便データ取込と特殊行除外の定義 |
@@ -40,7 +40,7 @@ Swift アプリケーションでも、「何を明文化するか」はドメ�
 |------|------|------------|
 | **存在理由・スコープ** | プロジェクトの目的、対象ユーザ、共通 SPEC への参照 | 方針変更時に overview だけ更新すればよい |
 | **公開 API の契約** | 型・引数・戻り値・挙動の要約 | ライブラリの場合、利用者と AI の両方が「契約」を一箇所で参照できる |
-| **ドメインルール** | 数式・ビジネスルール・フォーマット仕様（例: Markdown の扱い、フォールバック） | 実装・テストが「その spec に従っているか」で検証しやすい |
+| **ドメインルール** | 数式・ビジネスルール・フォーマット仕様 (例: Markdown の扱い、フォールバック) | 実装・テストが「その spec に従っているか」で検証しやすい |
 | **コード構造と責務** | モジュール/ファイル/クラスごとの責務、MVVM 等の方針 | 新機能を「どこに書くか」の判断が AI ・人間ともにしやすい |
 | **プラットフォーム別挙動** | macOS / iPadOS で何が違うか、`#if os` の意図 | プラットフォーム固有の変更が 1 ファイルにまとまる |
 | **データ・リソース定義** | ローカライズキー一覧、リソースの置き場所・上書き可能性 | 翻訳・リソース追加時に参照する単一の情報源になる |
@@ -71,12 +71,12 @@ Swift アプリケーションでも、「何を明文化するか」はドメ�
 |----------|------|------------------------|
 | **docs/specs.md** | 仕様の起点。上記一覧へのリンクと短い説明。 | 新規 |
 | **docs/overview.md** | プロジェクトの存在理由・スコープ・共通 SPEC への参照。 | §1 プロジェクト概要、§3 準拠仕様 |
-| **docs/requirements.md** | 機能要件・非機能要件（Must/Should/Could）。 | §2 要件ゴール、§4 個別要件の要件部分 |
-| **docs/api_spec.md** | 公開 API の契約（AboutWindow / AboutView / aboutSheet / aboutPopover）。 | §6 使用方法、README の API 説明を集約 |
-| **docs/content_spec.md** | コンテンツ形式（Markdown の扱い、フォールバック、将来の JSON/RTF）。 | §2.1.3、§4、MarkdownView の仕様 |
-| **docs/localization_spec.md** | ローカライズ（キー一覧、Bundle.module、AboutDefault.md）。 | §2.1.4、§4.4 |
-| **docs/architecture.md** | コード構造と責務（MVVM、ファイル別、#if os 方針）。 | §4.2 プロジェクト構成、§4.3 主要ファイル、§2.2.4 |
-| **docs/platform_spec.md** | プラットフォーム別挙動（macOS / iPadOS）。 | §4.1、AboutWindow / Extensions の仕様 |
+| **docs/requirements.md** | 機能要件・非機能要件 (Must/Should/Could)。 | §2 要件ゴール、§4 個別要件の要件部分 |
+| **docs/api_spec.md** | 公開 API の契約 (AboutWindow / AboutView / aboutSheet / aboutPopover)。 | §6 使用方法、README の API 説明を集約 |
+| **docs/content_spec.md** | コンテンツ形式 (Markdown の扱い、フォールバック、将来の JSON/RTF)。 | §2.1.3、§4、MarkdownView の仕様 |
+| **docs/localization_spec.md** | ローカライズ (キー一覧、Bundle.module、AboutDefault.md)。 | §2.1.4、§4.4 |
+| **docs/architecture.md** | コード構造と責務 (MVVM、ファイル別、#if os 方針)。 | §4.2 プロジェクト構成、§4.3 主要ファイル、§2.2.4 |
+| **docs/platform_spec.md** | プラットフォーム別挙動 (macOS / iPadOS)。 | §4.1、AboutWindow / Extensions の仕様 |
 | **docs/SPEC.md** | 実装状況サマリ・Backlog・品質評価・Appendix。要件詳細は上記へ委譲。 | 現行の §10, §11, Appendix を中心に残す |
 | **docs/SPEC_CICD.md** | CI/CD 仕様。 | 変更なし |
 
@@ -106,12 +106,12 @@ S2J Source List では、以下のように分割しています。
 |----------|------|
 | **docs/specs.md** | 仕様の起点。各 spec へのリンクと短い説明。 |
 | **docs/overview.md** | プロジェクトの存在理由・スコープ・共通 SPEC への参照。 |
-| **docs/architecture.md** | コード構造と責務（Core/UI/Platform、ファイル配置、層境界）。 |
-| **docs/selection_spec.md** | 選択・編集ルール（単一/複数、Command/Shift、コミット/キャンセル）。 |
+| **docs/architecture.md** | コード構造と責務 (Core/UI/Platform、ファイル配置、層境界)。 |
+| **docs/selection_spec.md** | 選択・編集ルール (単一/複数、Command/Shift、コミット/キャンセル)。 |
 | **docs/search_spec.md** | 検索マッチング・親子表示ルール。 |
 | **docs/drag_drop_spec.md** | ドラッグ & ドロップの挙動・制約・API。 |
 | **docs/SPEC.md** | 要件概要・実装状況サマリ・Backlog・品質評価・Appendix。 |
-| **docs/SPEC_CICD.md** | CI/CD 仕様（ワークフロー・ローカルテスト・カバレッジ）。 |
+| **docs/SPEC_CICD.md** | CI/CD 仕様 (ワークフロー・ローカルテスト・カバレッジ)。 |
 | **docs/SPEC_STRUCTURE.md** | 本ドキュメント。仕様の細分化方針とベター・プラクティス。 |
 
 ### 5.2. クイック参照
@@ -127,5 +127,5 @@ S2J Source List では、以下のように分割しています。
 ## 6. まとめ
 
 * Swift アプリケーションでも、**「存在理由」「API 契約」「ドメインルール」「コード構造」「プラットフォーム差」「リソース定義」** などは、それぞれ 1 ファイルにまとめておくと、AI 伴走とメンテナンスの両方に有利です。
-* **仕様の起点（specs.md）を 1 つ用意**し、そこから各 spec へリンクする構成にすると、参照が安定します。
+* **仕様の起点 (specs.md) を1つ用意** し、そこから各 spec へリンクする構成にすると、参照が安定します。
 * S2J Source List では、`overview` / `architecture` / `selection_spec` / `search_spec` / `drag_drop_spec` を分離し、`SPEC.md` は実装状況・Backlog 中心に残す形で運用します。
