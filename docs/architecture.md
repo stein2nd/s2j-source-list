@@ -9,7 +9,7 @@
 
 ## 2. 設計方針
 
-* **レイヤー分離**: Core（モデル・サービス・選択管理）と UI（Views・Platform）を分離し、ビジネスロジックは Swift で実装し SwiftUI と疎結合にする（Observable / Combine ベース）。
+* **レイヤー分離**: Core (モデル・サービス・選択管理) と UI (Views・Platform) を分離し、ビジネスロジックは Swift で実装し SwiftUI と疎結合にする (Observable / Combine ベース)。
 * **共有ロジック**: `#if canImport(SwiftUI)` および `#if os(macOS)` / `#if os(iOS)` でプラットフォームを分岐。ViewModel 相当のロジックは Core に集約し共通化する。
 * **プラットフォーム固有**: macOS は `AppKitBridge` で AppKit カラー取得、iPadOS は `iPadOptimizations` で SwiftUI ネイティブ API のみを使用。
 * **カスタマイズ**: `SidebarView` のイニシャライザ引数や ViewModifier で拡張可能にする。
@@ -29,7 +29,7 @@ Sources/S2JSourceList/
 │   ├── Views/
 │   │   ├── SidebarView.swift       # メインのサイドバーコンポーネント、検索・展開・コンテキストメニュー
 │   │   ├── SourceRowView.swift     # 行のレンダラー、カスタムコンテンツ対応
-│   │   └── InlineEditorView.swift  # インライン編集ビュー（リネーム）
+│   │   └── InlineEditorView.swift  # インライン編集ビュー (リネーム)
 │   └── Platform/
 │       ├── macOS/
 │       │   └── AppKitBridge.swift  # AppKit カラー取得、NSOutlineView 挙動の参考
@@ -45,9 +45,9 @@ Sources/S2JSourceList/
 |----------|------|-----------|
 | **SourceItem.swift** | 表示アイテムのデータモデル。`Identifiable`, `Equatable`。title、icon、badge、children、isEditable、metadata。 | — |
 | **SelectionManager.swift** | 選択状態の管理。単一/複数選択モード、selectedItemIds、selectionHistory、selectItem / deselectItem / toggleSelection。 | [selection_spec.md](./selection_spec.md) |
-| **SourceListService.swift** | データ供給。`@Published var rootItems`。renameItem、expandItem、collapseItem。Publisher（itemsChanged, itemRenamed, itemDeleted）提供。 | — |
+| **SourceListService.swift** | データ供給。`@Published var rootItems`。renameItem、expandItem、collapseItem。Publisher (itemsChanged, itemRenamed, itemDeleted) 提供。 | — |
 | **SidebarView.swift** | メイン UI。検索バー、リスト表示、DisclosureGroup による階層、コンテキストメニュー、選択・編集の統合。 | [selection_spec.md](./selection_spec.md), [search_spec.md](./search_spec.md), [drag_drop_spec.md](./drag_drop_spec.md) |
-| **SourceRowView.swift** | 行の描画。アイコン・バッジ・ラベル。カスタムコンテンツ（customContent）対応。選択・編集状態の表示。 | — |
+| **SourceRowView.swift** | 行の描画。アイコン・バッジ・ラベル。カスタムコンテンツ (customContent) 対応。選択・編集状態の表示。 | — |
 | **InlineEditorView.swift** | 行内編集 UI。TextField によるリネーム、コミット/キャンセル。 | [selection_spec.md](./selection_spec.md) |
 | **AppKitBridge.swift** | macOS 専用。AppKit のカラー取得、必要に応じて NSOutlineView の挙動を参考にした微調整。 | — |
 | **iPadOptimizations.swift** | iPadOS 専用。SwiftUI ネイティブ API のみで構成、編集モード等の最適化。 | — |
