@@ -293,7 +293,7 @@ SCHEME_NAME=S2JSourceList IOS_DEVICE="iPad Pro" IOS_VERSION="15.0" ./scripts/tes
 
 このスクリプトは以下を実行します：
 * macOS でのテスト実行
-* iOS シミュレーターでのテスト実行（Xcode が必要）
+* iOS シミュレーターでのテスト実行 (Xcode が必要)
 * テストカバレッジの有効化
 
 **注意**: iOS テストを実行するには、Xcode がインストールされている必要があります。
