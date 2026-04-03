@@ -1,6 +1,6 @@
 # 仕様書の起点 (S2J Source List)
 
-本ドキュメントは、Swift Package「S2J Source List」の仕様の**入口**です。
+本ドキュメントは、Swift Package「S2J Source List」の仕様の **入口** です。
 各トピックは以下のドキュメントに分割しています。AI 伴走やメンテ時は、該当する spec を参照してください。
 
 | ドキュメント | 役割 |
