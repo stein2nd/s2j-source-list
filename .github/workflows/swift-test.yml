@@ -45,6 +45,12 @@ jobs:
       # Note: each setup step is allowed to fail (continue-on-error: true).
       # We'll detect the selected Xcode with xcodebuild -version below and then
       # use sudo xcode-select -s if specific path exists.
+      - name: Try setup Xcode 26.5
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.5'
+        continue-on-error: true
+
       - name: Try setup Xcode 26.1
         uses: maxim-lobanov/setup-xcode@v1
         with:
@@ -103,15 +109,17 @@ jobs:
           fi
 
       # ----- If a preferred Xcode app path exists on the runner, force select it -----
-      - name: Force-select Xcode app if present (26.1 -> 26.0.1 -> 16.4)
+      - name: Force-select Xcode app if present (26.5 -> 26.1 -> 26.0.1 -> 16.4)
         run: |
           set -euo pipefail
           echo "Checking for known Xcode app paths and selecting first match..."
           # Check candidate paths in priority order (user requested)
           CANDIDATES=(
+            "/Applications/Xcode_26.5.app/Contents/Developer"
+            "/Applications/Xcode_26.5.0.app/Contents/Developer"
             "/Applications/Xcode_26.1.app/Contents/Developer"
             "/Applications/Xcode_26.1.0.app/Contents/Developer"
-            "/Applications/Xcode.app/Contents/Developer"        # may be 26.0.1 or other
+            "/Applications/Xcode.app/Contents/Developer"        # may be 26.5 or other
             "/Applications/Xcode_26.0.app/Contents/Developer"
             "/Applications/Xcode_16.4.0.app/Contents/Developer"
           )

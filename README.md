@@ -1,7 +1,10 @@
 # S2J Source List
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-3.0.en.html)
-[![Swift](https://img.shields.io/badge/Swift-5.9-blue?logo=Swift&logoColor=white)](https://www.swift.org)
+[![Swift](https://img.shields.io/badge/Swift-6.3-blue?logo=Swift&logoColor=white)](https://www.swift.org)
+[![Xcode](https://img.shields.io/badge/Xcode-26.5-blue?logo=xcode&logoColor=white)](https://developer.apple.com/xcode/)
+[![macOS](https://img.shields.io/badge/macOS-14.0+-blue?logo=apple&logoColor=white)](https://www.apple.com/macos/)
+[![iPadOS](https://img.shields.io/badge/iPadOS-17.0+-blue?logo=apple&logoColor=white)](https://www.apple.com/ipados/)
 
 ## Description
 
@@ -55,9 +58,9 @@ For support, feature requests, or bug reports, please visit the [GitHub Issues](
 
 ### Requirements
 
-* macOS v12.0+ / iPadOS v15.0+
-* Xcode v14.0+
-* Swift v5.9+
+* macOS v14.0+ / iPadOS v17.0+
+* Xcode v26.5+
+* Swift v6.3+
 
 <!-- 
 ### Swift Package Manager
@@ -280,13 +283,13 @@ We look forward to your contributions. Please follow the steps below.
 ./scripts/test-local.sh
 
 # npm スクリプトからの引数でカスタマイズ (最優先)
-npm run test:local -- --scheme-name S2JSourceList --ios-device "iPad Pro" --ios-version "15.0"
+npm run test:local -- --scheme-name S2JSourceList --ios-device "iPad Pro" --ios-version "17.0"
 
 # コマンドライン引数でカスタマイズ
-./scripts/test-local.sh --scheme-name S2JSourceList --ios-device "iPad Pro" --ios-version "15.0"
+./scripts/test-local.sh --scheme-name S2JSourceList --ios-device "iPad Pro" --ios-version "17.0"
 
 # 環境変数でカスタマイズ (引数と自動検出が優先されない場合に使用)
-SCHEME_NAME=S2JSourceList IOS_DEVICE="iPad Pro" IOS_VERSION="15.0" ./scripts/test-local.sh
+SCHEME_NAME=S2JSourceList IOS_DEVICE="iPad Pro" IOS_VERSION="17.0" ./scripts/test-local.sh
 ```
 
 **優先順位**: 1. npm スクリプトからの引数 (コマンドライン引数) > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値

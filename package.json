@@ -1,6 +1,6 @@
 {
   "name": "s2j-source-list",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Using SwiftUI, reimplementing the AppKit-based \"PXSourceList\".",
   "type": "module",
   "author": "Koutarou ISHIKAWA",
@@ -29,9 +29,9 @@
   "scripts": {
     "lint:docs": "s2j-docs-linter ./README.md ./docs/**/*.md",
     "test:local": "./scripts/test-local.sh",
-    "test:local:iOSfull": "./scripts/test-local.sh --ios-device \"iPad Pro\" --ios-version \"15.0\" --enable-xcode-project --xcodegen-auto-install"
+    "test:local:iOSfull": "./scripts/test-local.sh --ios-device \"iPad Pro\" --ios-version \"17.0\" --enable-xcode-project --xcodegen-auto-install"
   },
   "devDependencies": {
-    "@s2j/docs-linter": "^1.0.15"
+    "@s2j/docs-linter": "^1.0.18"
   }
 }

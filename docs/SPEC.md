@@ -17,7 +17,7 @@
 * Swift Package 名: s2j-source-list
 * 元リポジトリ: [PXSourceList](https://github.com/alexrozanski/PXSourceList)
 * 目的: AppKit ベースの「PXSourceList」を SwiftUI で再実装します。
-* 対応 OS: macOS v12以上、iPadOS v15以上
+* 対応 OS: macOS v14以上、iPadOS v17以上
 
 ---
 
@@ -33,8 +33,8 @@
 
 ### 2.2. 非機能要件
 
-* 言語: Swift v5.8+ (プロジェクト開始時の最新安定版に合わせる)
-* SwiftUI: Xcode v13+/SwiftUI v3+ 相当の API を利用可能
+* 言語: Swift v6.3+ (Xcode v26.5 に同梱される Swift バージョンに合わせる)
+* SwiftUI: Xcode v26.5+/SwiftUI 相当の API を利用可能
 * ビルド: Xcode Cloud / GitHub Actions サポート (詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照)
 * ライセンス: 元リポジトリに準じる (要確認、互換性がなければ MIT を推奨)
 * ドキュメント: README + API ドキュメント (API Reference 形式推奨)
@@ -581,7 +581,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 **補足**:
 * 本プロジェクトは Swift Package として他アプリケーションに組み込まれることを前提とするため、Xcode ウィザードで「App」テンプレートを選ぶ必要はありません。
-* macOS/iPadOS 両対応の Swift Package として作成する場合は、「Framework」または「Swift Package」テンプレートを使用し、対応プラットフォームを .macOS (.v12)、.iOS (.v15) と指定します。
+* macOS/iPadOS 両対応の Swift Package として作成する場合は、「Framework」または「Swift Package」テンプレートを使用し、対応プラットフォームを .macOS (.v14)、.iOS (.v17) と指定します。
 * また、本リポジトリでは Git サブモジュール [Docs Linter](https://github.com/stein2nd/docs-linter) を導入し、ドキュメント品質 (表記揺れや用語統一) の検証を CI で実施します。
 
 ### 1. テンプレート選択
@@ -597,7 +597,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 | Team | Apple ID に応じて設定 | コード署名のため |
 | Organization Identifier | `com.s2j` | ドメイン逆引き規則、一貫性確保 |
 | Interface | SwiftUI | SwiftUI ベースを前提 |
-| Language | Swift (Swift v7.0) | Xcode v26.0.1に同梱される Swift バージョン (Objective-C は不要) |
+| Language | Swift (Swift v6.3) | Xcode v26.5 に同梱される Swift バージョン (Objective-C は不要) |
 | Use Core Data | Off | データ永続化不要 |
 | Include Tests | On | `SPEC.md` にもとづきテストを考慮 |
 | Include CloudKit | Off | 不要 |
@@ -608,8 +608,8 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 | 項目 | 推奨値 | 理由 |
 |---|---|---|
-| macOS Deployment Target | macOS v12.0以上 | SwiftUI の `List` / `OutlineGroup` API が安定するバージョン |
-| iOS Deployment Target | iPadOS v15.0以上 | `.sheet` / `.popover` の SwiftUI API が安定するバージョン |
+| macOS Deployment Target | macOS v14.0以上 | SwiftUI の `List` / `OutlineGroup` API が安定するバージョン |
+| iOS Deployment Target | iPadOS v17.0以上 | SwiftUI の `onChange` 新シグネチャ等、iOS v17の API を前提とするバージョン |
 
 ### 4. 実行確認の環境 (推奨)
 

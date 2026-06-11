@@ -2,10 +2,11 @@ name: S2JSourceList
 options:
   bundleIdPrefix: com.s2j
   deploymentTarget:
-    macOS: "12.0"
-    iOS: "15.0"
+    macOS: "14.0"
+    iOS: "17.0"
   developmentLanguage: en
   defaultLocalization: en
+  xcodeVersion: "26.5"
 
 targets:
   S2JSourceList-macOS:
@@ -18,7 +19,7 @@ targets:
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceList-macOS
       PRODUCT_NAME: S2JSourceList
-      SWIFT_VERSION: "5.8"
+      SWIFT_VERSION: "6.3"
       GENERATE_INFOPLIST_FILE: YES
       DEFINES_MODULE: YES
       CURRENT_PROJECT_VERSION: "1"
@@ -34,7 +35,7 @@ targets:
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceList-iOS
       PRODUCT_NAME: S2JSourceList
-      SWIFT_VERSION: "5.8"
+      SWIFT_VERSION: "6.3"
       GENERATE_INFOPLIST_FILE: YES
       DEFINES_MODULE: YES
       CURRENT_PROJECT_VERSION: "1"
@@ -51,7 +52,7 @@ targets:
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceListTests-macOS
       PRODUCT_NAME: S2JSourceListTests
-      SWIFT_VERSION: "5.8"
+      SWIFT_VERSION: "6.3"
       GENERATE_INFOPLIST_FILE: YES
       CURRENT_PROJECT_VERSION: "1"
       MARKETING_VERSION: "1.0"
@@ -68,7 +69,7 @@ targets:
       PRODUCT_NAME: S2JSourceListTests
       CODE_SIGN_STYLE: Automatic
       DEVELOPMENT_TEAM: ""
-      SWIFT_VERSION: "5.8"
+      SWIFT_VERSION: "6.3"
       GENERATE_INFOPLIST_FILE: YES
       CURRENT_PROJECT_VERSION: "1"
       MARKETING_VERSION: "1.0"

@@ -51,7 +51,7 @@ public struct InlineEditorView: View {
             .onAppear {
                 isFocused = true
             }
-            .onChange(of: isFocused) { newValue in
+            .onChange(of: isFocused) { _, newValue in
                 if !newValue {
                     // Lost focus - commit if changed, otherwise cancel
                     if text != originalText {

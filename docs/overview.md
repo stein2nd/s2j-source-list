@@ -9,7 +9,7 @@
 * **Swift Package 名**: s2j-source-list
 * **元リポジトリ**: [PXSourceList](https://github.com/alexrozanski/PXSourceList)
 * **目的**: AppKit ベースの「PXSourceList」を SwiftUI で再実装し、macOS および iPadOS アプリケーション向けの階層サイドバーコンポーネントとして提供する。
-* **対応 OS**: macOS v12 以上、iPadOS v15 以上
+* **対応 OS**: macOS v14 以上、iPadOS v17 以上
 
 ## 準拠仕様
 

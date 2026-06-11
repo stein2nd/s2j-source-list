@@ -88,7 +88,7 @@
     * `actions/checkout@v4` を使用してリポジトリをチェック・アウトします。
 * **Xcode バージョンの選択 (フォールバック付き)**
     * 優先順位に従って、利用可能な Xcode バージョンを選択します。
-    * **優先順位**: Xcode 26.1 → Xcode 26.0.1 → Xcode 16.4.0
+    * **優先順位**: Xcode 26.5 → Xcode 26.1 → Xcode 26.0.1 → Xcode 16.4.0
     * **実装**: `maxim-lobanov/setup-xcode@v1` を使用し、各バージョンに対して `continue-on-error: true` を設定してフォールバックを実現します。
     * **注意**: 各セットアップ・ステップは失敗を許可し、利用可能な最初のバージョンを使用します。
 * **ログディレクトリの作成**
@@ -109,9 +109,11 @@
 * **Xcode アプリの強制選択 (優先順位付き)**
     * 優先順位に従って、利用可能な Xcode アプリを強制選択します。
     * **優先順位**:
+        * `/Applications/Xcode_26.5.app/Contents/Developer`
+        * `/Applications/Xcode_26.5.0.app/Contents/Developer`
         * `/Applications/Xcode_26.1.app/Contents/Developer`
         * `/Applications/Xcode_26.1.0.app/Contents/Developer`
-        * `/Applications/Xcode.app/Contents/Developer` (26.0.1 またはその他の可能性)
+        * `/Applications/Xcode.app/Contents/Developer` (26.5 またはその他の可能性)
         * `/Applications/Xcode_26.0.app/Contents/Developer`
         * `/Applications/Xcode_16.4.0.app/Contents/Developer`
     * **実装**: `sudo xcode-select -s` を使用して Xcode を選択します。
@@ -294,7 +296,7 @@
 
 * `SCHEME_NAME`: Xcode スキーム名 (デフォルト: Package.swift から自動検出)
 * `IOS_DEVICE`: iOS シミュレーター・デバイス名 (デフォルト: "iPad Pro")
-* `IOS_VERSION`: iOS 最小バージョン (デフォルト: "15.0")
+* `IOS_VERSION`: iOS 最小バージョン (デフォルト: "17.0")
 * `SKIP_IOS_TESTS`: iOS テストをスキップする場合は "true"
 * `ENABLE_XCODE_PROJECT`: Xcode プロジェクト生成とテストを有効化 (デフォルト: `project.yml` が存在する場合に自動有効化)
 * `XCODE_PROJECT_NAME`: Xcode プロジェクト名 (デフォルト: 自動検出)

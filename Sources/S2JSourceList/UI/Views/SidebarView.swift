@@ -101,7 +101,7 @@ public struct SidebarView: View {
             // Initialize expanded items
             updateExpandedItems()
         }
-        .onChange(of: service.rootItems) { _ in
+        .onChange(of: service.rootItems) {
             updateExpandedItems()
         }
     }
