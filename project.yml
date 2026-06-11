@@ -7,6 +7,7 @@ options:
   developmentLanguage: en
   defaultLocalization: en
   xcodeVersion: "26.5"
+  projectFormat: xcode16_3
 
 targets:
   S2JSourceList-macOS:

@@ -2,6 +2,21 @@
 
 ## unreleased
 
+## 2.0.1 - 2026-06-11
+
+### Changed
+
+* `project.yml` の Project Format を Xcode v26.3相当に更新
+    * `projectFormat: xcode16_3` を追加（生成される `objectVersion` を90に）
+
+### Fixed
+
+* GitHub Actions の `test-macos` / `test-ios` / `build-release` が Swift v6.2系で失敗する問題を修正
+    * runner を `macos-latest` から `macos-26` に変更
+    * 全 job の Xcode バージョンを `26.5`（Swift v6.3.2+）に統一
+    * Swift v6.2系 Xcode へのフォールバック（26.1 / 26.0.1 / 16.4.0等）を削除
+    * Xcode Force-select とツールチェーン確認ステップを追加
+
 ## 2.0.0 - 2026-06-11
 
 ### Changed
