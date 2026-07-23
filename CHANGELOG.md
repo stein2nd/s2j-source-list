@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## 2.0.2 - 2026-07-23
+
 ### Changed
 
 * `@s2j/docs-linter` を ^1.0.18 から ^1.0.21 に更新
