@@ -2,6 +2,16 @@
 
 ## unreleased
 
+### Changed
+
+* `@s2j/docs-linter` を ^1.0.18 から ^1.0.21 に更新
+
+### Fixed
+
+* npm 12+ で `npm install` が Git 依存の取得禁止（`EALLOWGIT`）により失敗する問題を修正
+    * `.npmrc` に `allow-git=all` を追加（`@s2j/docs-linter` の間接 GitHub 依存に対応）
+    * `legacy-peer-deps=true` を追加
+
 ## 2.0.1 - 2026-06-11
 
 ### Changed
