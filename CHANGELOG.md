@@ -2,6 +2,13 @@
 
 ## unreleased
 
+## 2.0.4 - 2026-08-31
+
+### Changed
+
+* `@s2j/docs-linter` を ^1.0.22から ^1.0.23に更新
+* `README.md` の `Package.swift` 依存指定を v1.0.0 から v2.0.4 に更新
+
 ## 2.0.3 - 2026-08-10
 
 ### Changed
