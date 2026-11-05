@@ -2,6 +2,14 @@
 
 ## unreleased
 
+## 2.0.6 - 2026-11-06
+
+### Changed
+
+* `@s2j/docs-linter` を ^1.0.26から ^1.0.32に更新
+* `README.md` の `Package.swift` 依存指定を v2.0.5 から v2.0.6 に更新
+* `package.json` に `overrides` を追加（`glob` ^14.0.3、`minimatch` ^11.0.4）
+
 ## 2.0.5 - 2026-10-02
 
 ### Changed
