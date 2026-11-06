@@ -2,6 +2,13 @@
 
 ## unreleased
 
+## 2.0.7 - 2026-11-06
+
+### Changed
+
+* GitHub Actions `Swift Test` の `build-release` ジョブを `test-macos` に統合（`macos-26` ランナー利用を 3 ジョブから 2 ジョブに削減）
+* `README.md` の `Package.swift` 依存指定を v2.0.6 から v2.0.7 に更新
+
 ## 2.0.6 - 2026-11-06
 
 ### Changed
