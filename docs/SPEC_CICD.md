@@ -27,17 +27,42 @@
 
 * **ワークフローファイル**: `.github/workflows/swift-test.yml`
 * **トリガー**: `push` および `pull_request` イベント (`main`、`develop` ブランチ)
-* **実行環境**: `macos-latest` (GitHub Actions の macOS Runner)
+* **実行環境**: `macos-26` (GitHub Actions の macOS arm64 Runner。`swift-tools-version: 6.3` に必要な Swift v6.3+ / Xcode v26.5を利用)
 * **その他のワークフロー**:
-    * `docs-linter.yml`: Markdown ドキュメントの表記揺れ検出 (Docs Linter) (✅ 直近の実行で成功)
+    * `docs-lint.yml`: Markdown ドキュメントの表記揺れ検出 (Docs Linter) (✅ 直近の実行で成功)
+        * Checkout には `actions/checkout@v6` (Node.js v24ランタイム) を使用
 
 ### 1.4. ジョブ構成
 
-本ワークフローは、以下の3つのジョブで構成されています。
+本ワークフローは、以下の **2つのジョブ**で構成されています (`test-macos` と `test-ios` は互いに依存せず並列実行)。
 
-* **`test-macos`**: macOS 向けテスト実行
-* **`test-ios`**: iOS/iPadOS 向けテスト実行
-* **`build-release`**: リリース・ビルド生成
+* **`test-macos`**: macOS 向けテスト実行、Codecov へのカバレッジ送信、**リリース・ビルド生成とアーティファクト保存**
+* **`test-ios`**: iOS/iPadOS 向けテスト実行 (Xcode プロジェクト経由)
+
+旧来の独立ジョブ **`build-release`** は v2.0.7以降 **`test-macos` に統合** 済みです (詳細は [1.5. ジョブ統合の背景](#15-ジョブ統合の背景-build-release--test-macos) を参照)。
+
+### 1.5. ジョブ統合の背景 (build-release → test-macos)
+
+v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
+
+1. `test-macos` と `test-ios` を **並列**実行
+2. 両方が成功したあと、3本目の `build-release` が `macos-26` ランナー上で `swift build -c release` を実行
+
+2026-11 の v2.0.6向け CI では、`test-macos` / `test-ios` はいずれも成功した一方、**3本目の `build-release` だけがホストランナーを割り当てられず**、約15分待機の末キャンセルされ、ワークフロー全体が failed になりました。ログ上は次のような **GitHub Actions インフラ側**の事象でした (アプリケーションコードやテスト失敗ではありません)。
+
+* `Internal server error` (Correlation ID 付き)
+* `The job was not acquired by Runner of type hosted even after multiple attempts`
+* Annotation: `Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.`
+
+`macos-26` は需要が高く、1ワークフローあたり **同時に3本の macOS ジョブ** を要求すると、テスト完了後の追加ジョブでキュー待ちや割当失敗が起きやすい、という判断です。
+
+**対応 (v2.0.7):** リリース・ビルドとアーティファクトのアップロードを、すでに `macos-26` 上で Xcode / Swift ツールチェーンが整っている **`test-macos` の末尾ステップ** に移し、1 回の workflow あたりの macOS ジョブ数を **3 → 2** に削減しました。
+
+**トレードオフ:** 統合後は **macOS テストが成功した時点** でリリース・ビルドが走ります (旧構成では `test-ios` の成否も `build-release` 開始の条件でした)。iOS テストの成否とリリース・ビルドの成否は、別ジョブとしては連動しません。
+
+**付記:** macOS arm64ランナーの capacity Annotation は、ジョブが success であれば **告知** として扱い、リポジトリ側で解消する設定はありません。
+
+**Actions ランタイム (v2.0.7以降の follow-up):** Node.js v20非推奨 Annotation 回避のため、`actions/checkout` / `actions/upload-artifact` / `codecov/codecov-action` を **Node.js v24対応の v6** に更新しています (Codecov 入力は `file` から `files` に変更)。
 
 ## 2. ジョブ詳細仕様
 
@@ -45,38 +70,49 @@
 
 #### 2.1.1. 概要
 
-* **目的**: macOS プラットフォーム向けのユニットテストを実行し、テスト・カバレッジを収集します。
-* **実行環境**: `macos-latest`
-* **依存関係**: なし (独立実行が可能)
+* **目的**: macOS 向けユニットテストとカバレッジ収集に加え、**リリース用ビルド (`.build/release/`) の生成と Artifacts 保存**を行います (旧 `build-release` ジョブの役割を包含)。
+* **実行環境**: `macos-26`
+* **依存関係**: なし (`test-ios` と並列。旧 `build-release` の `needs: [test-macos, test-ios]` は廃止)
 
 #### 2.1.2. 実行ステップ
 
 * **Checkout**
-    * `actions/checkout@v4` を使用してリポジトリをチェック・アウトします。
+    * `actions/checkout@v6` (Node.js v24ランタイム) を使用してリポジトリをチェック・アウトします。
 * **Setup Xcode**
     * `maxim-lobanov/setup-xcode@v1` を使用して Xcode をセットアップします。
-    * **Xcode バージョン**: `latest-stable` (最新の安定版)
+    * **Xcode バージョン**: `26.5` (`swift-tools-version: 6.3` に必要な Swift v6.3+)
+* **Force-select Xcode app**
+    * ランナー上に存在する Xcode アプリを優先順位 (26.5 → 26.4.1 → 26.4 → 26.3等) で `xcode-select` します。
+* **Verify Swift toolchain**
+    * Swift v6.2系のみの環境では失敗させ、6.3+ を要求します。
 * **Run tests on macOS**
     * `swift test --enable-code-coverage` を実行して、macOS 向けのユニットテストを実行します。
     * テスト・カバレッジを有効化します。
 * **Upload coverage to Codecov**
-    * `codecov/codecov-action@v3` を使用して、テスト・カバレッジを Codecov にアップロードします。
+    * `codecov/codecov-action@v6` を使用して、テスト・カバレッジを Codecov にアップロードします。
     * **設定**:
-        * `file`: `.build/coverage/coverage.xml`
+        * `files`: `.build/coverage/coverage.xml`
         * `flags`: `macos`
         * `name`: `macos-coverage`
+* **Build release binary**
+    * `swift build -c release` を実行してリリース構成をビルドします。
+* **Upload build artifacts**
+    * `actions/upload-artifact@v6` を使用してビルド成果物をアップロードします。
+    * **アーティファクト名**: `s2j-source-list-build`
+    * **パス**: `.build/release/`
 
 #### 2.1.3. 期待される結果
 
 * すべての macOS 向けユニットテストが成功すること。
 * テスト・カバレッジが Codecov に正常にアップロードされること。
+* リリース用ビルドが成功し、アーティファクト `s2j-source-list-build` が保存されること。
 
 ### 2.2. test-ios ジョブ
 
 #### 2.2.1. 概要
 
 * **目的**: iOS/iPadOS プラットフォーム向けのユニットテストを実行し、テスト・カバレッジを収集します。
-* **実行環境**: `macos-latest`
+* **実行環境**: `macos-26`
 * **タイムアウト**: `60分` (ビルド/シミュレーター起動で時間を要する場合があるため)
 * **依存関係**: なし (独立で実行可能)
 * **環境変数**:
@@ -85,10 +121,10 @@
 #### 2.2.2. 実行ステップ
 
 * **Checkout**
-    * `actions/checkout@v4` を使用してリポジトリをチェック・アウトします。
+    * `actions/checkout@v6` (Node.js v24ランタイム) を使用してリポジトリをチェック・アウトします。
 * **Xcode バージョンの選択 (フォールバック付き)**
     * 優先順位に従って、利用可能な Xcode バージョンを選択します。
-    * **優先順位**: Xcode 26.5 → Xcode 26.1 → Xcode 26.0.1 → Xcode 16.4.0
+    * **優先順位**: Xcode v26.5 → Xcode v26.1 → Xcode v26.0.1 → Xcode v16.4.0
     * **実装**: `maxim-lobanov/setup-xcode@v1` を使用し、各バージョンに対して `continue-on-error: true` を設定してフォールバックを実現します。
     * **注意**: 各セットアップ・ステップは失敗を許可し、利用可能な最初のバージョンを使用します。
 * **ログディレクトリの作成**
@@ -103,9 +139,9 @@
         * `xcrun simctl list devices available`
     * **出力変数**:
         * `xcode_version`: 検出された Xcode バージョン
-        * `has_ios_26_1`: iOS 26.1 ランタイムが利用可能かどうか
-        * `has_ios_26_0`: iOS 26.0 ランタイムが利用可能かどうか
-        * `has_ios_18_5`: iOS 18.5 ランタイムが利用可能かどうか
+        * `has_ios_26_1`: iOS v26.1ランタイムが利用可能かどうか
+        * `has_ios_26_0`: iOS v26.0ランタイムが利用可能かどうか
+        * `has_ios_18_5`: iOS v18.5ランタイムが利用可能かどうか
 * **Xcode アプリの強制選択 (優先順位付き)**
     * 優先順位に従って、利用可能な Xcode アプリを強制選択します。
     * **優先順位**:
@@ -113,7 +149,7 @@
         * `/Applications/Xcode_26.5.0.app/Contents/Developer`
         * `/Applications/Xcode_26.1.app/Contents/Developer`
         * `/Applications/Xcode_26.1.0.app/Contents/Developer`
-        * `/Applications/Xcode.app/Contents/Developer` (26.5 またはその他の可能性)
+        * `/Applications/Xcode.app/Contents/Developer` (26.5またはその他の可能性)
         * `/Applications/Xcode_26.0.app/Contents/Developer`
         * `/Applications/Xcode_16.4.0.app/Contents/Developer`
     * **実装**: `sudo xcode-select -s` を使用して Xcode を選択します。
@@ -135,7 +171,7 @@
     * **検証**: 生成されたスキーム・ファイル (`S2JSourceList-iOS.xcscheme`) の存在と内容を確認します。
 * **シミュレーター・ランタイムとデバイスの選択 (フォールバック付き)**
     * 優先順位に従って、利用可能な iOS シミュレーター・ランタイムとデバイスを選択します。
-    * **ランタイム優先順位**: iOS 26.1 → iOS 26.0 → iOS 18.5 → 最初に利用可能な iOS ランタイム
+    * **ランタイム優先順位**: iOS v26.1 → iOS v26.0 → iOS v18.5 → 最初に利用可能な iOS ランタイム
     * **デバイス選択**:
         * まず、選択されたランタイムに対応するデバイスを検索します。
         * 見つからない場合は、優先デバイス名 (`iPhone 17`、`iPhone 16e`、`iPhone 16`、`iPad Air`、`iPad Pro`、`iPad (A16)`) から選択します。
@@ -160,7 +196,7 @@
 * **ランタイムバージョンの抽出と SDK の自動検出**
     * シミュレーターのランタイム・バージョンを抽出します (例: `iOS 26.0` → `26.0`)。
     * `xcodebuild -showsdks` で利用可能な iOS Simulator SDK を確認します。
-    * ランタイム・バージョンと一致する SDK を自動検出します (例: `iphonesimulator26.0` for iOS 26.0)。
+    * ランタイム・バージョンと一致する SDK を自動検出します (例: `iphonesimulator26.0` for iOS v26.0)。
     * 完全一致が見つからない場合は、メジャー・バージョンで一致する SDK を検索します。
     * それでも見つからない場合は、任意の `iphonesimulator` SDK を使用します。
 * **デスティネーションの構築**
@@ -173,13 +209,13 @@
     * 複数のアプローチでテストを実行します。
     * **ストラテジー A**: `xcodebuild test-without-building` (SDK 指定なし、xcodebuild が自動選択)
         * 成功した場合は終了します。
-        * 失敗した場合は、ストラテジー A-2 に進みます。
+        * 失敗した場合は、ストラテジー A-2に進みます。
     * **ストラテジー A-2**: `xcodebuild test-without-building` (検出された SDK を明示的に指定)
         * 成功した場合は終了します。
         * 失敗した場合は、ストラテジー B に進みます。
     * **ストラテジー B**: `xcodebuild test` (SDK 指定なし、xcodebuild が自動選択)
         * 成功した場合は終了します。
-        * 失敗した場合は、ストラテジー B-2 に進みます。
+        * 失敗した場合は、ストラテジー B-2に進みます。
     * **ストラテジー B-2**: `xcodebuild test` (検出された SDK を明示的に指定)
         * 成功した場合は終了します。
     * **共通設定**:
@@ -193,14 +229,14 @@
             * `xcrun xcresulttool get --path "$RESULT_BUNDLE" --format json`: JSON 形式の結果
             * `xcrun xccov view --report "$RESULT_BUNDLE"`: カバレッジ・レポート
 * **診断情報のアップロード (アーティファクト)**
-    * `actions/upload-artifact@v4` を使用して、診断情報をアーティファクトとしてアップロードします。
+    * `actions/upload-artifact@v6` を使用して、診断情報をアーティファクトとしてアップロードします。
     * **アーティファクト名**: `ios-test-diagnostics`
     * **パス**: `$LOG_DIR` (すべてのログファイルを含む)
     * **条件**: `if: ${{ always() }}` (テストが失敗しても実行)
 * **カバレッジのアップロード (Codecov) (ベスト・エフォート)**
-    * `codecov/codecov-action@v3` を使用して、テスト・カバレッジを Codecov にアップロードします。
+    * `codecov/codecov-action@v6` を使用して、テスト・カバレッジを Codecov にアップロードします。
     * **設定**:
-        * `file`: `.build/coverage/coverage.xml`
+        * `files`: `.build/coverage/coverage.xml`
         * `flags`: `ios`
         * `name`: `ios-coverage`
         * `fail_ci_if_error`: `false` (失敗しても CI を継続)
@@ -223,32 +259,9 @@
 * **詳細なログ記録**: すべてのステップでログを記録し、アーティファクトとして保存します。
 * **診断情報の常時アップロード**: テストが失敗しても診断情報をアップロードし、問題の特定を容易にします。
 
-### 2.3. build-release ジョブ
+### 2.3. build-release ジョブ (廃止)
 
-#### 2.3.1. 概要
-
-* **目的**: リリース用の Universal Binary をビルドし、ビルド成果物をアーティファクトとして保存します。
-* **実行環境**: `macos-latest`
-* **依存関係**: `test-macos` および `test-ios` ジョブが成功した後に実行されます (`needs: [test-macos, test-ios]`)
-
-#### 2.3.2. 実行ステップ
-
-* **Checkout**
-    * `actions/checkout@v4` を使用してリポジトリをチェック・アウトします。
-* **Setup Xcode**
-    * `maxim-lobanov/setup-xcode@v1` を使用して Xcode をセットアップします。
-    * **Xcode バージョン**: `latest-stable` (最新の安定版)
-* **Build Universal Binary**
-    * `swift build -c release` を実行して、リリース用の Universal Binary をビルドします。
-* **Upload build artifacts**
-    * `actions/upload-artifact@v4` を使用して、ビルド成果物をアーティファクトとしてアップロードします。
-    * **アーティファクト名**: `s2j-source-list-build`
-    * **パス**: `.build/release/`
-
-#### 2.3.3. 期待される結果
-
-* リリース用の Universal Binary が正常にビルドされること。
-* ビルド成果物がアーティファクトとして保存されること。
+v2.0.7以降、本ジョブは **存在しません**。リリース・ビルドと Artifacts のアップロードは [2.1. test-macos ジョブ](#21-test-macos-ジョブ) に統合されています。統合に至った経緯は [1.5. ジョブ統合の背景](#15-ジョブ統合の背景-build-release--test-macos) を参照してください。
 
 ## 3. ローカルテスト・スクリプト
 
@@ -354,6 +367,7 @@
 
 ### 5.1. リリース・ビルド
 
+* **生成ジョブ**: `test-macos` (v2.0.7以降)
 * **パス**: `.build/release/`
 * **形式**: Universal Binary (Swift Package Manager が自動生成)
 * **アーティファクト名**: `s2j-source-list-build`
@@ -380,7 +394,7 @@
 
 ### 6.2. ビルド失敗時の動作
 
-* **リリース・ビルド**: ビルドが失敗した場合、ジョブは失敗します。
+* **リリース・ビルド (`test-macos` 内)**: ビルドが失敗した場合、`test-macos` ジョブは失敗します。
 
 ## 7. 実装状況
 
@@ -390,14 +404,14 @@
 
 * **GitHub Actions ワークフロー**:
     * `swift-test.yml`: Swift Package のユニットテストおよび UI スナップショット・テストの自動実行 (✅100% 実装完了・テスト成功)
-    * `test-macos` ジョブ: macOS 向けテスト実行とカバレッジ収集 (✅テスト成功)
+    * `test-macos` ジョブ: macOS 向けテスト、カバレッジ収集、**リリース・ビルドと Artifacts 保存** (✅テスト成功。旧 `build-release` を統合)
     * `test-ios` ジョブ: iOS/iPadOS 向けテスト実行とカバレッジ収集 (✅テスト成功)
         * ランタイム・バージョンの抽出と SDK の自動検出機能 (✅実装完了)
         * デスティネーション構築の改善 (OS バージョンを指定せず、UDID のみを使用) (✅実装完了)
         * テスト実行の優先順位の最適化 (SDK を指定せずに実行を優先) (✅実装完了)
         * 診断情報の常時アップロード (`if: always()` を追加) (✅実装完了)
-    * `build-release` ジョブ: リリース・ビルド生成 (✅テスト成功)
-    * `docs-linter.yml`: Docs Linter による Markdown 表記揺れ検出 (✅直近の実行で成功)
+    * GitHub Actions 本体: `checkout` / `upload-artifact` / `codecov-action` を **v6 (Node.js 24)** に更新 (✅直近の実行で成功)
+    * `docs-lint.yml`: Docs Linter による Markdown 表記揺れ検出 (✅直近の実行で成功)
 * **ローカルテスト・スクリプト**:
     * `scripts/test-local.sh`: コミット前に CI/CD と同じテストをローカルで実行 (✅100% 実装完了)
     * 汎用的で、他の Swift Package Manager プロジェクトでも使用可能
@@ -420,8 +434,8 @@
 
 ### 8.2. 中期での改善予定 (3-6ヵ月)
 
-* **並列実行の最適化**: `test-macos` と `test-ios` ジョブを並列実行し、CI 時間を短縮します。
 * **キャッシュの活用**: Swift Package の依存関係をキャッシュし、ビルド時間を短縮します。
+* **`test-ios` 実行時間の短縮**: シミュレータ boot / `xcodebuild` まわりの所要時間 (おおよそ8〜10分) の削減を検討します。
 
 ---
 
@@ -439,9 +453,14 @@ on:
 
 ### A.2. ジョブ依存関係
 
+`test-macos` と `test-ios` は **相互に `needs` を持たず並列**実行します (v2.0.7以降。旧 `build-release` の `needs: [test-macos, test-ios]` は廃止)。
+
 ```yaml
-build-release:
-  needs: [test-macos, test-ios]
+jobs:
+  test-macos:
+    runs-on: macos-26
+  test-ios:
+    runs-on: macos-26
 ```
 
 ### A.3. 環境変数
