@@ -2,6 +2,10 @@
 
 ## unreleased
 
+### Changed
+
+* GitHub Actions の `actions/checkout` / `actions/upload-artifact` / `codecov/codecov-action` を Node.js 24 対応の v6 に更新
+
 ## 2.0.7 - 2026-11-06
 
 ### Changed
