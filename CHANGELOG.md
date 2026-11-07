@@ -2,6 +2,17 @@
 
 ## unreleased
 
+## 2.0.10 - 2026-11-08
+
+### Changed
+
+* GitHub Actions (`docs-lint.yml`) の `actions/setup-node` を v4から v5に更新し、Runner を `ubuntu-24.04` に固定、Node.js を v24に統一
+* `docs/SPEC_CICD.md` の Docs Lint 実行環境の記述を更新
+
+### Fixed
+
+* `lint-docs` の Node.js v20非推奨および `ubuntu-latest` 移行予告の Annotation を解消
+
 ## 2.0.9 - 2026-11-08
 
 ### Changed

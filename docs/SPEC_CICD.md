@@ -30,7 +30,8 @@
 * **実行環境**: `macos-26` (GitHub Actions の macOS arm64 Runner。`swift-tools-version: 6.3` に必要な Swift v6.3+ / Xcode v26.5を利用)
 * **その他のワークフロー**:
     * `docs-lint.yml`: Markdown ドキュメントの表記揺れ検出 (Docs Linter) (✅ 直近の実行で成功)
-        * Checkout には `actions/checkout@v6` (Node.js v24ランタイム) を使用
+        * **実行環境**: `ubuntu-24.04`
+        * `actions/checkout@v6` / `actions/setup-node@v5` (Node.js v24)
 
 ### 1.4. ジョブ構成
 
@@ -411,7 +412,7 @@ v2.0.7以降、本ジョブは **存在しません**。リリース・ビルド
         * テスト実行の優先順位の最適化 (SDK を指定せずに実行を優先) (✅実装完了)
         * 診断情報の常時アップロード (`if: always()` を追加) (✅実装完了)
     * GitHub Actions 本体: `checkout` / `upload-artifact` / `codecov-action` を **v6 (Node.js 24)** に更新 (✅直近の実行で成功)
-    * `docs-lint.yml`: Docs Linter による Markdown 表記揺れ検出 (✅直近の実行で成功)
+    * `docs-lint.yml`: Docs Linter による Markdown 表記揺れ検出 (`ubuntu-24.04` / `setup-node@v5` / Node.js v24) (✅直近の実行で成功)
 * **ローカルテスト・スクリプト**:
     * `scripts/test-local.sh`: コミット前に CI/CD と同じテストをローカルで実行 (✅100% 実装完了)
     * 汎用的で、他の Swift Package Manager プロジェクトでも使用可能
