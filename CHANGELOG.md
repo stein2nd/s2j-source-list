@@ -8,6 +8,7 @@
 
 * GitHub Actions (`docs-lint.yml`) の `actions/setup-node` を v4から v5に更新し、Runner を `ubuntu-24.04` に固定、Node.js を v24に統一
 * `docs/SPEC_CICD.md` の Docs Lint 実行環境の記述を更新
+* `README.md` の `Package.swift` 依存指定を v2.0.9から v2.0.10に更新
 
 ### Fixed
 
