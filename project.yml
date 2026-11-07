@@ -2,81 +2,160 @@ name: S2JSourceList
 options:
   bundleIdPrefix: com.s2j
   deploymentTarget:
-    macOS: "14.0"
-    iOS: "17.0"
+    macOS: "14.6"
+    iOS: "17.6"
   developmentLanguage: en
   defaultLocalization: en
-  xcodeVersion: "26.5"
+  usesTabs: false
+  indentWidth: 4
+  tabWidth: 4
+  xcodeVersion: "26.3"
   projectFormat: xcode16_3
 
 targets:
   S2JSourceList-macOS:
     type: framework
     platform: macOS
+    deploymentTarget: "14.6"
     sources:
       - path: Sources/S2JSourceList
+        excludes:
+          - "**/*.md"
     resources:
       - path: Sources/S2JSourceList/Resources
     settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceList-macOS
-      PRODUCT_NAME: S2JSourceList
-      SWIFT_VERSION: "6.3"
-      GENERATE_INFOPLIST_FILE: YES
-      DEFINES_MODULE: YES
-      CURRENT_PROJECT_VERSION: "1"
-      MARKETING_VERSION: "1.0"
+      base:
+        PRODUCT_NAME: S2JSourceList
+        PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceList-macOS
+        SWIFT_VERSION: "6.3"
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited)"
+        DEVELOPMENT_LANGUAGE: en
+        GENERATE_INFOPLIST_FILE: YES
+        MACOSX_DEPLOYMENT_TARGET: "14.6"
+        DEFINES_MODULE: YES
+        CURRENT_PROJECT_VERSION: "1"
+        MARKETING_VERSION: "1.0"
+      configs:
+        Debug:
+          SWIFT_OPTIMIZATION_LEVEL: -Onone
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) DEBUG"
+        Release:
+          SWIFT_OPTIMIZATION_LEVEL: -O
 
   S2JSourceList-iOS:
     type: framework
     platform: iOS
+    deploymentTarget: "17.6"
     sources:
       - path: Sources/S2JSourceList
+        excludes:
+          - "**/*.md"
     resources:
       - path: Sources/S2JSourceList/Resources
     settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceList-iOS
-      PRODUCT_NAME: S2JSourceList
-      SWIFT_VERSION: "6.3"
-      GENERATE_INFOPLIST_FILE: YES
-      DEFINES_MODULE: YES
-      CURRENT_PROJECT_VERSION: "1"
-      MARKETING_VERSION: "1.0"
-      SUPPORTS_MACCATALYST: NO
+      base:
+        PRODUCT_NAME: S2JSourceList
+        PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceList-iOS
+        SWIFT_VERSION: "6.3"
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited)"
+        DEVELOPMENT_LANGUAGE: en
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGNING_ALLOWED: NO
+        IPHONEOS_DEPLOYMENT_TARGET: "17.6"
+        DEFINES_MODULE: YES
+        CURRENT_PROJECT_VERSION: "1"
+        MARKETING_VERSION: "1.0"
+        SUPPORTS_MACCATALYST: false
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: false
+      configs:
+        Debug:
+          SWIFT_OPTIMIZATION_LEVEL: -Onone
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) DEBUG"
+        Release:
+          SWIFT_OPTIMIZATION_LEVEL: -O
 
   S2JSourceListTests-macOS:
     type: bundle.unit-test
     platform: macOS
+    deploymentTarget: "14.6"
     sources:
       - path: Tests/S2JSourceListTests
     dependencies:
       - target: S2JSourceList-macOS
     settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceListTests-macOS
-      PRODUCT_NAME: S2JSourceListTests
-      SWIFT_VERSION: "6.3"
-      GENERATE_INFOPLIST_FILE: YES
-      CURRENT_PROJECT_VERSION: "1"
-      MARKETING_VERSION: "1.0"
+      base:
+        PRODUCT_NAME: S2JSourceListTests
+        PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceListTests-macOS
+        SWIFT_VERSION: "6.3"
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited)"
+        DEVELOPMENT_LANGUAGE: en
+        GENERATE_INFOPLIST_FILE: YES
+        MACOSX_DEPLOYMENT_TARGET: "14.6"
+        CURRENT_PROJECT_VERSION: "1"
+        MARKETING_VERSION: "1.0"
+      configs:
+        Debug:
+          SWIFT_OPTIMIZATION_LEVEL: -Onone
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) DEBUG"
+        Release:
+          SWIFT_OPTIMIZATION_LEVEL: -O
 
   S2JSourceListTests-iOS:
     type: bundle.unit-test
     platform: iOS
+    deploymentTarget: "17.6"
     sources:
       - path: Tests/S2JSourceListTests
     dependencies:
       - target: S2JSourceList-iOS
     settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceListTests-iOS
-      PRODUCT_NAME: S2JSourceListTests
-      CODE_SIGN_STYLE: Automatic
-      DEVELOPMENT_TEAM: ""
-      SWIFT_VERSION: "6.3"
-      GENERATE_INFOPLIST_FILE: YES
-      CURRENT_PROJECT_VERSION: "1"
-      MARKETING_VERSION: "1.0"
-      SUPPORTS_MACCATALYST: NO
+      base:
+        PRODUCT_NAME: S2JSourceListTests
+        PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceListTests-iOS
+        SWIFT_VERSION: "6.3"
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited)"
+        DEVELOPMENT_LANGUAGE: en
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGNING_ALLOWED: NO
+        IPHONEOS_DEPLOYMENT_TARGET: "17.6"
+        CURRENT_PROJECT_VERSION: "1"
+        MARKETING_VERSION: "1.0"
+        SUPPORTS_MACCATALYST: false
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: false
+      configs:
+        Debug:
+          SWIFT_OPTIMIZATION_LEVEL: -Onone
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) DEBUG"
+        Release:
+          SWIFT_OPTIMIZATION_LEVEL: -O
+
+  SampleApp:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.6"
+    sources:
+      - path: SampleApp.swift
+    settings:
+      base:
+        PRODUCT_NAME: SampleApp
+        PRODUCT_BUNDLE_IDENTIFIER: com.s2j.S2JSourceList.SampleApp
+        SWIFT_VERSION: "6.3"
+        MACOSX_DEPLOYMENT_TARGET: "14.6"
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_LANGUAGE: en
+    dependencies:
+      - target: S2JSourceList-macOS
 
 schemes:
+  SampleApp:
+    build:
+      targets:
+        SampleApp: all
+        S2JSourceList-macOS: all
+    run:
+      config: Debug
+
   S2JSourceList:
     build:
       targets:
@@ -86,6 +165,10 @@ schemes:
       targets:
         - S2JSourceListTests-macOS
         - S2JSourceListTests-iOS
+    run:
+      config: Debug
+    archive:
+      config: Release
 
   S2JSourceList-macOS:
     build:
@@ -94,6 +177,10 @@ schemes:
     test:
       targets:
         - S2JSourceListTests-macOS
+    run:
+      config: Debug
+    archive:
+      config: Release
 
   S2JSourceList-iOS:
     build:
@@ -104,3 +191,9 @@ schemes:
         - S2JSourceListTests-iOS
       destination:
         platform: iOS Simulator
+    run:
+      config: Debug
+      destination:
+        platform: iOS Simulator
+    archive:
+      config: Release

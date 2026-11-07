@@ -7,11 +7,10 @@
 
 import SwiftUI
 
-/** 
+/**
  * Sourcelist のアイテムの、タイトルをインラインで編集するためのビュー
  */
 public struct InlineEditorView: View {
-
     @Binding var text: String
 
     let onCommit: () -> Void
@@ -20,7 +19,7 @@ public struct InlineEditorView: View {
     @FocusState private var isFocused: Bool
     @State private var originalText: String
 
-    /** 
+    /**
      * インライン編集のイニシャライザー
      * - Parameter text: テキスト
      * - Parameter onCommit: コミット時のアクション
@@ -31,13 +30,13 @@ public struct InlineEditorView: View {
         onCommit: @escaping () -> Void,
         onCancel: @escaping () -> Void
     ) {
-        self._text = text
+        _text = text
         self.onCommit = onCommit
         self.onCancel = onCancel
-        self._originalText = State(initialValue: text.wrappedValue)
+        _originalText = State(initialValue: text.wrappedValue)
     }
 
-    /** 
+    /**
      * インライン編集のボディを返します。
      * - Returns: インライン編集のボディ
      */
@@ -63,14 +62,14 @@ public struct InlineEditorView: View {
             }
     }
 
-    /** 
+    /**
      * インライン編集をコミットします。
      */
     private func commit() {
         onCommit()
     }
 
-    /** 
+    /**
      * インライン編集をキャンセルします。
      */
     private func cancel() {

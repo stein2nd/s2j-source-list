@@ -5,17 +5,16 @@
 //  Created by S2J Source List Generator
 //
 
-import Foundation
 import Combine
+import Foundation
 import SwiftUI
 
-/** 
+/**
  * ソースリスト項目の選択状態を管理するクラス
  * 単一選択と複数選択の両モード、選択履歴、プログラムによる選択をサポートします。
  */
 public final class SelectionManager: ObservableObject {
-
-    /** 
+    /**
      * 選択モード
      */
     public enum SelectionMode {
@@ -23,42 +22,42 @@ public final class SelectionManager: ObservableObject {
         case multiple
     }
 
-    /** 
+    /**
      * 現在の選択モード
      */
     @Published public var selectionMode: SelectionMode
 
-    /** 
+    /**
      * 選択されたアイテムの IDの集合
      */
     @Published public private(set) var selectedItemIds: Set<UUID>
 
-    /** 
+    /**
      * 選択履歴
      */
     @Published public private(set) var selectionHistory: [UUID]
 
-    /** 
+    /**
      * 選択履歴の最大サイズ
      */
     public var maxHistorySize: Int = 50
 
-    /** 
+    /**
      * 選択変更イベントのパブリッシャー
      */
     public let selectionChanged = PassthroughSubject<Set<UUID>, Never>()
 
-    /** 
+    /**
      * 新しい選択マネージャーを初期化します。
      * - Parameter selectionMode: 選択モード (デフォルトは単一選択)
      */
     public init(selectionMode: SelectionMode = .single) {
         self.selectionMode = selectionMode
-        self.selectedItemIds = []
-        self.selectionHistory = []
+        selectedItemIds = []
+        selectionHistory = []
     }
 
-    /** 
+    /**
      * アイテムを選択します。
      * - Parameter itemId: アイテムの ID
      */
@@ -73,7 +72,7 @@ public final class SelectionManager: ObservableObject {
         selectionChanged.send(selectedItemIds)
     }
 
-    /** 
+    /**
      * アイテムの選択状態を解除します。
      * - Parameter itemId: アイテムの ID
      */
@@ -82,7 +81,7 @@ public final class SelectionManager: ObservableObject {
         selectionChanged.send(selectedItemIds)
     }
 
-    /** 
+    /**
      * アイテムの選択状態を切り替えます。
      * - Parameter itemId: アイテムの ID
      */
@@ -94,7 +93,7 @@ public final class SelectionManager: ObservableObject {
         }
     }
 
-    /** 
+    /**
      * すべての選択をクリアします。
      */
     public func clearSelection() {
@@ -102,7 +101,7 @@ public final class SelectionManager: ObservableObject {
         selectionChanged.send(selectedItemIds)
     }
 
-    /** 
+    /**
      * 複数のアイテムを選択します。
      * - Parameter itemIds: 選択するアイテムの IDの集合
      */
@@ -121,7 +120,7 @@ public final class SelectionManager: ObservableObject {
         selectionChanged.send(selectedItemIds)
     }
 
-    /** 
+    /**
      * アイテムが選択されているかどうかを返します。
      * - Parameter itemId: アイテムの ID
      * - Returns: アイテムが選択されているかどうか
@@ -130,7 +129,7 @@ public final class SelectionManager: ObservableObject {
         selectedItemIds.contains(itemId)
     }
 
-    /** 
+    /**
      * 最初に選択されたアイテムの IDを取得します。
      * - Returns: 最初に選択されたアイテムの ID, または nil が選択されていない場合
      */
@@ -140,7 +139,7 @@ public final class SelectionManager: ObservableObject {
 
     // MARK: - History Management
 
-    /** 
+    /**
      * 選択履歴にアイテムを追加します。
      * - Parameter itemId: アイテムの ID
      */
@@ -155,7 +154,7 @@ public final class SelectionManager: ObservableObject {
         }
     }
 
-    /** 
+    /**
      * 前の選択を履歴で移動します。
      * - Returns: 前のアイテムの ID, または nil が選択されていない場合
      */
@@ -166,7 +165,7 @@ public final class SelectionManager: ObservableObject {
         return previous
     }
 
-    /** 
+    /**
      * 次の選択を履歴で移動します。
      * - Returns: 次のアイテムの ID, または nil が選択されていない場合
      */

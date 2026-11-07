@@ -7,11 +7,10 @@
 
 import SwiftUI
 
-/** 
+/**
  * ソースリストのアイテムの行コンテンツを表示するためのビュー
  */
 public struct SourceRowView: View {
-
     let item: SourceItem
     let isSelected: Bool
     let isEditing: Bool
@@ -25,7 +24,7 @@ public struct SourceRowView: View {
 
     @State private var editedTitle: String
 
-    /** 
+    /**
      * ソースリストのアイテムの行コンテンナのイニシャライザー
      * - Parameter item: ソースリストのアイテム
      * - Parameter isSelected: 選択されているかどうか
@@ -60,10 +59,10 @@ public struct SourceRowView: View {
         self.onEdit = onEdit
         self.onCancelEdit = onCancelEdit
         self.customContent = customContent
-        self._editedTitle = State(initialValue: item.title)
+        _editedTitle = State(initialValue: item.title)
     }
 
-    /** 
+    /**
      * ソースリストのアイテムの行コンテンツを返します。
      * - Returns: ソースリストのアイテムの行コンテンツ
      */
@@ -74,25 +73,25 @@ public struct SourceRowView: View {
                 Spacer()
                     .frame(width: CGFloat(indentationLevel) * indentationWidth)
             }
-            
+
             // Icon
             if let icon = IconProvider.image(for: item.icon) {
                 icon
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .scaledToFit()
                     .frame(width: iconSize, height: iconSize)
                     .foregroundColor(isSelected ? .white : .primary)
             }
-            
+
             // Content
-            if let customContent = customContent {
+            if let customContent {
                 customContent(item)
             } else {
                 defaultContent
             }
-            
+
             Spacer()
-            
+
             // Badge
             if let badge = item.badge {
                 Text(badge)
@@ -123,13 +122,13 @@ public struct SourceRowView: View {
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
-    @ViewBuilder
-    /** 
+    /**
      * デフォルトのコンテンツを返します。
      * - Returns: デフォルトのコンテンツ
      */
+    @ViewBuilder
     private var defaultContent: some View {
-        if isEditing && item.isEditable {
+        if isEditing, item.isEditable {
             InlineEditorView(
                 text: $editedTitle,
                 onCommit: {

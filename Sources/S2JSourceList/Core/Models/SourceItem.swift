@@ -8,59 +8,58 @@
 import Foundation
 import SwiftUI
 
-/** 
+/**
  * ソースリスト階層内の項目を表す構造体
  * アイテムにはタイトル、アイコン、バッジ、子アイテム、メタデータがあります。
  * アイテムは編集可能、選択可能であり、カスタム・コンテンツのレンダリングをサポートします。
  */
 public struct SourceItem: Identifiable, Equatable, Hashable {
-
-    /** 
+    /**
      * アイテムの ID
      */
     public let id: UUID
 
-    /** 
+    /**
      * アイテムのタイトル
      */
     public var title: String
 
-    /** 
+    /**
      * アイコンの名前
      */
     public var icon: String?
 
-    /** 
+    /**
      * バッジのテキスト
      */
     public var badge: String?
 
-    /** 
+    /**
      * 子アイテムの配列
      */
     public var children: [SourceItem]?
 
-    /** 
+    /**
      * アイテムが編集可能かどうか
      */
     public var isEditable: Bool
 
-    /** 
+    /**
      * アイテムが選択可能かどうか
      */
     public var isSelectable: Bool
 
-    /** 
+    /**
      * アイテムのメタデータ
      */
     public var metadata: [String: Any]?
 
-    /** 
+    /**
      * アイテムが展開されているかどうか
      */
     public var isExpanded: Bool
 
-    /** 
+    /**
      * 新しいソースアイテムを作成します。
      * - Parameter id: アイテムの ID
      * - Parameter title: アイテムのタイトル
@@ -93,16 +92,16 @@ public struct SourceItem: Identifiable, Equatable, Hashable {
         self.isExpanded = isExpanded
     }
 
-    /** 
+    /**
      * アイテムが子要素を持つかどうかを判定します。
      * - Returns: 子要素を持つかどうか
      */
     public var hasChildren: Bool {
-        guard let children = children else { return false }
+        guard let children else { return false }
         return !children.isEmpty
     }
 
-    /** 
+    /**
      * アイテムが子要素を持つかどうかを判定します。
      * - Returns: 子要素を持つかどうか
      */
@@ -112,7 +111,7 @@ public struct SourceItem: Identifiable, Equatable, Hashable {
 
     // MARK: - Equatable
 
-    /** 
+    /**
      * アイテムが等しいかどうかを判定します。
      * - Parameter lhs: 左辺のアイテム
      * - Parameter rhs: 右辺のアイテム
@@ -121,10 +120,10 @@ public struct SourceItem: Identifiable, Equatable, Hashable {
     public static func == (lhs: SourceItem, rhs: SourceItem) -> Bool {
         lhs.id == rhs.id
     }
-    
+
     // MARK: - Hashable
 
-    /** 
+    /**
      * アイテムのハッシュ値を計算します。
      * - Parameter hasher: ハッシュ値を計算するためのハッシュ
      */
@@ -135,8 +134,8 @@ public struct SourceItem: Identifiable, Equatable, Hashable {
 
 // MARK: - Convenience Initializers
 
-extension SourceItem {
-    /** 
+public extension SourceItem {
+    /**
      * 子アイテムを持つグループアイテムを作成します。
      * - Parameter id: アイテムの ID
      * - Parameter title: アイテムのタイトル
@@ -144,7 +143,7 @@ extension SourceItem {
      * - Parameter children: 子アイテムの配列
      * - Parameter isExpanded: アイテムが展開されているかどうか
      */
-    public static func group(
+    static func group(
         id: UUID = UUID(),
         title: String,
         icon: String? = nil,
@@ -161,7 +160,7 @@ extension SourceItem {
         )
     }
 
-    /** 
+    /**
      * 子アイテムなしのシンプルなアイテムを作成します。
      * - Parameter id: アイテムの ID
      * - Parameter title: アイテムのタイトル
@@ -170,7 +169,7 @@ extension SourceItem {
      * - Parameter isEditable: アイテムが編集可能かどうか
      * - Parameter metadata: アイテムのメタデータ
      */
-    public static func item(
+    static func item(
         id: UUID = UUID(),
         title: String,
         icon: String? = nil,

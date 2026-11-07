@@ -2,6 +2,21 @@
 
 ## unreleased
 
+## 2.0.9 - 2026-11-08
+
+### Changed
+
+* `package.json` に Swift 向け npm スクリプトを追加 (`lint:swiftlint` / `lint:swiftformat` / `lint:periphery` / `format:swift` / `profile:swift` / `lint:build` / `analyze:swift`)
+* `.swiftlint.yml` / `.swiftformat` / `.periphery.yml` / `.swift-version` を追加
+* Swift ソースを SwiftFormat で整形し、SwiftLint / Periphery の指摘を解消
+* 最小 OS を macOS v14.6・iPadOS v17.6に統一 (`Package.swift` / `project.yml` / `README.md` / `scripts/test-local.sh`、`s2j-about-window` に合わせる)
+* `project.yml` を `settings.base` 構成に整理し、Periphery 用の `SampleApp` ターゲットとスキームを追加
+* `.periphery.yml` のスキャン対象スキームを `SampleApp` に変更
+
+### Fixed
+
+* XcodeGen 生成時に macOS フレームワークへ `PRODUCT_NAME` が入らずモジュール名がずれ、`npm run lint:periphery` が `build-for-testing` で失敗する問題を修正
+
 ## 2.0.8 - 2026-11-06
 
 ### Changed

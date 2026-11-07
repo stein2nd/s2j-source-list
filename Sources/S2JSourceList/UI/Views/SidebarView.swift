@@ -7,11 +7,10 @@
 
 import SwiftUI
 
-/** 
+/**
  * 階層的なソースリストを表示するための、サイドバーのメイン・コンポーネント
  */
 public struct SidebarView: View {
-
     @ObservedObject var service: SourceListService
     @ObservedObject var selectionManager: SelectionManager
 
@@ -29,7 +28,7 @@ public struct SidebarView: View {
     @State private var editingItemId: UUID?
     @State private var expandedItemIds: Set<UUID> = []
 
-    /** 
+    /**
      * コンテキストメニュー・アクション
      */
     public struct ContextMenuAction: Identifiable {
@@ -37,7 +36,7 @@ public struct SidebarView: View {
         public let title: String
         public let action: () -> Void
         public let isDestructive: Bool
-        
+
         public init(title: String, action: @escaping () -> Void, isDestructive: Bool = false) {
             self.title = title
             self.action = action
@@ -45,7 +44,7 @@ public struct SidebarView: View {
         }
     }
 
-    /** 
+    /**
      * サイドバーのイニシャライザー
      * - Parameter service: サイドバーのサービス
      * - Parameter selectionManager: サイドバーの選択マネージャー
@@ -76,12 +75,12 @@ public struct SidebarView: View {
         self.iconSize = iconSize
         self.customRowContent = customRowContent
         self.contextMenuBuilder = contextMenuBuilder
-        
+
         // Sync selection mode
         selectionManager.selectionMode = allowsMultipleSelection ? .multiple : .single
     }
 
-    /** 
+    /**
      * サイドバーのボディを返します。
      * - Returns: サイドバーのボディ
      */
@@ -93,7 +92,7 @@ public struct SidebarView: View {
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
             }
-            
+
             // List
             listView
         }
@@ -104,10 +103,12 @@ public struct SidebarView: View {
         .onChange(of: service.rootItems) {
             updateExpandedItems()
         }
+        .accessibilityIdentifier(
+            allowsDragAndDrop ? "SourceList.Sidebar.DragDropEnabled" : "SourceList.Sidebar.DragDropDisabled"
+        )
     }
 
-    @ViewBuilder
-    /** 
+    /**
      * 検索バーを返します。
      * - Returns: 検索バー
      */
@@ -121,10 +122,10 @@ public struct SidebarView: View {
             )
             .textFieldStyle(.plain)
             if !searchText.isEmpty {
-                Button(action: { searchText = "" }) {
+                Button(action: { searchText = "" }, label: {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(.secondary)
-                }
+                })
                 .buttonStyle(.plain)
             }
         }
@@ -135,8 +136,7 @@ public struct SidebarView: View {
         )
     }
 
-    @ViewBuilder
-    /** 
+    /**
      * リストビューを返します。
      * - Returns: リストビュー
      */
@@ -153,7 +153,7 @@ public struct SidebarView: View {
         #endif
     }
 
-    /** 
+    /**
      * アイテムの行コンテンツを返します。
      * - Parameter item: アイテム
      * - Parameter level: レベル
@@ -163,7 +163,7 @@ public struct SidebarView: View {
         let isSelected = selectionManager.isSelected(item.id)
         let isEditing = editingItemId == item.id
         let itemIsExpanded = isItemExpanded(item)
-        
+
         if item.hasChildren {
             return AnyView(
                 DisclosureGroup(isExpanded: Binding(
@@ -184,8 +184,7 @@ public struct SidebarView: View {
         }
     }
 
-    @ViewBuilder
-    /** 
+    /**
      * アイテムの行コンテンツを返します。
      * - Parameter item: アイテム
      * - Parameter isSelected: 選択されているかどうか
@@ -237,35 +236,35 @@ public struct SidebarView: View {
         }
     }
 
-    @ViewBuilder
-    /** 
+    /**
      * デフォルトのコンテキストメニューを返します。
      * - Parameter item: アイテム
      * - Returns: コンテキストメニュー
      */
+    @ViewBuilder
     private func defaultContextMenu(for item: SourceItem) -> some View {
         if item.isEditable {
             Button(action: {
                 editingItemId = item.id
-            }) {
+            }, label: {
                 Text(NSLocalizedString("SourceList.Edit.Rename", bundle: .module, comment: "Rename"))
-            }
+            })
         }
-        
+
         if item.hasChildren {
             Button(action: {
                 toggleExpansion(item.id)
-            }) {
+            }, label: {
                 Text(isItemExpanded(item) ?
-                     NSLocalizedString("SourceList.Collapse", bundle: .module, comment: "Collapse") :
-                     NSLocalizedString("SourceList.Expand", bundle: .module, comment: "Expand"))
-            }
+                    NSLocalizedString("SourceList.Collapse", bundle: .module, comment: "Collapse") :
+                    NSLocalizedString("SourceList.Expand", bundle: .module, comment: "Expand"))
+            })
         }
     }
 
     // MARK: - Helper Methods
 
-    /** 
+    /**
      * フィルタリングされたアイテムの配列を返します。
      * - Returns: フィルタリングされたアイテムの配列
      */
@@ -276,7 +275,7 @@ public struct SidebarView: View {
         return filterItems(service.rootItems, searchText: searchText)
     }
 
-    /** 
+    /**
      * アイテムをフィルタリングします。
      * - Parameter items: アイテムの配列
      * - Parameter searchText: 検索テキスト
@@ -300,7 +299,7 @@ public struct SidebarView: View {
         }
     }
 
-    /** 
+    /**
      * アイテムが展開されているかどうかを返します。
      * - Parameter item: アイテム
      * - Returns: 展開されているかどうか
@@ -309,7 +308,7 @@ public struct SidebarView: View {
         expandedItemIds.contains(item.id) || item.isExpanded
     }
 
-    /** 
+    /**
      * アイテムの展開状態を切り替えます。
      * - Parameter itemId: アイテムの ID
      */
@@ -323,7 +322,7 @@ public struct SidebarView: View {
         }
     }
 
-    /** 
+    /**
      * 展開されたアイテムを更新します。
      */
     private func updateExpandedItems() {
