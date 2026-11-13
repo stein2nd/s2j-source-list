@@ -2,6 +2,18 @@
 
 ## unreleased
 
+## 2.0.12 - 2026-11-14
+
+### Changed
+
+* GitHub Actions `swift-test.yml` で `build-release` を独立ジョブに復帰 (`needs: [test-macos, test-ios]`、`s2j-about-window` と同様)
+* `docs/SPEC_CICD.md` を 3 ジョブ構成に更新、`docs/SPEC.md` / `selection_spec.md` の選択モード連携の記述を実装に合わせて修正
+* `README.md` の `Package.swift` 依存指定を v2.0.11から v2.0.12に更新
+
+### Fixed
+
+* `SidebarView` の `onAppear` で `selectionMode` を同期していた処理を削除し、`Publishing changes from within view updates` が残るケースを解消 ([#10](https://github.com/stein2nd/s2j-source-list/issues/10))
+
 ## 2.0.11 - 2026-11-14
 
 ### Changed

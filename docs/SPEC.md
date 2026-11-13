@@ -303,7 +303,7 @@ struct ContentView: View {
 }
 ```
 
-複数選択を有効にする場合は、`allowsMultipleSelection` と `SelectionManager.selectionMode` を一致させてください (推奨: `SelectionManager(selectionMode: .multiple)`)。`SidebarView` は `init` 内でモードを書き換えず、必要なら初回表示時に同期します。詳細は [selection_spec.md](./selection_spec.md) §2.5。
+複数選択を有効にする場合は、`allowsMultipleSelection` と `SelectionManager.selectionMode` を一致させてください (推奨: `SelectionManager(selectionMode: .multiple)`)。`SidebarView` は `init` / `onAppear` ともにモードを書き換えません。詳細は [selection_spec.md](./selection_spec.md) §2.5。
 
 ---
 

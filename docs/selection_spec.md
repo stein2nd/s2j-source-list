@@ -38,8 +38,8 @@
 
 * `allowsMultipleSelection == true` のとき `SelectionManager.selectionMode` は `.multiple`、そうでなければ `.single` と一致させる。
 * **推奨**: ホスト側で `SelectionManager(selectionMode: allowsMultipleSelection ? .multiple : .single)` のように生成する (`README.md` / `SampleApp.swift` を参照)。
-* `SidebarView` の `init` 内では `@Published` の `selectionMode` を**更新しない** (SwiftUI の `Publishing changes from within view updates` 警告を避ける。詳細は [issue #10](https://github.com/stein2nd/s2j-source-list/issues/10))。
-* `allowsMultipleSelection` と実際のモードが不一致のとき、**初回 `onAppear`** で `syncSelectionModeIfNeeded()` により一度だけ同期する。
+* `SidebarView` は `selectionMode` を **書き換えない** (`init` / `onAppear` とも。詳細は [issue #10](https://github.com/stein2nd/s2j-source-list/issues/10))。
+* 不一致時はホスト側で `SelectionManager` を作り直すか、`allowsMultipleSelection` と整合させる。
 
 ## 3. 選択履歴
 

@@ -49,7 +49,7 @@ public struct SidebarView: View {
      * - Parameter service: サイドバーのサービス
      * - Parameter selectionManager: サイドバーの選択マネージャー
      * - Parameter allowsMultipleSelection: 複数選択を許可するかどうか
-     *   `SelectionManager(selectionMode:)` を同じモードで生成することを推奨（不一致時は初回表示で同期）
+     *   `SelectionManager(selectionMode:)` を同じモードで生成することを推奨（`SidebarView` はモードを書き換えない）
      * - Parameter allowsDragAndDrop: ドラッグアンドドロップを許可するかどうか
      * - Parameter showsSearchBar: 検索バーを表示するかどうか
      * - Parameter indentationWidth: インデントの幅
@@ -95,7 +95,6 @@ public struct SidebarView: View {
             listView
         }
         .onAppear {
-            syncSelectionModeIfNeeded()
             updateExpandedItems()
         }
         .onChange(of: service.rootItems) {
@@ -318,15 +317,6 @@ public struct SidebarView: View {
             expandedItemIds.insert(itemId)
             service.expandItem(id: itemId)
         }
-    }
-
-    /**
-     * `allowsMultipleSelection` と `SelectionManager` の選択モードを初回表示時に揃えます。
-     */
-    private func syncSelectionModeIfNeeded() {
-        let expected: SelectionManager.SelectionMode = allowsMultipleSelection ? .multiple : .single
-        guard selectionManager.selectionMode != expected else { return }
-        selectionManager.selectionMode = expected
     }
 
     /**
