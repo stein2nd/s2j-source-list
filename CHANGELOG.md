@@ -2,6 +2,17 @@
 
 ## unreleased
 
+## 2.0.14 - 2026-11-14
+
+### Changed
+
+* `docs/SPEC.md` / `architecture.md` / `selection_spec.md` / `SPEC_CICD.md` を現行実装に合わせて更新 (最小 OS 14.6/17.6、選択・iPad 複数選択の記述、CI 直列構成)
+* `README.md` の `Package.swift` 依存指定を v2.0.13から v2.0.14に更新
+
+### Fixed
+
+* `SidebarView` の行選択で二重 `onTapGesture` により同フレームで `selectItem` が2回走る問題を修正し、選択を `Task { @MainActor … }` に遅延 ([#10](https://github.com/stein2nd/s2j-source-list/issues/10))
+
 ## 2.0.13 - 2026-11-14
 
 ### Changed

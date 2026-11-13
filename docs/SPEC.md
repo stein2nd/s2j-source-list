@@ -17,7 +17,7 @@
 * Swift Package 名: s2j-source-list
 * 元リポジトリ: [PXSourceList](https://github.com/alexrozanski/PXSourceList)
 * 目的: AppKit ベースの「PXSourceList」を SwiftUI で再実装します。
-* 対応 OS: macOS v14以上、iPadOS v17以上
+* 対応 OS: macOS v14.6 以上、iPadOS v17.6 以上
 
 ---
 
@@ -197,8 +197,8 @@
 **実装状況**: ✅ **実装済み** - `SelectionManager` で単一選択・複数選択を実装
 
 * 詳細は [selection_spec.md](selection_spec.md) を参照してください。
-* `SelectionManager` 経由で `.listSelection()` 互換の API を提供します。
-* macOS: Command/Shift 多重選択サポート。iPadOS: 編集モードで複数選択をサポートします。
+* 現状は `SelectionManager` (`selectItem` / `toggleSelection` 等) と `SidebarView` の行タップで選択状態を更新します。
+* macOS / iPadOS 共通: `allowsMultipleSelection == true` のとき行タップでトグル。Command+クリック・Shift+範囲選択、iPad の SwiftUI 編集モード (Edit mode) による複数選択は **未実装** (将来検討。`selection_spec.md` §2.3 を参照)。
 
 ### 4.6.4. ドラッグ & ドロップ
 

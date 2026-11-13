@@ -198,9 +198,7 @@ public struct SidebarView: View {
             indentationWidth: indentationWidth,
             iconSize: iconSize,
             onSelect: {
-                if item.isSelectable {
-                    selectionManager.selectItem(item.id)
-                }
+                handleRowSelection(for: item)
             },
             onEdit: { newTitle in
                 service.renameItem(id: item.id, newTitle: newTitle)
@@ -222,13 +220,16 @@ public struct SidebarView: View {
                 defaultContextMenu(for: item)
             }
         }
-        .onTapGesture {
-            if item.isSelectable {
-                if allowsMultipleSelection {
-                    selectionManager.toggleSelection(item.id)
-                } else {
-                    selectionManager.selectItem(item.id)
-                }
+    }
+
+    /// 行タップ時の選択を次ランループに遅延し、`Publishing changes from within view updates` を避ける。
+    private func handleRowSelection(for item: SourceItem) {
+        guard item.isSelectable else { return }
+        Task { @MainActor in
+            if allowsMultipleSelection {
+                selectionManager.toggleSelection(item.id)
+            } else {
+                selectionManager.selectItem(item.id)
             }
         }
     }

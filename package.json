@@ -1,6 +1,6 @@
 {
   "name": "s2j-source-list",
-  "version": "2.0.13",
+  "version": "2.0.14",
   "description": "Using SwiftUI, reimplementing the AppKit-based \"PXSourceList\".",
   "type": "module",
   "author": "Koutarou ISHIKAWA",

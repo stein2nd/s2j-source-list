@@ -27,7 +27,7 @@
 | プラットフォーム | 複数選択の方法 |
 |------------------|----------------|
 | **macOS** | Command キー + クリックで追加選択、Shift キー + クリックで範囲選択 (将来実装を検討)。現状は `allowsMultipleSelection` が true の場合、タップごとにトグル。 |
-| **iPadOS** | 編集モード (Edit mode) で複数選択をサポート。通常モードでは単一選択相当。 |
+| **iPadOS** | 編集モード (Edit mode) による複数選択は将来実装を検討。現状は macOS と同様、`allowsMultipleSelection` が true の場合はタップごとにトグル。 |
 
 ### 2.4. 選択可能な項目
 
