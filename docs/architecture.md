@@ -58,7 +58,7 @@ Sources/S2JSourceList/
 
 * **SourceItem ツリー** → `SourceListService.rootItems` が保持。
 * **SidebarView** は `SourceListService` と `SelectionManager` を `@ObservedObject` で参照。
-* **選択変更** → `SelectionManager.selectionChanged` (PassthroughSubject) でホストへ通知。
+* **選択変更** → `SelectionManager.selectionChanged` (PassthroughSubject) でホストに通知。
 * **編集・削除** → `SourceListService` の `renameItem` 等を経由し、必要に応じて Publisher で通知。
 * **検索** → `SidebarView` 内の `searchText` でフィルタし、`filteredItems` として表示。詳細は [search_spec.md](./search_spec.md) を参照。
 
@@ -68,7 +68,19 @@ Sources/S2JSourceList/
 * **iPadOS のみ**: `iPadOptimizations`、`.listStyle(.insetGrouped)`、編集モードによる複数選択。
 * **共通**: `SourceItem`、`SourceListService`、`SelectionManager`、`SidebarView` 本体、`SourceRowView`、`InlineEditorView`、検索ロジック。
 
-## 6. 関連ドキュメント
+## 6. リポジトリ直下の補助ターゲット (XcodeGen)
+
+Swift Package 本体 (`Sources/`) に加え、Xcode プロジェクト向けに次を配置しています。
+
+| パス | 役割 |
+|------|------|
+| **project.yml** | XcodeGen 定義。`S2JSourceList-macOS` / `S2JSourceList-iOS` フレームワーク、ユニットテスト、**SampleApp** スキーム。最小 OS は macOS **14.6** / iOS **17.6** (`settings.base` 構成)。 |
+| **SampleApp.swift** | macOS の最小デモアプリ (`NavigationSplitView` + `SidebarView`)。手動動作確認および Periphery 用ビルドに使用。 |
+| **.periphery.yml** | 未使用コード検出。**SampleApp** スキームを対象 (`lint:periphery`)。 |
+
+ローカル品質チェック (`npm run lint:swift` 等) の詳細は [SPEC_CICD.md](./SPEC_CICD.md) を参照してください。
+
+## 7. 関連ドキュメント
 
 * 仕様の入口: [specs.md](./specs.md)
 * プロジェクト概要: [overview.md](./overview.md)

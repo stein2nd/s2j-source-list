@@ -2,6 +2,20 @@
 
 ## unreleased
 
+## 2.0.11 - 2026-11-14
+
+### Changed
+
+* `SidebarView` の `init` で `SelectionManager.selectionMode` を更新しないよう変更し、初回 `onAppear` で `allowsMultipleSelection` と同期 ([#10](https://github.com/stein2nd/s2j-source-list/issues/10))
+* `SampleApp` / `README.md` の利用例で `SelectionManager(selectionMode:)` を `allowsMultipleSelection` に合わせるよう更新
+* `package.json` の `lint:swift` に `xcode:generate` を追加し、`xcode:generate` スクリプトを定義
+* `docs/` 配下の仕様を現行実装に合わせて更新 (`SPEC.md` の SampleApp、最小 OS v14.6/v17.6、`docs-lint.yml`、`SPEC_CICD.md` の iOS v17.6デフォルトと `lint:swift` 記載、`selection_spec.md` §2.5、`architecture.md` の SampleApp/Periphery、`overview.md` 等)
+* `README.md` の `Package.swift` 依存指定を v2.0.10から v2.0.11に更新
+
+### Fixed
+
+* `SidebarView` 初期化時の `@Published` 更新により SwiftUI の `Publishing changes from within view updates` 警告が出る問題を修正
+
 ## 2.0.10 - 2026-11-08
 
 ### Changed
@@ -27,7 +41,7 @@
 
 ### Fixed
 
-* XcodeGen 生成時に macOS フレームワークへ `PRODUCT_NAME` が入らずモジュール名がずれ、`npm run lint:periphery` が `build-for-testing` で失敗する問題を修正
+* XcodeGen 生成時に macOS フレームワークに `PRODUCT_NAME` が入らずモジュール名がずれ、`npm run lint:periphery` が `build-for-testing` で失敗する問題を修正
 
 ## 2.0.8 - 2026-11-06
 

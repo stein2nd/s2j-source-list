@@ -310,7 +310,7 @@ v2.0.7以降、本ジョブは **存在しません**。リリース・ビルド
 
 * `SCHEME_NAME`: Xcode スキーム名 (デフォルト: Package.swift から自動検出)
 * `IOS_DEVICE`: iOS シミュレーター・デバイス名 (デフォルト: "iPad Pro")
-* `IOS_VERSION`: iOS 最小バージョン (デフォルト: "17.0")
+* `IOS_VERSION`: iOS 最小バージョン (デフォルト: "17.6")
 * `SKIP_IOS_TESTS`: iOS テストをスキップする場合は "true"
 * `ENABLE_XCODE_PROJECT`: Xcode プロジェクト生成とテストを有効化 (デフォルト: `project.yml` が存在する場合に自動有効化)
 * `XCODE_PROJECT_NAME`: Xcode プロジェクト名 (デフォルト: 自動検出)
@@ -346,7 +346,23 @@ v2.0.7以降、本ジョブは **存在しません**。リリース・ビルド
 
 * **詳細なエラー・メッセージとデバッグ情報の表示**: 各ステップで適切なログとエラーメッセージを出力
 
-### 3.8. CI/CD との整合性
+### 3.8. ローカル Swift 品質チェック (npm)
+
+`package.json` で XcodeGen プロジェクト向けのリンター・静的解析を実行できます (CI の Swift Test とは別経路)。
+
+| スクリプト | 内容 |
+|------------|------|
+| `npm run lint:swift` | `xcode:generate` → SwiftLint → SwiftFormat (lint) → Periphery (`--strict`) |
+| `npm run xcode:generate` | `xcodegen generate` |
+| `npm run lint:swiftlint` | `Sources` / `Tests` / `Package.swift` |
+| `npm run lint:swiftformat` | `.swiftformat` に従うフォーマット検査 |
+| `npm run lint:periphery` | `.periphery.yml` の **SampleApp** スキームで未使用コード検出 |
+| `npm run format:swift` | SwiftFormat で自動整形 |
+| `npm run lint:build` / `analyze:swift` | `S2JSourceList-macOS` スキームのビルド / 静的解析 |
+
+設定ファイル: `.swiftlint.yml`、`.swiftformat`、`.swift-version`、`.periphery.yml`。
+
+### 3.9. CI/CD との整合性
 
 * **macOS テスト**: `swift test --enable-code-coverage` を実行 (CI/CD と同じ)
 * **iOS テスト**: Xcode プロジェクトの生成、シミュレーターの起動、`xcodebuild test` の実行 (CI/CD と同じ)
@@ -404,7 +420,7 @@ v2.0.7以降、本ジョブは **存在しません**。リリース・ビルド
 以下の機能は完全に実装され、テストも完了しています。
 
 * **GitHub Actions ワークフロー**:
-    * `swift-test.yml`: Swift Package のユニットテストおよび UI スナップショット・テストの自動実行 (✅100% 実装完了・テスト成功)
+    * `swift-test.yml`: Swift Package のユニットテスト (macOS / iOS) とカバレッジ収集、macOS リリース・ビルド Artifacts の自動実行 (✅100% 実装完了・テスト成功。UI / スナップショットテストは未導入)
     * `test-macos` ジョブ: macOS 向けテスト、カバレッジ収集、**リリース・ビルドと Artifacts 保存** (✅テスト成功。旧 `build-release` を統合)
     * `test-ios` ジョブ: iOS/iPadOS 向けテスト実行とカバレッジ収集 (✅テスト成功)
         * ランタイム・バージョンの抽出と SDK の自動検出機能 (✅実装完了)

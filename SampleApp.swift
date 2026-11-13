@@ -12,7 +12,7 @@ struct SampleApp: App {
             SourceItem(title: "Tags", icon: "tag")
         ]
     )
-    @StateObject private var selectionManager = SelectionManager()
+    @StateObject private var selectionManager = SelectionManager(selectionMode: .multiple)
 
     var body: some Scene {
         WindowGroup {

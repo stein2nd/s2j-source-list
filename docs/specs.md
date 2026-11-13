@@ -23,4 +23,5 @@
 * **「D&D の仕様は？」** → [drag_drop_spec.md](./drag_drop_spec.md)
 * **「実装状況・Backlog」** → [SPEC.md](./SPEC.md)
 * **「CI やローカルテストの仕様」** → [SPEC_CICD.md](./SPEC_CICD.md)
+* **「ローカル Swift lint (SwiftLint / Periphery 等)」** → [SPEC_CICD.md](./SPEC_CICD.md) §3.8
 * **「仕様をどう分割するかの方針」** → [SPEC_STRUCTURE.md](./SPEC_STRUCTURE.md)

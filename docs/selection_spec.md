@@ -34,6 +34,13 @@
 * `SourceItem.isSelectable == true` の項目のみ選択可能。
 * `isSelectable == false` の項目をタップしても選択状態は変化しない。
 
+### 2.5. `SidebarView` と `SelectionManager` の連携
+
+* `allowsMultipleSelection == true` のとき `SelectionManager.selectionMode` は `.multiple`、そうでなければ `.single` と一致させる。
+* **推奨**: ホスト側で `SelectionManager(selectionMode: allowsMultipleSelection ? .multiple : .single)` のように生成する (`README.md` / `SampleApp.swift` を参照)。
+* `SidebarView` の `init` 内では `@Published` の `selectionMode` を**更新しない** (SwiftUI の `Publishing changes from within view updates` 警告を避ける。詳細は [issue #10](https://github.com/stein2nd/s2j-source-list/issues/10))。
+* `allowsMultipleSelection` と実際のモードが不一致のとき、**初回 `onAppear`** で `syncSelectionModeIfNeeded()` により一度だけ同期する。
+
 ## 3. 選択履歴
 
 * `selectionHistory` に直近の選択が最大 `maxHistorySize` 件まで保持される (デフォルト 50)。

@@ -76,7 +76,7 @@ Add the following to your `Package.swift` file.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.10")
+    .package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.11")
 ]
 ```
 
@@ -141,6 +141,8 @@ struct ContentView: View {
 ### 高度な例
 
 ```swift
+@StateObject private var selectionManager = SelectionManager(selectionMode: .multiple)
+
 SidebarView(
     service: service,
     selectionManager: selectionManager,

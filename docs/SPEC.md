@@ -128,19 +128,18 @@
 `s2j-source-list`/
 ├── LICENSE
 ├── README.md
-├┬─ docs/  # ドキュメント類
-│└─ `SPEC.md`  # 本ドキュメント
-├┬─ tools/
-│└── docs-linter  # Git サブモジュール『Docs Linter』
-├┬─ .github/  # CI/CD
-│└┬─ workflows/
-│　├─ docs-linter.yml (✅ 実装済み)
-│　└─ swift-test.yml (✅ 実装済み)
-├┬─ scripts/  # スクリプト
-│└─ test-local.sh  # ローカル・テスト実行スクリプト (✅ 実装済み)
-├── SampleApp.swift  # エントリー・ポイント (⚠️ 未実装)
-├── Package.swift  # Swift Package 定義 (プロジェクト・ファイル兼用) (✅ 実装済み)
-├── project.yml  # XcodeGen 設定ファイル
+├── SampleApp.swift  # macOS デモアプリ・Periphery 用 (✅ 実装済み)
+├── Package.swift  # Swift Package 定義 (✅ 実装済み)
+├── project.yml  # XcodeGen (フレームワーク・テスト・SampleApp スキーム) (✅ 実装済み)
+├── .swiftlint.yml / .swiftformat / .periphery.yml / .swift-version  # ローカル Swift 品質チェック (✅)
+├┬─ docs/  # 仕様 (`specs.md` が入口)
+│　├─ SPEC.md / SPEC_CICD.md / overview.md / architecture.md ほか
+├┬─ .github/workflows/
+│　├─ docs-lint.yml  # Docs Linter (`npm run lint:docs`) (✅)
+│　└─ swift-test.yml  # Swift テスト・カバレッジ (✅)
+├┬─ scripts/
+│└─ test-local.sh  # ローカル CI 相当テスト (✅)
+├┬─ tools/docs-linter/  # (任意) Docs Linter サブモジュール。通常は npm の `@s2j/docs-linter` を使用
 ├┬─ Sources/
 │└┬─ S2JSourceList/  # メイン・ソースコード
 │　├┬─ Core/
@@ -304,6 +303,8 @@ struct ContentView: View {
 }
 ```
 
+複数選択を有効にする場合は、`allowsMultipleSelection` と `SelectionManager.selectionMode` を一致させてください (推奨: `SelectionManager(selectionMode: .multiple)`)。`SidebarView` は `init` 内でモードを書き換えず、必要なら初回表示時に同期します。詳細は [selection_spec.md](./selection_spec.md) §2.5。
+
 ---
 
 ## 7. ドキュメント推奨項目
@@ -343,9 +344,10 @@ CI/CD に関する詳細な仕様は、[SPEC_CICD.md](./SPEC_CICD.md) を参照�
 * 主な機能:
     * GitHub Actions ワークフロー (`.github/workflows/swift-test.yml`): macOS および iOS/iPadOS 向けテスト実行 (✅ 直近の実行で成功)
     * ローカルテスト・スクリプト (`scripts/test-local.sh`): コミット前に CI/CD と同じテストをローカルで実行可能 (✅ 実装済み)
-    * ドキュメント品質検証 (`.github/workflows/docs-linter.yml`): Docs Linter による表記揺れ検出 (✅ 直近の実行で成功)
+    * ドキュメント品質検証 (`.github/workflows/docs-lint.yml`): Docs Linter による表記揺れ検出 (`ubuntu-24.04` / Node.js 24) (✅ 直近の実行で成功)
+    * ローカル Swift 品質チェック (`npm run lint:swift` 等): SwiftLint / SwiftFormat / Periphery (詳細は [SPEC_CICD.md](./SPEC_CICD.md) §3.8)
 
-**実装状況**: ✅ **完全実装済み・テスト成功** - GitHub Actions ワークフローは実装済み、GitHub Actions「Swift Test」「Docs Linter」ワークフローが直近の実行で成功。リリース自動化は未実装です。
+**実装状況**: ✅ **完全実装済み・テスト成功** - GitHub Actions ワークフローは実装済み、GitHub Actions「Swift Test」「Docs Linter」ワークフローが直近の実行で成功。リリース自動化 (Notarize 等) は未実装です。
 
 ## 10. 開発スケジュール (提案) 
 
@@ -391,7 +393,6 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 ### 11.3. 未実装機能
 
 * ⚠️ **UI テスト、スナップショットテスト**: 主要なユーザー操作の検証、SwiftUI レンダリングの一貫性検証が未実装です。
-* ⚠️ **SampleApp.swift**: エントリーポイントとなるサンプルアプリが未実装です。
 * ⚠️ **Preview Content**: SwiftUI Preview 用のコンテンツが未実装です。
 * ⚠️ **リリース自動化**: Xcode Archive、Notarize、Artifacts 管理、API Reference ドキュメントの提供が未実装です。
 * ⚠️ **API Reference ドキュメント (DocC)**: コードコメントは実装済みですが、DocC 形式の API ドキュメントは未整備です。
@@ -435,7 +436,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 | **アクセシビリティ** | VoiceOver 対応 | ✅ 実装済み | 100% | `accessibilityLabel` / `accessibilityValue` を実装 |
 | | キーボードナビゲーション | ⚠️ 部分実装 | 70% | 基本的な対応は実装済み、強化が必要 |
 | | 動的タイプ対応 | ⚠️ 部分実装 | 80% | SwiftUI の標準機能で対応、完全対応は未実装 |
-| **その他** | `SampleApp.swift` | ⚠️ 未実装 | 0% | エントリーポイントとなるサンプルアプリが未実装 |
+| **その他** | `SampleApp.swift` | ✅ 実装済み | 100% | macOS デモ・Periphery 用 (`project.yml` の SampleApp スキーム) |
 | | Preview Content | ⚠️ 未実装 | 0% | SwiftUI Preview 用のコンテンツが未実装 |
 | | `Package.swift` | ✅ 実装済み | 100% | Swift Package 定義、リソース設定 |
 
@@ -493,14 +494,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
      * macOS と iPadOS の両方で UI テストを実行します。
    * 見積もり: 1-2週間。
 
-3. **SampleApp.swift の実装** (優先度: 中)
-   * 現状: エントリーポイントとなるサンプルアプリが未実装です。
-   * 実装内容:
-     * 基本的な使用例を示すサンプルアプリを実装します。
-     * 各種機能のデモンストレーションを提供します。
-   * 見積もり: 3-5日。
-
-4. **Preview Content の実装** (優先度: 低)
+3. **Preview Content の実装** (優先度: 低)
    * 現状: SwiftUI Preview 用のコンテンツが未実装です。
    * 実装内容:
      * Xcode Preview 用のサンプルデータを提供します。
@@ -517,7 +511,15 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
    * ローカルテスト・スクリプトの実装を完了しました。
    * 詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照してください。
 
-3. **リリース自動化の実装** (優先度: 中)
+3. **SampleApp.swift の実装** (優先度: 中) (✅ 完了)
+   * macOS 用 `SampleApp.swift` と XcodeGen の SampleApp スキームを追加しました (v2.0.9 以降)。
+   * Periphery および手動デモに使用します。
+
+4. **ローカル Swift 品質チェック** (優先度: 中) (✅ 完了)
+   * `npm run lint:swift` (SwiftLint / SwiftFormat / Periphery) を導入しました (v2.0.9 以降)。
+   * 詳細は [SPEC_CICD.md](SPEC_CICD.md) §3.8 を参照してください。
+
+5. **リリース自動化の実装** (優先度: 中)
    * 現状: GitHub Actions ワークフローは実装済み、リリース自動化は未実装です。
    * 実装内容:
      * Xcode の Archive を利用したビルド `xcodebuild` (Universal Binary 推奨) を実装します。
@@ -526,7 +528,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
      * リリース・アセット: ソース + API Reference ドキュメントを提供します。
    * 見積もり: 1-2週間。
 
-4. **API Reference ドキュメント (DocC) の整備** (優先度: 中)
+6. **API Reference ドキュメント (DocC) の整備** (優先度: 中)
    * 現状: コードコメントは実装済み、DocC 形式の API ドキュメントは未整備です。
    * 実装内容:
      * DocC 形式での API Reference を生成します。
@@ -582,7 +584,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 **補足**:
 * 本プロジェクトは Swift Package として他アプリケーションに組み込まれることを前提とするため、Xcode ウィザードで「App」テンプレートを選ぶ必要はありません。
 * macOS/iPadOS 両対応の Swift Package として作成する場合は、「Framework」または「Swift Package」テンプレートを使用し、対応プラットフォームを .macOS (.v14)、.iOS (.v17) と指定します。
-* また、本リポジトリでは Git サブモジュール [Docs Linter](https://github.com/stein2nd/docs-linter) を導入し、ドキュメント品質 (表記揺れや用語統一) の検証を CI で実施します。
+* また、本リポジトリでは npm パッケージ `@s2j/docs-linter` (`npm run lint:docs`) および GitHub Actions `docs-lint.yml` により、ドキュメント品質 (表記揺れや用語統一) を検証します (`tools/docs-linter` サブモジュールは任意)。
 
 ### 1. テンプレート選択
 
@@ -608,15 +610,15 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 | 項目 | 推奨値 | 理由 |
 |---|---|---|
-| macOS Deployment Target | macOS v14.0以上 | SwiftUI の `List` / `OutlineGroup` API が安定するバージョン |
-| iOS Deployment Target | iPadOS v17.0以上 | SwiftUI の `onChange` 新シグネチャ等、iOS v17の API を前提とするバージョン |
+| macOS Deployment Target | macOS v14.6以上 | `Package.swift` / `project.yml` と一致 (`s2j-about-window` と同一) |
+| iOS Deployment Target | iPadOS v17.6以上 | `Package.swift` / `project.yml` と一致 (`s2j-about-window` と同一) |
 
 ### 4. 実行確認の環境 (推奨)
 
 | プラットフォーム | 実行確認ターゲット | 理由 |
 |---|---|---|
-| macOS | macOS v13 (Ventura) 以降 | `List` / `OutlineGroup` の動作確認 |
-| iPadOS | iPadOS v16以降 (iPad Pro シミュレーター) | `List` の UI 挙動確認 |
+| macOS | macOS v14.6 以降 | 最小デプロイメントターゲットおよび `List` / `OutlineGroup` の動作確認 |
+| iPadOS | iPadOS v17.6 以降 (iPad Pro シミュレーター等) | 最小デプロイメントターゲットおよび `List` の UI 挙動確認 |
 
 ### 5. CI ワークフロー補足
 
@@ -624,5 +626,6 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 * **重要**: CI/CD 関連の仕様は、[SPEC_CICD.md](SPEC_CICD.md) で規定します。本セクションでは概要のみを記載します。
 * 主な機能:
-    * GitHub Actions ワークフロー: `docs-linter.yml` (Docs Linter)、`swift-test.yml` (Swift Package テスト)
+    * GitHub Actions ワークフロー: `docs-lint.yml` (Docs Linter)、`swift-test.yml` (Swift Package テスト)
     * ローカルテスト・スクリプト: `scripts/test-local.sh` (コミット前に CI/CD と同じテストをローカルで実行可能)
+    * ローカル Swift 品質チェック: `npm run lint:swift` (詳細は [SPEC_CICD.md](SPEC_CICD.md) §3.8)
