@@ -2,6 +2,15 @@
 
 ## unreleased
 
+## 2.0.13 - 2026-11-14
+
+### Changed
+
+* GitHub Actions `swift-test.yml` で `test-ios` に `needs: test-macos` を追加し `macos-26` の同時要求を避ける (`macos-26` の長時間キュー待ち対策)
+* 独立ジョブ `build-release` を廃止し、リリースビルドと Artifacts アップロードを `test-ios` ジョブ末尾に統合 (macOS / iOS テスト成功が前提)
+* `docs/SPEC_CICD.md` を上記 2 ジョブ直列構成に合わせて更新
+* `README.md` の `Package.swift` 依存指定を v2.0.12から v2.0.13に更新
+
 ## 2.0.12 - 2026-11-14
 
 ### Changed

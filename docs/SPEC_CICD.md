@@ -35,13 +35,12 @@
 
 ### 1.4. ジョブ構成
 
-本ワークフローは、以下の **3つのジョブ**で構成されています (`test-macos` と `test-ios` は並列実行し、両方が成功したあと `build-release` が実行されます)。
+本ワークフローは **2 ジョブ**で構成されています。`macos-26` を **同時に 2 本要求**すると片方が長時間「Waiting for a runner」のままになる事例があるため、`test-ios` は `needs: test-macos` で **直列**実行します (iOS テスト成功後、同一ジョブ内でリリースビルドを実行)。
 
-* **`test-macos`**: macOS 向けテスト実行、Codecov へのカバレッジ送信
-* **`test-ios`**: iPadOS 向けテスト実行 (XcodeGen / `S2JSourceList-iOS` スキーム、`project.yml` の最小 iOS **17.6** に準拠)
-* **`build-release`**: `needs: [test-macos, test-ios]` のち `swift build -c release` と Artifacts 保存 (`Package.swift` の最小 macOS **14.6** / iOS **17.6**)
+* **`test-macos`**: macOS 向けテスト、Codecov 送信
+* **`test-ios`**: `needs: test-macos` のち iPadOS テスト (XcodeGen / `S2JSourceList-iOS`、最小 iOS **17.6**)、続けて `swift build -c release` と Artifacts (`Package.swift` の最小 macOS **14.6** / iOS **17.6**)
 
-v2.0.7〜v2.0.12 では runner 容量の都合で `build-release` を `test-macos` に一時統合していましたが、**s2j-about-window と同様の 3 ジョブ構成に戻しています** (経緯は [1.5](#15-ジョブ統合の背景-build-release--test-macos) を参照)。
+s2j-about-window は `test-macos` / `test-ios` 並列 + 3 本目 `build-release` ですが、本リポジトリでは **ランナー割当の安定性**を優先し、リリースビルドは `test-ios` 末尾に統合しています (macOS / iOS の両テスト成功が前提。経緯は [1.5](#15-ジョブ統合の背景-build-release--test-macos) を参照)。
 
 ### 1.5. ジョブ統合の背景 (build-release → test-macos)
 
@@ -62,7 +61,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 **トレードオフ (統合期間):** `test-macos` に統合していた間は、**macOS テストが成功した時点** でリリース・ビルドが走り、iOS テストの成否とは連動しませんでした。
 
-**復帰 (現行):** `build-release` を独立ジョブに戻し、`test-macos` と `test-ios` の**両方が成功した場合のみ**リリース・ビルドを実行します (`s2j-about-window` と同様)。
+**現行 (v2.0.13 以降):** `test-ios` に `needs: test-macos` を置き **直列**化。リリース・ビルドは `test-ios` ジョブ末尾で実行し、同時 `macos-26` 要求を **1 本**に抑えます (両プラットフォームのテスト成功が前提)。
 
 **付記:** macOS arm64ランナーの capacity Annotation は、ジョブが success であれば **告知** として扱い、リポジトリ側で解消する設定はありません。
 
@@ -108,10 +107,10 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 #### 2.2.1. 概要
 
-* **目的**: iOS/iPadOS プラットフォーム向けのユニットテストを実行し、テスト・カバレッジを収集します。
+* **目的**: iOS/iPadOS 向けユニットテスト、カバレッジ収集、**リリース・ビルドと Artifacts 保存** (成功時)。
 * **実行環境**: `macos-26`
-* **タイムアウト**: `60分` (ビルド/シミュレーター起動で時間を要する場合があるため)
-* **依存関係**: なし (独立で実行可能)
+* **タイムアウト**: `90分` (シミュレータ + iOS テスト + リリースビルド)
+* **依存関係**: `needs: test-macos` (macOS テスト成功後にのみ開始。`macos-26` の同時割当を避ける)
 * **環境変数**:
     * `LOG_DIR`: `/tmp/gha-ios-logs` (出力ログ保存先)
 
@@ -256,23 +255,14 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 * **詳細なログ記録**: すべてのステップでログを記録し、アーティファクトとして保存します。
 * **診断情報の常時アップロード**: テストが失敗しても診断情報をアップロードし、問題の特定を容易にします。
 
-### 2.3. build-release ジョブ
+### 2.3. リリース・ビルド (`test-ios` ジョブ内)
 
-#### 2.3.1. 概要
+独立ジョブ `build-release` は **廃止**しています。`test-ios` の iOS テスト・ステップ成功後、同一ジョブで次を実行します。
 
-* **目的**: リリース用ビルド (`.build/release/`) の生成と Artifacts 保存。
-* **実行環境**: `macos-26`
-* **依存関係**: `needs: [test-macos, test-ios]` (両テスト成功後にのみ実行)
-
-#### 2.3.2. 実行ステップ
-
-* **Checkout** / **Setup Xcode** / **Force-select Xcode** / **Verify Swift toolchain** — `test-macos` と同様
-* **Build release binary**: `swift build -c release` (`Package.swift` のプラットフォーム最小 macOS 14.6 / iOS 17.6)
+* **Build release binary**: `swift build -c release`
 * **Upload build artifacts**: `s2j-source-list-build` (`.build/release/`)
 
-#### 2.3.3. 期待される結果
-
-* macOS / iOS テストが成功したワークフローでのみリリース・ビルドが成功し、アーティファクトが保存されること。
+**前提**: `needs: test-macos` により macOS テストが先に成功していること。
 
 ## 3. ローカルテスト・スクリプト
 
@@ -394,7 +384,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 ### 5.1. リリース・ビルド
 
-* **生成ジョブ**: `build-release` (`needs: [test-macos, test-ios]`)
+* **生成ジョブ**: `test-ios` (末尾ステップ、`needs: test-macos`)
 * **パス**: `.build/release/`
 * **形式**: Universal Binary (Swift Package Manager が自動生成)
 * **アーティファクト名**: `s2j-source-list-build`
@@ -421,7 +411,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 ### 6.2. ビルド失敗時の動作
 
-* **リリース・ビルド (`build-release`)**: ビルドが失敗した場合、`build-release` ジョブは失敗します (macOS / iOS テストが先に成功している必要があります)。
+* **リリース・ビルド (`test-ios` 内)**: ビルドが失敗した場合、`test-ios` ジョブは失敗します。
 
 ## 7. 実装状況
 
@@ -432,7 +422,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 * **GitHub Actions ワークフロー**:
     * `swift-test.yml`: Swift Package のユニットテスト (macOS / iOS) とカバレッジ収集、macOS リリース・ビルド Artifacts の自動実行 (✅100% 実装完了・テスト成功。UI / スナップショットテストは未導入)
     * `test-macos` ジョブ: macOS 向けテスト、カバレッジ収集 (✅テスト成功)
-    * `build-release` ジョブ: `test-macos` / `test-ios` 成功後のリリース・ビルドと Artifacts 保存
+    * `test-ios` ジョブ末尾: macOS / iOS テスト成功後のリリース・ビルドと Artifacts 保存
     * `test-ios` ジョブ: iOS/iPadOS 向けテスト実行とカバレッジ収集 (✅テスト成功)
         * ランタイム・バージョンの抽出と SDK の自動検出機能 (✅実装完了)
         * デスティネーション構築の改善 (OS バージョンを指定せず、UDID のみを使用) (✅実装完了)
@@ -481,16 +471,14 @@ on:
 
 ### A.2. ジョブ依存関係
 
-`test-macos` と `test-ios` は **並列**実行し、`build-release` は両方の成功後に実行します。
+`test-ios` は `needs: test-macos` で **直列**実行します (同時 `macos-26` 要求を避ける)。
 
 ```yaml
 jobs:
   test-macos:
     runs-on: macos-26
   test-ios:
-    runs-on: macos-26
-  build-release:
-    needs: [test-macos, test-ios]
+    needs: test-macos
     runs-on: macos-26
 ```
 
