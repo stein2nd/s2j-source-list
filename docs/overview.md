@@ -1,17 +1,14 @@
-<!--
-目的：「プロジェクトの存在理由」の明文化
- -->
-# 概要
+# S2J Source List - 概要
 
-## 存在理由・スコープ
+## 存在理由・スコープ `{@overview:s-h001}`
 
 * **名称**: S2J Source List
 * **Swift Package 名**: s2j-source-list
 * **元リポジトリ**: [PXSourceList](https://github.com/alexrozanski/PXSourceList)
 * **目的**: AppKit ベースの「PXSourceList」を SwiftUI で再実装し、macOS および iPadOS アプリケーション向けの階層サイドバーコンポーネントとして提供する。
-* **対応 OS**: macOS v14.6 以上、iPadOS v17.6 以上
+* **対応 OS**: macOS v14.6以上、iPadOS v17.6以上
 
-## 準拠仕様
+## 準拠仕様 `{@overview:s-h002}`
 
 本ツールの設計は、以下の共通 SPEC に準拠します。
 
@@ -20,8 +17,9 @@
 技術スタック・開発ルール・国際化・コーディング規約・デザイン規約・テスト方針は、上記 COMMON_SPEC に従います。
 本リポジトリでは、**プロジェクト固有の仕様**のみを `docs/` 配下の各 spec で定義します。
 
-## 関連ドキュメント
+## 関連ドキュメント `{@overview:s-h003}`
 
 * 仕様の入口・一覧: [specs.md](./specs.md)
-* 要件・実装状況・Backlog: [SPEC.md](./SPEC.md)
+* 実装状況 (要約): [status.md](./status.md)
+* 要件、実装状況、Backlog (詳細): [SPEC.md](./SPEC.md)
 * CI/CD: [SPEC_CICD.md](./SPEC_CICD.md)

@@ -1,15 +1,16 @@
-# SPEC.md (PXSourceList - SwiftUI Port)
+# S2J Source List - SPEC.md (PXSourceList - SwiftUI Port)
 
-## はじめに
+## はじめに `{@spec:s-h001}`
 
 * **仕様の入口**: 各仕様の一覧・クイック参照は [specs.md](specs.md) を参照してください。
+* **実装状況の入口**: スナップショットは [status.md](status.md)、本章 §11・§12は詳細・正本です。
 * 本ドキュメントでは、Swift Package「S2J Source List」の専用仕様を定義します。
 * 本ツールの設計は、以下の共通 SPEC に準拠します。
     * [Swift/SwiftUI 共通仕様](https://github.com/stein2nd/xcode-common-specs/blob/main/docs/COMMON_SPEC.md)
 * 以下は、本ツール固有の仕様をまとめたものです。
 * CI/CD 関連の仕様については、[SPEC_CICD.md](SPEC_CICD.md) で規定します。
 
-## 1. プロジェクト概要
+## 1. プロジェクト概要 `{@spec:s1}`
 
 詳細は [overview.md](overview.md) を参照してください。
 
@@ -17,13 +18,13 @@
 * Swift Package 名: s2j-source-list
 * 元リポジトリ: [PXSourceList](https://github.com/alexrozanski/PXSourceList)
 * 目的: AppKit ベースの「PXSourceList」を SwiftUI で再実装します。
-* 対応 OS: macOS v14.6 以上、iPadOS v17.6 以上
+* 対応 OS: macOS v14.6以上、iPadOS v17.6以上
 
 ---
 
-## 2. 要件ゴール (高レベル要件)
+## 2. 要件ゴール (高レベル要件) `{@spec:s2}`
 
-### 2.1. 機能要件
+### 2.1. 機能要件 `{@spec:s2-1}`
 
 1. PXSourceList の機能的要素 (階層表示、アイコン、バッジ、選択、多重選択、コンテキストメニュー、ドラッグ & ドロップ、カスタム行表示) を SwiftUI で再現します。
 2. ビジネスロジック (モデル・セレクション管理・データソース) は Swift で実装し、SwiftUI と疎結合にします (Observable / Combine ベース)。
@@ -31,42 +32,42 @@
 4. SPM (Swift Package Manager) で配布可能なモジュール設計とします。
 5. Accessibility、ローカライズ、テスト、CI を備えます。
 
-### 2.2. 非機能要件
+### 2.2. 非機能要件 `{@spec:s2-2}`
 
-* 言語: Swift v6.3+ (Xcode v26.5 に同梱される Swift バージョンに合わせる)
+* 言語: Swift v6.3+ (Xcode v26.5に同梱される Swift バージョンに合わせる)
 * SwiftUI: Xcode v26.5+/SwiftUI 相当の API を利用可能
 * ビルド: Xcode Cloud / GitHub Actions サポート (詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照)
 * ライセンス: 元リポジトリに準じる (要確認、互換性がなければ MIT を推奨)
 * ドキュメント: README + API ドキュメント (API Reference 形式推奨)
 
-## 3. 準拠仕様
+## 3. 準拠仕様 `{@spec:s3}`
 
-### 3.1. 技術スタック
-
-* [COMMON_SPEC.md](https://github.com/stein2nd/xcode-common-specs/blob/main/docs/COMMON_SPEC.md) に準拠します。
-
-### 3.2. 開発ルール
+### 3.1. 技術スタック `{@spec:s3-1}`
 
 * [COMMON_SPEC.md](https://github.com/stein2nd/xcode-common-specs/blob/main/docs/COMMON_SPEC.md) に準拠します。
 
-### 3.3. 国際化・ローカライズ
+### 3.2. 開発ルール `{@spec:s3-2}`
 
 * [COMMON_SPEC.md](https://github.com/stein2nd/xcode-common-specs/blob/main/docs/COMMON_SPEC.md) に準拠します。
 
-### 3.4. コーディング規約
+### 3.3. 国際化・ローカライズ `{@spec:s3-3}`
 
 * [COMMON_SPEC.md](https://github.com/stein2nd/xcode-common-specs/blob/main/docs/COMMON_SPEC.md) に準拠します。
 
-### 3.5. デザイン規約
+### 3.4. コーディング規約 `{@spec:s3-4}`
 
 * [COMMON_SPEC.md](https://github.com/stein2nd/xcode-common-specs/blob/main/docs/COMMON_SPEC.md) に準拠します。
 
-### 3.6. テスト方針
+### 3.5. デザイン規約 `{@spec:s3-5}`
+
+* [COMMON_SPEC.md](https://github.com/stein2nd/xcode-common-specs/blob/main/docs/COMMON_SPEC.md) に準拠します。
+
+### 3.6. テスト方針 `{@spec:s3-6}`
 
 * [COMMON_SPEC.md](https://github.com/stein2nd/xcode-common-specs/blob/main/docs/COMMON_SPEC.md) に準拠します。
 * CI/CD でのテスト実行に関する詳細な仕様は、[SPEC_CICD.md](./SPEC_CICD.md) で規定します。
 
-## 4. 個別要件
+## 4. 個別要件 `{@spec:s4}`
 
 * 元リポジトリ (PXSourceList) の Objective-C / AppKit 実装は参考とし、直接利用しません。
 * UI は SwiftUI の `List` / `OutlineGroup` / `DisclosureGroup` / `WindowGroup` / `Sheet` を利用します。
@@ -86,7 +87,7 @@
     * macOS の場合は、`SidebarListStyle()` を基本にし、選択時のフォーカスやアクセントカラーを AppKit に近付けます。(✅ 実装済み)
     * iPadOS の場合は、SwiftUI のネイティブ `List` API のみで構成します。(✅ 実装済み)
 
-### 4.1. プラットフォーム固有 API 利用方針
+### 4.1. プラットフォーム固有 API 利用方針 `{@spec:s4-1}`
 
 **実装状況**: ✅ **実装済み** - プラットフォーム固有 API の実装完了
 
@@ -96,23 +97,23 @@
 * 共有ロジック (ViewModel / モデル) は、すべて `#if canImport(SwiftUI)` ベースで共通化します。(✅ 実装済み)
 * カスタマイズは `SidebarView` のイニシャライザ引数や `ViewModifier` で拡張可能にします。
 
-### 4.2. PXSourceList → Swift モデル マッピング (抜粋)
+### 4.2. PXSourceList → Swift モデル マッピング (抜粋) `{@spec:s4-2}`
 
 * PXSourceList の `PXSourceListItem` → `SourceItem`
   * title、icon、badge、representedObject、isSelectable、isEditable
 * グループ/セクション概念は `children: [SourceItem]?` で表現します。
 * Delegate/Callback (選択/編集/コンテキストメニュー) は Combine の `PassthroughSubject` 系で変換します。
 
-### 4.3. 互換性と制約事項
+### 4.3. 互換性と制約事項 `{@spec:s4-3}`
 
 * SwiftUI の `OutlineGroup` は AppKit の完全な振る舞いを再現しないため、細かい挙動 (ネイティブの行高さ制御、ドラッグの微調整等) は `AppKitBridge` モジュールを使う必要があります。
 * 既存の Objective-C コードを直接呼び出す方針がある場合は、`AppKitBridge` モジュールを用意して既存コンポーネントをラップします。
 * iPadOS 側では外部メニューやフォーカスの振る舞いが macOS と異なるため、プラットフォームごとの最適化コードを用意します。
 * PXSourceList の API (Delegate / DataSource) をそのまま公開すると SwiftUI 側で扱いにくいため、Combine ベースの Publisher API に変換することを推奨します。
 
-### 4.4. モジュール設計 (公開 API)
+### 4.4. モジュール設計 (公開 API) `{@spec:s4-4}`
 
-### 4.4.1. 主要型 (例)
+### 4.4.1. 主要型 (例) `{@spec:s4-4-1}`
 
 * `public struct SourceItem: Identifiable, Equatable` — 表示アイテム (title、icon、badge、children、isEditable、metadata)
 * `public final class SourceListService: ObservableObject` — データ供給と永続化用インターフェース (`@Published var rootItems: [SourceItem]`)
@@ -120,7 +121,7 @@
 * `public struct SidebarView: View` — 組込みのサイドバーコンポーネント (カスタマイズ・ポイント多数)
 * `public struct SourceRowView: View` — 行のレンダラー (カスタム・コンテンツを受け取るために `Content` ジェネリクスを用意)
 
-### 4.5. プロジェクト構成
+### 4.5. プロジェクト構成 `{@spec:s4-5}`
 
 コード構造と各ファイルの責務の詳細は [architecture.md](architecture.md) を参照してください。
 
@@ -177,30 +178,30 @@
 └── Preview Content/ (⚠️ 未実装)
 ```
 
-### 4.6. UI 実装方針 (主要機能)
+### 4.6. UI 実装方針 (主要機能) `{@spec:s4-6}`
 
-### 4.6.1. 階層表示
+### 4.6.1. 階層表示 `{@spec:s4-6-1}`
 
 **実装状況**: ✅ **実装済み** - `SidebarView` で `List` + `DisclosureGroup` を使用して実装
 
 * 基本は `List` + `DisclosureGroup` / `OutlineGroup` を用います。
 * macOS では `SidebarListStyle()` を基本にし、選択時のフォーカスやアクセントカラーを AppKit に近付けます。
 
-### 4.6.2. アイコン・バッジ
+### 4.6.2. アイコン・バッジ `{@spec:s4-6-2}`
 
 **実装状況**: ✅ **実装済み** - `SourceRowView` と `IconProvider` で実装
 
 * `Image` (`systemName` / アセット) と `Text` を組み合わせ、バッジは `ZStack` で重ねます。
 
-### 4.6.3. 選択 (単一 / 複数)
+### 4.6.3. 選択 (単一 / 複数) `{@spec:s4-6-3}`
 
 **実装状況**: ✅ **実装済み** - `SelectionManager` で単一選択・複数選択を実装
 
 * 詳細は [selection_spec.md](selection_spec.md) を参照してください。
 * 現状は `SelectionManager` (`selectItem` / `toggleSelection` 等) と `SidebarView` の行タップで選択状態を更新します。
-* macOS / iPadOS 共通: `allowsMultipleSelection == true` のとき行タップでトグル。Command+クリック・Shift+範囲選択、iPad の SwiftUI 編集モード (Edit mode) による複数選択は **未実装** (将来検討。`selection_spec.md` §2.3 を参照)。
+* macOS / iPadOS 共通: `allowsMultipleSelection == true` のとき行タップでトグル。Command+クリック、Shift+範囲選択、iPad の SwiftUI 編集モード (Edit mode) による複数選択は **未実装** (将来検討。`selection_spec.md` §2.3を参照)。
 
-### 4.6.4. ドラッグ & ドロップ
+### 4.6.4. ドラッグ & ドロップ `{@spec:s4-6-4}`
 
 **実装状況**: ⚠️ **未実装** - `SidebarView` に `allowsDragAndDrop` パラメータは用意されていますが、実際の `onDrag` / `onDrop` 実装は未完了です。
 
@@ -208,13 +209,13 @@
 * `onDrag` / `onDrop` をラップした高レベル API を提供します。
 * 必要に応じて AppKit ブリッジを用い、より細かいドロップ挙動を実現します。
 
-### 4.6.5. コンテキストメニュー
+### 4.6.5. コンテキストメニュー `{@spec:s4-6-5}`
 
 **実装状況**: ✅ **実装済み** - `SidebarView` で `contextMenu` を使用して実装
 
 * `contextMenu` を利用します。アクションは `SourceListService` を通じて実行します。
 
-### 4.6.6. インライン編集 (ラベルのリネーム)
+### 4.6.6. インライン編集 (ラベルのリネーム) `{@spec:s4-6-6}`
 
 **実装状況**: ✅ **実装済み** - `InlineEditorView` で実装
 
@@ -222,7 +223,7 @@
 * `TextField` と `isEditing` フラグで行内編集を実装します。
 * 編集のコミット/キャンセルは `SelectionManager` 経由で通知します。
 
-### 4.7. カスタマイズポイント
+### 4.7. カスタマイズポイント `{@spec:s4-7}`
 
 **実装状況**: ✅ **実装済み** - `SidebarView` のイニシャライザでカスタマイズ可能
 
@@ -232,7 +233,7 @@
   * `allowsMultipleSelection`, `allowsDragAndDrop` (✅ 実装済み - パラメータとして実装、ただしドラッグ & ドロップ機能は未実装)
   * `searchBar: Bool` (組込み検索) (✅ 実装済み - `showsSearchBar` パラメータ) — 検索のマッチングルールは [search_spec.md](search_spec.md) を参照
 
-### 4.8. 主要ファイルの実装状況
+### 4.8. 主要ファイルの実装状況 `{@spec:s4-8}`
 
 * `Package.swift`: Swift Package 定義、リソース設定 (✅ 実装済み)
 * `project.yml` : XcodeGen 設定ファイル、macOS/iOS ターゲット定義、プラットフォーム専用スキーム定義
@@ -254,14 +255,14 @@
 * `AppKitBridge.swift`: AppKit ブリッジ (必要に応じて) (✅ 実装済み)
 * `iPadOptimizations.swift`: iPadOS 最適化 (✅ 実装済み)
 * `IconProvider.swift`: アイコン提供ユーティリティ (✅ 実装済み)
-* `Bundle+Module.swift`: Bundle.module の代替実装 (Xcode プロジェクト用) (✅ 実装済み)
+* `Bundle+Module.swift`: `Bundle.module` の代替実装 (Xcode プロジェクト用) (✅ 実装済み)
 * `Resources/Localizable.strings`: 英語・日本語ローカライゼーション (✅ 実装済み)
 
-### 4.9. セキュリティ / プライバシー
+### 4.9. セキュリティ / プライバシー `{@spec:s4-9}`
 
 * `representedObject` 等に不特定型を入れる場合、外部パッケージに依存するデータの取り扱いに注意します (潜在的な参照保持など)。
 
-### 4.10. アクセシビリティとローカライズ
+### 4.10. アクセシビリティとローカライズ `{@spec:s4-10}`
 
 **実装状況**: ✅ **実装済み** - ローカライゼーション対応を完了、アクセシビリティ基本実装を完了
 
@@ -272,7 +273,7 @@
 * VoiceOver 用の `accessibilityLabel` / `accessibilityValue` を各行コンポーネントで提供します。(✅ 実装済み - `SourceRowView` で `accessibilityLabel`、`accessibilityValue`、`accessibilityAddTraits` を実装)
 * `Localizable.strings` を含め、API Reference のローカライズを想定します。
 
-## 5. デザイン規約
+## 5. デザイン規約 `{@spec:s5}`
 
 **実装状況**: ✅ **実装済み** - デザイン規約の実装完了
 
@@ -280,7 +281,7 @@
 * macOS では `SidebarListStyle()` を基本とし、選択時のフォーカスやアクセントカラーを AppKit に近付けます。(✅ 実装済み - `SidebarView` で `.listStyle(.sidebar)` を使用)
 * iPadOS では、SwiftUI のネイティブ `List` API のみで構成します。(✅ 実装済み - `SidebarView` で `.listStyle(.insetGrouped)` を使用)
 
-## 6. 使用方法
+## 6. 使用方法 `{@spec:s6}`
 
 **実装状況**: ✅ **実装済み** - 使用方法の実装完了
 
@@ -307,14 +308,14 @@ struct ContentView: View {
 
 ---
 
-## 7. ドキュメント推奨項目
+## 7. ドキュメント推奨項目 `{@spec:s7}`
 
 * Quick Start (Swift Package からの導入手順)
 * API Reference (DocC)
 * カスタマイズ・ガイド (カスタム行、検索、D&D)
 * Migration Guide (PXSourceList からの移行)
 
-## 8. テスト戦略
+## 8. テスト戦略 `{@spec:s8}`
 
 **実装状況**: ✅ **部分実装** - ユニットテストは実装済み、UI テストは未実装
 
@@ -335,7 +336,7 @@ struct ContentView: View {
 * CI/CD パイプラインで自動的にテストを実行し、テスト・カバレッジを収集します。
 * CI/CD でのテスト実行に関する詳細な仕様は、[SPEC_CICD.md](./SPEC_CICD.md) で規定します。
 
-## 9. CI / CD
+## 9. CI / CD `{@spec:s9}`
 
 CI/CD に関する詳細な仕様は、[SPEC_CICD.md](./SPEC_CICD.md) を参照してください。
 
@@ -344,12 +345,12 @@ CI/CD に関する詳細な仕様は、[SPEC_CICD.md](./SPEC_CICD.md) を参照�
 * 主な機能:
     * GitHub Actions ワークフロー (`.github/workflows/swift-test.yml`): macOS および iOS/iPadOS 向けテスト実行 (✅ 直近の実行で成功)
     * ローカルテスト・スクリプト (`scripts/test-local.sh`): コミット前に CI/CD と同じテストをローカルで実行可能 (✅ 実装済み)
-    * ドキュメント品質検証 (`.github/workflows/docs-lint.yml`): Docs Linter による表記揺れ検出 (`ubuntu-24.04` / Node.js 24) (✅ 直近の実行で成功)
+    * ドキュメント品質検証 (`.github/workflows/docs-lint.yml`): Docs Linter による表記揺れ検出 (`ubuntu-24.04` / Node.js v24) (✅ 直近の実行で成功)
     * ローカル Swift 品質チェック (`npm run lint:swift` 等): SwiftLint / SwiftFormat / Periphery (詳細は [SPEC_CICD.md](./SPEC_CICD.md) §3.8)
 
 **実装状況**: ✅ **完全実装済み・テスト成功** - GitHub Actions ワークフローは実装済み、GitHub Actions「Swift Test」「Docs Linter」ワークフローが直近の実行で成功。リリース自動化 (Notarize 等) は未実装です。
 
-## 10. 開発スケジュール (提案) 
+## 10. 開発スケジュール (提案) `{@spec:s10}`
 
 1. v0.1.0… コアモデル + SidebarView (読み取り専用、展開/折り畳み、選択)
 2. v0.2.0… アイコン、バッジ、カスタム行、検索
@@ -357,9 +358,9 @@ CI/CD に関する詳細な仕様は、[SPEC_CICD.md](./SPEC_CICD.md) を参照�
 4. v0.4.0… ドラッグ & ドロップ、多重選択の強化
 5. v1.0.0… ドキュメント整備・安定版リリース
 
-## 11. 実装状況サマリー
+## 11. 実装状況サマリー `{@spec:s11}`
 
-本章では、「現在の実装状況」を記載します。
+本章では、「現在の実装状況」を記載します。要約のみ必要な場合は先に [status.md](status.md) を参照してください。
 
 S2J Source List は、当初の仕様の約90%を達成し、本番環境での使用に適した高品質な Swift Package として完成しています。
 
@@ -369,7 +370,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * **優れたユーザー体験**: プラットフォーム固有の最適化と包括的なアクセシビリティ対応
 * **堅牢なテスト**: ユニットテストによるコアロジックの検証
 
-### 11.1. 完全実装済み機能 (100% 完了)
+### 11.1. 完全実装済み機能 (100% 完了) `{@spec:s11-1}`
 
 * ✅ **階層構造の表示**: 展開/折り畳み機能を `SidebarView` で `DisclosureGroup` を使用して実装
 * ✅ **項目の選択**: 単一選択・複数選択を `SelectionManager` で実装
@@ -382,15 +383,15 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * ✅ **国際化・ローカライズ**: Base、en、ja の `Localizable.strings` を実装
 * ✅ **ユニットテスト**: `SourceItemTests`、`SelectionManagerTests`、`SourceListServiceTests` を実装
 * ✅ **CI/CD**: GitHub Actions ワークフローとローカルテスト・スクリプトを実装、GitHub Actions「Swift Test」ワークフローが正常に動作し、すべてのテストが成功 (詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照)
-* ✅ **主要ファイル**: すべてのコアファイル (SourceItem、SourceListService、SelectionManager、SidebarView、SourceRowView、InlineEditorView、AppKitBridge、iPadOptimizations、IconProvider、Bundle+Module) を実装
+* ✅ **主要ファイル**: すべてのコアファイル (`SourceItem`、`SourceListService`、`SelectionManager`、`SidebarView`、`SourceRowView`、`InlineEditorView`、`AppKitBridge`、`iPadOptimizations`、`IconProvider`、`Bundle+Module`) を実装
 * ✅ **アクセシビリティ**: VoiceOver 用の `accessibilityLabel` / `accessibilityValue` を実装
 * ✅ **ダークモード対応**: SwiftUI の標準カラーを使用して実装
 
-### 11.2. ほとんど実装済み機能 (85-95% 完了)
+### 11.2. ほとんど実装済み機能 (85-95% 完了) `{@spec:s11-2}`
 
 * ⚠️ **ドラッグ & ドロップ**: 85% 完了 - `SidebarView` に `allowsDragAndDrop` パラメータは用意されていますが、実際の `onDrag` / `onDrop` 実装は未完了です。
 
-### 11.3. 未実装機能
+### 11.3. 未実装機能 `{@spec:s11-3}`
 
 * ⚠️ **UI テスト、スナップショットテスト**: 主要なユーザー操作の検証、SwiftUI レンダリングの一貫性検証が未実装です。
 * ⚠️ **Preview Content**: SwiftUI Preview 用のコンテンツが未実装です。
@@ -398,12 +399,12 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * ⚠️ **API Reference ドキュメント (DocC)**: コードコメントは実装済みですが、DocC 形式の API ドキュメントは未整備です。
 * ⚠️ **Assets.xcassets**: 必要に応じて追加する予定ですが、現在は未実装です。
 
-### 11.4. 実装完了率
+### 11.4. 実装完了率 `{@spec:s11-4}`
 
 本章では、各機能・モジュールごとの詳細な実装完了率を表形式で整理します。
 
 | カテゴリー | 機能・モジュール | 実装状況 | 完了率 | 備考 |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | **コア機能** | 階層構造の表示 | ✅ 実装済み | 100% | `SidebarView` で `DisclosureGroup` を使用 |
 | | 項目の選択 (単一/複数)  | ✅ 実装済み | 100% | `SelectionManager` で実装 |
 | | アイコン・バッジの表示 | ✅ 実装済み | 100% | `SourceRowView` と `IconProvider` で実装 |
@@ -421,7 +422,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 | | `SourceListService` | ✅ 実装済み | 100% | データ供給と永続化用インターフェース |
 | | `SelectionManager` | ✅ 実装済み | 100% | 選択状態の管理 (単一/複数選択、選択履歴)  |
 | **ユーティリティ** | `IconProvider` | ✅ 実装済み | 100% | アイコン提供ユーティリティ |
-| | `Bundle+Module` | ✅ 実装済み | 100% | Bundle.module の代替実装 (Xcode プロジェクト用) |
+| | `Bundle+Module` | ✅ 実装済み | 100% | `Bundle.module` の代替実装 (Xcode プロジェクト用) |
 | **リソース** | ローカライゼーション (Base/en/ja)  | ✅ 実装済み | 100% | `Localizable.strings` を実装 |
 | | `Assets.xcassets` | ⚠️ 未実装 | 0% | 必要に応じて追加予定 |
 | **テスト** | ユニットテスト | ✅ 実装済み | 100% | `SourceItemTests`、`SelectionManagerTests`、`SourceListServiceTests` |
@@ -436,7 +437,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 | **アクセシビリティ** | VoiceOver 対応 | ✅ 実装済み | 100% | `accessibilityLabel` / `accessibilityValue` を実装 |
 | | キーボードナビゲーション | ⚠️ 部分実装 | 70% | 基本的な対応は実装済み、強化が必要 |
 | | 動的タイプ対応 | ⚠️ 部分実装 | 80% | SwiftUI の標準機能で対応、完全対応は未実装 |
-| **その他** | `SampleApp.swift` | ✅ 実装済み | 100% | macOS デモ・Periphery 用 (`project.yml` の SampleApp スキーム) |
+| **その他** | `SampleApp.swift` | ✅ 実装済み | 100% | macOS デモ、Periphery 用 (`project.yml` の SampleApp スキーム) |
 | | Preview Content | ⚠️ 未実装 | 0% | SwiftUI Preview 用のコンテンツが未実装 |
 | | `Package.swift` | ✅ 実装済み | 100% | Swift Package 定義、リソース設定 |
 
@@ -448,7 +449,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * **コア機能**: 98.75% (8機能中7機能が100%。1機能は85%)
 * **UI コンポーネント**: 100% (5コンポーネントすべて実装済み)
 * **データモデル**: 100% (3モジュールすべて実装済み)
-* **ユーティリティ**: 100% (1モジュール実装済み)
+* **ユーティリティ**: 100% (`IconProvider` / `Bundle+Module` の2モジュール実装済み)
 * **リソース**: 50% (ローカライゼーションは実装済み。Assets は未実装)
 * **テスト**: 33.3% (ユニットテストは実装済み。UI テスト・スナップショットテストは未実装)
 * **CI/CD**: 75% (GitHub Actions ワークフローとローカルテスト・スクリプトは実装済み・テスト成功。リリース自動化は未実装)
@@ -457,7 +458,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 **全体実装の完了率**: 約 **90%** (コア機能、UI コンポーネント、データモデルは完全実装。テスト、CI/CD、ドキュメントは部分実装)
 
-### 11.5. 品質評価
+### 11.5. 品質評価 `{@spec:s11-5}`
 
 * **コード品質**: A (良好) - Swift、SwiftUI のベスト・プラクティスに準拠
 * **ユーザビリティ**: A (良好) - プラットフォーム固有の最適化と直感的な UI
@@ -468,13 +469,13 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 ---
 
-## 12. Backlog
+## 12. Backlog `{@spec:s12}`
 
 本章では、「今後の予定」を記載します。
 
 **残りの未実装・部分実装の機能**: ドラッグ & ドロップ (85%完了、パラメータは実装済み)、UI テスト、リリース自動化など、現在の実装でも十分に実用的な機能です。詳細は「11. 実装状況サマリー」を参照してください。
 
-### 12.1. 短期での改善予定 (1-3ヵ月)
+### 12.1. 短期での改善予定 (1-3ヵ月) `{@spec:s12-1}`
 
 以下の機能は、短期間で実装可能な項目です。
 
@@ -501,7 +502,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
      * 開発時の視覚的確認を容易にします。
    * 見積もり: 1-2日。
 
-### 12.2. 中期での改善予定 (3-6ヵ月)
+### 12.2. 中期での改善予定 (3-6ヵ月) `{@spec:s12-2}`
 
 1. **GitHub Actions ワークフローの修正** (優先度: 高) (✅ 完了)
    * GitHub Actions ワークフローとローカルテスト・スクリプトの実装を完了しました。
@@ -512,12 +513,12 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
    * 詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照してください。
 
 3. **SampleApp.swift の実装** (優先度: 中) (✅ 完了)
-   * macOS 用 `SampleApp.swift` と XcodeGen の SampleApp スキームを追加しました (v2.0.9 以降)。
+   * macOS 用 `SampleApp.swift` と XcodeGen の SampleApp スキームを追加しました (v2.0.9以降)。
    * Periphery および手動デモに使用します。
 
 4. **ローカル Swift 品質チェック** (優先度: 中) (✅ 完了)
-   * `npm run lint:swift` (SwiftLint / SwiftFormat / Periphery) を導入しました (v2.0.9 以降)。
-   * 詳細は [SPEC_CICD.md](SPEC_CICD.md) §3.8 を参照してください。
+   * `npm run lint:swift` (SwiftLint / SwiftFormat / Periphery) を導入しました (v2.0.9以降)。
+   * 詳細は [SPEC_CICD.md](SPEC_CICD.md) `{@spec-cicd:s3-8}` を参照してください。
 
 5. **リリース自動化の実装** (優先度: 中)
    * 現状: GitHub Actions ワークフローは実装済み、リリース自動化は未実装です。
@@ -544,7 +545,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
      * プラットフォーム固有のアセット管理を実装します。
    * 見積もり: 2-3日。
 
-### 12.3. 長期での改善予定 (6ヵ月以上)
+### 12.3. 長期での改善予定 (6ヵ月以上) `{@spec:s12-3}`
 
 以下の機能は、将来の拡張として検討する項目です。
 
@@ -577,50 +578,50 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 ---
 
-## Appendix A: Xcode プロジェクト作成ウィザード推奨選択肢リスト
+## Appendix A: Xcode プロジェクト作成ウィザード推奨選択肢リスト `{@spec:s-appendix-a-xcode}`
 
 * [COMMON_SPEC.md](https://github.com/stein2nd/xcode-common-specs/blob/main/docs/COMMON_SPEC.md) に準拠します。
 
 **補足**:
 * 本プロジェクトは Swift Package として他アプリケーションに組み込まれることを前提とするため、Xcode ウィザードで「App」テンプレートを選ぶ必要はありません。
-* macOS/iPadOS 両対応の Swift Package として作成する場合は、「Framework」または「Swift Package」テンプレートを使用し、対応プラットフォームを .macOS (.v14)、.iOS (.v17) と指定します。
+* macOS/iPadOS 両対応の Swift Package として作成する場合は、「Framework」または「Swift Package」テンプレートを使用し、対応プラットフォームを `.macOS("14.6")`、`.iOS("17.6")` と指定します (本リポジトリの `Package.swift` と一致)。
 * また、本リポジトリでは npm パッケージ `@s2j/docs-linter` (`npm run lint:docs`) および GitHub Actions `docs-lint.yml` により、ドキュメント品質 (表記揺れや用語統一) を検証します (`tools/docs-linter` サブモジュールは任意)。
 
-### 1. テンプレート選択
+### 1. テンプレート選択 `{@spec:s1-2}`
 
 * **Platform**: Multiplatform (macOS、iPadOS)
 * **Template**: Framework または Swift Package
 
-### 2. プロジェクト設定
+### 2. プロジェクト設定 `{@spec:s2-3}`
 
 | 項目 | 推奨値 | 理由 |
-|---|---|---|
+| --- | --- | --- |
 | Product Name | `s2j-source-list` | `SPEC.md` のプロダクト名と一致 |
 | Team | Apple ID に応じて設定 | コード署名のため |
 | Organization Identifier | `com.s2j` | ドメイン逆引き規則、一貫性確保 |
 | Interface | SwiftUI | SwiftUI ベースを前提 |
-| Language | Swift (Swift v6.3) | Xcode v26.5 に同梱される Swift バージョン (Objective-C は不要) |
+| Language | Swift (Swift v6.3) | Xcode v26.5に同梱される Swift バージョン (Objective-C は不要) |
 | Use Core Data | Off | データ永続化不要 |
 | Include Tests | On | `SPEC.md` にもとづきテストを考慮 |
 | Include CloudKit | Off | 不要 |
 | Include Document Group | Off | Document-based App ではない |
 | Source Control | On (Git) | `SPEC.md` / GitHub 運用をリンクさせるため |
 
-### 3. デプロイ設定
+### 3. デプロイ設定 `{@spec:s3-7}`
 
 | 項目 | 推奨値 | 理由 |
-|---|---|---|
+| --- | --- | --- |
 | macOS Deployment Target | macOS v14.6以上 | `Package.swift` / `project.yml` と一致 (`s2j-about-window` と同一) |
 | iOS Deployment Target | iPadOS v17.6以上 | `Package.swift` / `project.yml` と一致 (`s2j-about-window` と同一) |
 
-### 4. 実行確認の環境 (推奨)
+### 4. 実行確認の環境 (推奨) `{@spec:s4-11}`
 
 | プラットフォーム | 実行確認ターゲット | 理由 |
-|---|---|---|
-| macOS | macOS v14.6 以降 | 最小デプロイメントターゲットおよび `List` / `OutlineGroup` の動作確認 |
-| iPadOS | iPadOS v17.6 以降 (iPad Pro シミュレーター等) | 最小デプロイメントターゲットおよび `List` の UI 挙動確認 |
+| --- | --- | --- |
+| macOS | macOS v14.6以降 | 最小デプロイターゲットおよび `List` / `OutlineGroup` の動作確認 |
+| iPadOS | iPadOS v17.6以降 (iPad Pro シミュレーター等) | 最小デプロイターゲットおよび `List` の UI 挙動確認 |
 
-### 5. CI ワークフロー補足
+### 5. CI ワークフロー補足 `{@spec:s5-2}`
 
 **実装状況**: ✅ **実装済み** - GitHub Actions ワークフローは実装済み。UI スナップショット・テストは未実装です。
 

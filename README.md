@@ -62,10 +62,6 @@ For support, feature requests, or bug reports, please visit the [GitHub Issues](
 * Xcode v26.5+
 * Swift v6.3+
 
-<!-- 
-### Swift Package Manager
- -->
-
 ### Swift Package Manager
 
 <!-- 
@@ -76,7 +72,7 @@ Add the following to your `Package.swift` file.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.14")
+    .package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.15")
 ]
 ```
 
@@ -98,11 +94,7 @@ Or add it through Xcode:
 
 ## Usage
 
-<!-- 
 ### Basic Example
- -->
-
-### 基本的な例
 
 ```swift
 import SwiftUI
@@ -134,11 +126,7 @@ struct ContentView: View {
 }
 ```
 
-<!-- 
 ### Advanced Example
- -->
-
-### 高度な例
 
 ```swift
 @StateObject private var selectionManager = SelectionManager(selectionMode: .multiple)
@@ -296,7 +284,7 @@ SCHEME_NAME=S2JSourceList IOS_DEVICE="iPad Pro" IOS_VERSION="17.6" ./scripts/tes
 
 **優先順位**: 1. npm スクリプトからの引数 (コマンドライン引数) > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値
 
-このスクリプトは以下を実行します：
+このスクリプトは以下を実行します:
 * macOS でのテスト実行
 * iOS シミュレーターでのテスト実行 (Xcode が必要)
 * テストカバレッジの有効化

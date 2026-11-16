@@ -2,12 +2,26 @@
 
 ## unreleased
 
+## 2.0.15 - 2026-11-16
+
+### Added
+
+* `docs/status.md` を追加し、実装状況の入口 (カテゴリー要約・短期 Backlog 索引) とする
+* 見出し横断参照用タグ `` `{@doc:slug}` `` を `docs/` ほか主要 Markdown に付与、`scripts/apply-heading-tags.py` と `npm run docs:heading-tags` を追加
+
+### Changed
+
+* `docs/SPEC_STRUCTURE.md` §4を本リポジトリの実在 spec ファイル構成に合わせて整理し、`status.md` を推奨構成に追加
+* `docs/specs.md` / `overview.md` / `architecture.md` / `SPEC.md` から `status.md` に誘導するリンクを追加
+* `docs/SPEC.md` (Appendix 最小 OS、`§11.4` ユーティリティ件数) / `selection_spec.md` §2.5 (行選択の `Task` 遅延) を実装に合わせて更新
+* `README.md` の `Package.swift` 依存指定を v2.0.14→ v2.0.15に更新
+
 ## 2.0.14 - 2026-11-14
 
 ### Changed
 
-* `docs/SPEC.md` / `architecture.md` / `selection_spec.md` / `SPEC_CICD.md` を現行実装に合わせて更新 (最小 OS 14.6/17.6、選択・iPad 複数選択の記述、CI 直列構成)
-* `README.md` の `Package.swift` 依存指定を v2.0.13から v2.0.14に更新
+* `docs/SPEC.md` / `architecture.md` / `selection_spec.md` / `SPEC_CICD.md` を現行実装に合わせて更新 (最小 OS v14.6/17.6、選択 / iPad 複数選択の記述、CI 直列構成)
+* `README.md` の `Package.swift` 依存指定を v2.0.13→ v2.0.14に更新
 
 ### Fixed
 
@@ -19,16 +33,16 @@
 
 * GitHub Actions `swift-test.yml` で `test-ios` に `needs: test-macos` を追加し `macos-26` の同時要求を避ける (`macos-26` の長時間キュー待ち対策)
 * 独立ジョブ `build-release` を廃止し、リリースビルドと Artifacts アップロードを `test-ios` ジョブ末尾に統合 (macOS / iOS テスト成功が前提)
-* `docs/SPEC_CICD.md` を上記 2 ジョブ直列構成に合わせて更新
-* `README.md` の `Package.swift` 依存指定を v2.0.12から v2.0.13に更新
+* `docs/SPEC_CICD.md` を上記2ジョブ直列構成に合わせて更新
+* `README.md` の `Package.swift` 依存指定を v2.0.12→ v2.0.13に更新
 
 ## 2.0.12 - 2026-11-14
 
 ### Changed
 
 * GitHub Actions `swift-test.yml` で `build-release` を独立ジョブに復帰 (`needs: [test-macos, test-ios]`、`s2j-about-window` と同様)
-* `docs/SPEC_CICD.md` を 3 ジョブ構成に更新、`docs/SPEC.md` / `selection_spec.md` の選択モード連携の記述を実装に合わせて修正
-* `README.md` の `Package.swift` 依存指定を v2.0.11から v2.0.12に更新
+* `docs/SPEC_CICD.md` を3ジョブ構成に更新、`docs/SPEC.md` / `selection_spec.md` の選択モード連携の記述を実装に合わせて修正
+* `README.md` の `Package.swift` 依存指定を v2.0.11→ v2.0.12に更新
 
 ### Fixed
 
@@ -42,7 +56,7 @@
 * `SampleApp` / `README.md` の利用例で `SelectionManager(selectionMode:)` を `allowsMultipleSelection` に合わせるよう更新
 * `package.json` の `lint:swift` に `xcode:generate` を追加し、`xcode:generate` スクリプトを定義
 * `docs/` 配下の仕様を現行実装に合わせて更新 (`SPEC.md` の SampleApp、最小 OS v14.6/v17.6、`docs-lint.yml`、`SPEC_CICD.md` の iOS v17.6デフォルトと `lint:swift` 記載、`selection_spec.md` §2.5、`architecture.md` の SampleApp/Periphery、`overview.md` 等)
-* `README.md` の `Package.swift` 依存指定を v2.0.10から v2.0.11に更新
+* `README.md` の `Package.swift` 依存指定を v2.0.10→ v2.0.11に更新
 
 ### Fixed
 
@@ -52,9 +66,9 @@
 
 ### Changed
 
-* GitHub Actions (`docs-lint.yml`) の `actions/setup-node` を v4から v5に更新し、Runner を `ubuntu-24.04` に固定、Node.js を v24に統一
+* GitHub Actions (`docs-lint.yml`) の `actions/setup-node` を v4→ v5に更新し、Runner を `ubuntu-24.04` に固定、Node.js を v24に統一
 * `docs/SPEC_CICD.md` の Docs Lint 実行環境の記述を更新
-* `README.md` の `Package.swift` 依存指定を v2.0.9から v2.0.10に更新
+* `README.md` の `Package.swift` 依存指定を v2.0.9→ v2.0.10に更新
 
 ### Fixed
 
@@ -67,7 +81,7 @@
 * `package.json` に Swift 向け npm スクリプトを追加 (`lint:swiftlint` / `lint:swiftformat` / `lint:periphery` / `format:swift` / `profile:swift` / `lint:build` / `analyze:swift`)
 * `.swiftlint.yml` / `.swiftformat` / `.periphery.yml` / `.swift-version` を追加
 * Swift ソースを SwiftFormat で整形し、SwiftLint / Periphery の指摘を解消
-* 最小 OS を macOS v14.6・iPadOS v17.6に統一 (`Package.swift` / `project.yml` / `README.md` / `scripts/test-local.sh`、`s2j-about-window` に合わせる)
+* 最小 OS を macOS v14.6、iPadOS v17.6に統一 (`Package.swift` / `project.yml` / `README.md` / `scripts/test-local.sh`、`s2j-about-window` に合わせる)
 * `project.yml` を `settings.base` 構成に整理し、Periphery 用の `SampleApp` ターゲットとスキームを追加
 * `.periphery.yml` のスキャン対象スキームを `SampleApp` に変更
 
@@ -81,29 +95,29 @@
 
 * GitHub Actions の `actions/checkout` / `actions/upload-artifact` / `codecov/codecov-action` を Node.js v24対応の v6に更新
 * `docs/SPEC_CICD.md` を現行ワークフローに合わせて更新 (`build-release` 統合の背景、Action v6、`macos-26`)
-* `README.md` の `Package.swift` 依存指定を v2.0.7から v2.0.8に更新
+* `README.md` の `Package.swift` 依存指定を v2.0.7→ v2.0.8に更新
 
 ## 2.0.7 - 2026-11-06
 
 ### Changed
 
-* GitHub Actions `Swift Test` の `build-release` ジョブを `test-macos` に統合 (`macos-26` ランナー利用を3ジョブから2ジョブに削減)
-* `README.md` の `Package.swift` 依存指定を v2.0.6から v2.0.7に更新
+* GitHub Actions `Swift Test` の `build-release` ジョブを `test-macos` に統合 (`macos-26` ランナー利用を3ジョブ→2ジョブに削減)
+* `README.md` の `Package.swift` 依存指定を v2.0.6→ v2.0.7に更新
 
 ## 2.0.6 - 2026-11-06
 
 ### Changed
 
-* `@s2j/docs-linter` を ^1.0.26から ^1.0.32に更新
-* `README.md` の `Package.swift` 依存指定を v2.0.5から v2.0.6に更新
+* `@s2j/docs-linter` を ^1.0.26→ ^1.0.32に更新
+* `README.md` の `Package.swift` 依存指定を v2.0.5→ v2.0.6に更新
 * `package.json` に `overrides` を追加 (`glob` ^14.0.3、`minimatch` ^11.0.4)
 
 ## 2.0.5 - 2026-10-02
 
 ### Changed
 
-* `@s2j/docs-linter` を ^1.0.23から ^1.0.26に更新
-* `README.md` の `Package.swift` 依存指定を v2.0.4から v2.0.5に更新
+* `@s2j/docs-linter` を ^1.0.23→ ^1.0.26に更新
+* `README.md` の `Package.swift` 依存指定を v2.0.4→ v2.0.5に更新
 * `.vscode/settings.json` に `json.schemaDownload.enable` を追加
 
 ### Fixed
@@ -114,25 +128,25 @@
 
 ### Changed
 
-* `@s2j/docs-linter` を ^1.0.22から ^1.0.23に更新
-* `README.md` の `Package.swift` 依存指定を v1.0.0から v2.0.4に更新
+* `@s2j/docs-linter` を ^1.0.22→ ^1.0.23に更新
+* `README.md` の `Package.swift` 依存指定を v1.0.0→ v2.0.4に更新
 
 ## 2.0.3 - 2026-08-10
 
 ### Changed
 
-* `@s2j/docs-linter` を ^1.0.21から ^1.0.22に更新
+* `@s2j/docs-linter` を ^1.0.21→ ^1.0.22に更新
 * `package.json` に `allowScripts` を追加 (`@s2j/docs-linter` の postinstall を許可)
 
 ## 2.0.2 - 2026-07-23
 
 ### Changed
 
-* `@s2j/docs-linter` を ^1.0.18から ^1.0.21に更新
+* `@s2j/docs-linter` を ^1.0.18→ ^1.0.21に更新
 
 ### Fixed
 
-* npm 12+ で `npm install` が Git 依存の取得禁止 (`EALLOWGIT`) により失敗する問題を修正
+* npm v12+ で `npm install` が Git 依存の取得禁止 (`EALLOWGIT`) により失敗する問題を修正
     * `.npmrc` に `allow-git=all` を追加 (`@s2j/docs-linter` の間接 GitHub 依存に対応)
     * `legacy-peer-deps=true` を追加
 
@@ -155,8 +169,8 @@
 
 ### Changed
 
-* iPadOS の最小対応バージョンを v15から v17に引き上げ (破壊的変更)
-    * `onChange` を iOS 17+/macOS 14+ の新シグネチャに置き換え
+* iPadOS の最小対応バージョンを v15→ v17に引き上げ (破壊的変更)
+    * `onChange` を iOS v17+/macOS v14+ の新シグネチャに置き換え
 * Swift v6.3.x および Xcode v26.5に対応
     * `swift-tools-version` を v6.3に更新
     * `project.yml` の `SWIFT_VERSION` を v6.3、`xcodeVersion` を v26.5に更新
@@ -170,9 +184,9 @@
 
 ### Changed
 
-* macOS の最小対応バージョンを v12から v14に引き上げ (破壊的変更)
-* `swift-tools-version` を v5.9に統一 (s2j-about-window、s2j-cozy-brew と揃えた)
-* S2J Docs Linter を git submodule から `@s2j/docs-linter` npm パッケージ運用に切り替え (#6)
+* macOS の最小対応バージョンを v12→ v14に引き上げ (破壊的変更)
+* `swift-tools-version` を v5.9に統一 (s2j-about-window、s2j-cozy-brew とそろえた)
+* S2J Docs Linter を Git submodule から `@s2j/docs-linter` npm パッケージ運用に切り替え (#6)
     * `lint:docs` を `s2j-docs-linter` コマンドに簡素化
     * `@s2j/docs-linter` を v1.0.18に更新
 * Docs Lint CI ワークフローを `docs-lint.yml` に移行 (`docs-linter.yml` を削除)

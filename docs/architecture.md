@@ -1,20 +1,17 @@
-<!--
-目的：「コード構造と責務」の明文化
- -->
-# アーキテクチャー (S2J Source List)
+# S2J Source List - アーキテクチャー
 
-## 1. 目的
+## 1. 目的 `{@architecture:s1}`
 
 本ドキュメントは、Swift Package「S2J Source List」のコード構造と各ファイルの責務を明文化します。新機能の追加や変更時に「どこに何を書くか」の判断に利用してください。
 
-## 2. 設計方針
+## 2. 設計方針 `{@architecture:s2}`
 
-* **レイヤー分離**: Core (モデル・サービス・選択管理) と UI (Views・Platform) を分離し、ビジネスロジックは Swift で実装し SwiftUI と疎結合にする (Observable / Combine ベース)。
+* **レイヤー分離**: Core (モデル・サービス・選択管理) と UI (Views、Platform) を分離し、ビジネスロジックは Swift で実装し SwiftUI と疎結合にする (Observable / Combine ベース)。
 * **共有ロジック**: `#if canImport(SwiftUI)` および `#if os(macOS)` / `#if os(iOS)` でプラットフォームを分岐。ViewModel 相当のロジックは Core に集約し共通化する。
 * **プラットフォーム固有**: macOS は `AppKitBridge` で AppKit カラー取得。iPadOS は `iPadOptimizations` でレイアウト定数を提供し、リストスタイルは `SidebarView` 内で `.listStyle(.insetGrouped)` を指定する。
 * **カスタマイズ**: `SidebarView` のイニシャライザ引数や ViewModifier で拡張可能にする。
 
-## 3. ディレクトリ・ファイルと責務
+## 3. ディレクトリ・ファイルと責務 `{@architecture:s3}`
 
 ```
 Sources/S2JSourceList/
@@ -42,49 +39,50 @@ Sources/S2JSourceList/
 ```
 
 | ファイル | 責務 | 関連 spec |
-|----------|------|-----------|
-| **SourceItem.swift** | 表示アイテムのデータモデル。`Identifiable`, `Equatable`。title、icon、badge、children、isEditable、metadata。 | — |
-| **SelectionManager.swift** | 選択状態の管理。単一/複数選択モード、selectedItemIds、selectionHistory、selectItem / deselectItem / toggleSelection。 | [selection_spec.md](./selection_spec.md) |
-| **SourceListService.swift** | データ供給。`@Published var rootItems`。renameItem、expandItem、collapseItem。Publisher (itemsChanged, itemRenamed, itemDeleted) 提供。 | — |
-| **SidebarView.swift** | メイン UI。検索バー、リスト表示、DisclosureGroup による階層、コンテキストメニュー、選択・編集の統合。 | [selection_spec.md](./selection_spec.md), [search_spec.md](./search_spec.md), [drag_drop_spec.md](./drag_drop_spec.md) |
-| **SourceRowView.swift** | 行の描画。アイコン・バッジ・ラベル。カスタムコンテンツ (customContent) 対応。選択・編集状態の表示。 | — |
-| **InlineEditorView.swift** | 行内編集 UI。TextField によるリネーム、コミット/キャンセル。 | [selection_spec.md](./selection_spec.md) |
-| **AppKitBridge.swift** | macOS 専用。AppKit のカラー取得、必要に応じて NSOutlineView の挙動を参考にした微調整。 | — |
-| **iPadOptimizations.swift** | iPadOS 専用。行高・インデント・アイコンサイズ等のデフォルト定数。 | — |
-| **IconProvider.swift** | SF Symbol / アセットからのアイコン提供。 | — |
-| **Bundle+Module.swift** | SwiftPM の `Bundle.module` が使えない Xcode プロジェクト向けの代替実装。 | — |
+| --- | --- | --- |
+| `SourceItem.swift` | 表示アイテムのデータモデル。`Identifiable`, `Equatable`。title、icon、badge、children、isEditable、metadata。 | — |
+| `SelectionManager.swift` | 選択状態の管理。単一/複数選択モード、selectedItemIds、selectionHistory、selectItem / deselectItem / toggleSelection。 | [selection_spec.md](./selection_spec.md) |
+| `SourceListService.swift` | データ供給。`@Published var rootItems`。renameItem、expandItem、collapseItem。Publisher (itemsChanged, itemRenamed, itemDeleted) 提供。 | — |
+| `SidebarView.swift` | メイン UI。検索バー、リスト表示、DisclosureGroup による階層、コンテキストメニュー、選択・編集の統合。 | [selection_spec.md](./selection_spec.md), [search_spec.md](./search_spec.md), [drag_drop_spec.md](./drag_drop_spec.md) |
+| `SourceRowView.swift` | 行の描画。アイコン・バッジ・ラベル。カスタムコンテンツ (customContent) 対応。選択・編集状態の表示。 | — |
+| `InlineEditorView.swift` | 行内編集 UI。TextField によるリネーム、コミット/キャンセル。 | [selection_spec.md](./selection_spec.md) |
+| `AppKitBridge.swift` | macOS 専用。AppKit のカラー取得、必要に応じて NSOutlineView の挙動を参考にした微調整。 | — |
+| `iPadOptimizations.swift` | iPadOS 専用。行高・インデント・アイコンサイズ等のデフォルト定数。 | — |
+| `IconProvider.swift` | SF Symbol / アセットからのアイコン提供。 | — |
+| `Bundle+Module.swift` | SwiftPM の `Bundle.module` が使えない Xcode プロジェクト向けの代替実装。 | — |
 
-## 4. 層境界とデータフロー
+## 4. 層境界とデータフロー `{@architecture:s4}`
 
 * **SourceItem ツリー** → `SourceListService.rootItems` が保持。
 * **SidebarView** は `SourceListService` と `SelectionManager` を `@ObservedObject` で参照。
 * **選択変更** → `SelectionManager.selectionChanged` (PassthroughSubject) でホストに通知。
 * **編集・削除** → `SourceListService` の `renameItem` 等を経由し、必要に応じて Publisher で通知。
-* **検索** → `SidebarView` 内の `searchText` でフィルタし、`filteredItems` として表示。詳細は [search_spec.md](./search_spec.md) を参照。
+* **検索** → `SidebarView` 内の `searchText` でフィルターし、`filteredItems` として表示。詳細は [search_spec.md](./search_spec.md) を参照。
 
-## 5. プラットフォーム分岐のルール
+## 5. プラットフォーム分岐のルール `{@architecture:s5}`
 
 * **macOS のみ**: `AppKitBridge`、`SidebarListStyle()`、`Color(NSColor.xxx)`。
 * **iPadOS のみ**: `iPadOptimizations` (定数)、`SidebarView` の `.listStyle(.insetGrouped)`。複数選択は macOS と同様 `allowsMultipleSelection` + `toggleSelection` (編集モード UI は未実装)。
 * **共通**: `SourceItem`、`SourceListService`、`SelectionManager`、`SidebarView` 本体、`SourceRowView`、`InlineEditorView`、検索ロジック。
 
-## 6. リポジトリ直下の補助ターゲット (XcodeGen)
+## 6. リポジトリ直下の補助ターゲット (XcodeGen) `{@architecture:s6}`
 
 Swift Package 本体 (`Sources/`) に加え、Xcode プロジェクト向けに次を配置しています。
 
 | パス | 役割 |
-|------|------|
-| **project.yml** | XcodeGen 定義。`S2JSourceList-macOS` / `S2JSourceList-iOS` フレームワーク、ユニットテスト、**SampleApp** スキーム。最小 OS は macOS **14.6** / iOS **17.6** (`settings.base` 構成)。 |
-| **SampleApp.swift** | macOS の最小デモアプリ (`NavigationSplitView` + `SidebarView`)。手動動作確認および Periphery 用ビルドに使用。 |
-| **.periphery.yml** | 未使用コード検出。**SampleApp** スキームを対象 (`lint:periphery`)。 |
+| --- | --- |
+| `project.yml` | XcodeGen 定義。`S2JSourceList-macOS` / `S2JSourceList-iOS` フレームワーク、ユニットテスト、**SampleApp** スキーム。最小 OS は macOS **14.6** / iOS **17.6** (`settings.base` 構成)。 |
+| `SampleApp.swift` | macOS の最小デモアプリ (`NavigationSplitView` + `SidebarView`)。手動での動作確認および Periphery 用ビルドに使用。 |
+| `.periphery.yml` | 未使用コード検出。**SampleApp** スキームを対象 (`lint:periphery`)。 |
 
 ローカル品質チェック (`npm run lint:swift` 等) の詳細は [SPEC_CICD.md](./SPEC_CICD.md) を参照してください。
 
-## 7. 関連ドキュメント
+## 7. 関連ドキュメント `{@architecture:s7}`
 
 * 仕様の入口: [specs.md](./specs.md)
 * プロジェクト概要: [overview.md](./overview.md)
-* 要件・実装状況・Backlog: [SPEC.md](./SPEC.md)
+* 実装状況 (要約): [status.md](./status.md)
+* 要件、実装状況、Backlog (詳細): [SPEC.md](./SPEC.md)
 * 選択・編集ルール: [selection_spec.md](./selection_spec.md)
 * 検索ルール: [search_spec.md](./search_spec.md)
 * ドラッグ & ドロップ: [drag_drop_spec.md](./drag_drop_spec.md)
