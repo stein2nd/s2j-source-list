@@ -2,6 +2,18 @@
 
 ## unreleased
 
+## 2.0.16 - 2026-11-20
+
+### Added
+
+* `docs/status.md` に S2J シリーズ同型の **100% 完了条件チェックリスト** (機能一覧、Must 範囲、ゲート外) を追加
+
+### Changed
+
+* `README.md` の見出しに横断参照タグ `` `{@readme:…}` `` を付与
+* 開発依存 `@s2j/docs-linter` を **^1.0.34** に更新
+* `README.md` の `Package.swift` 依存指定を v2.0.15→ v2.0.16に更新
+
 ## 2.0.15 - 2026-11-16
 
 ### Added

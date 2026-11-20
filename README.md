@@ -6,7 +6,7 @@
 [![macOS](https://img.shields.io/badge/macOS-14.6+-blue?logo=apple&logoColor=white)](https://www.apple.com/macos/)
 [![iPadOS](https://img.shields.io/badge/iPadOS-17.6+-blue?logo=apple&logoColor=white)](https://www.apple.com/ipados/)
 
-## Description
+## Description `{@readme:s-description}`
 
 <!-- 
 S2J Source List is a SwiftUI-based hierarchical sidebar component for macOS and iPadOS. This library has been ported from the popular PXSourceList project, bringing its functionality to the SwiftUI ecosystem. It provides a modern, declarative API for displaying tree-structured data with support for such as selection, editing, icons, badges, and more.
@@ -14,7 +14,7 @@ S2J Source List is a SwiftUI-based hierarchical sidebar component for macOS and 
 
 S2J Source List は、macOS および iPadOS 向けの SwiftUI ベースの階層型サイドバーコンポーネントです。本ライブラリは、人気の [PXSourceList](https://github.com/alexrozanski/PXSourceList) プロジェクトから移植され、その機能を SwiftUI エコシステムにもたらします。ツリー構造のデータを表示するためのモダンな宣言型 API を提供し、選択、編集、アイコン、バッジなどの機能をサポートします。
 
-## Features
+## Features `{@readme:s-features}`
 
 <!-- 
 * ✅ Hierarchical display with expand/collapse
@@ -38,7 +38,7 @@ S2J Source List は、macOS および iPadOS 向けの SwiftUI ベースの階�
 * ✅ ダークモード対応
 * ✅ ローカライズ (英語、日本語)
 
-## License
+## License `{@readme:s-license}`
 
 <!-- 
 This project is licensed under the GPL 3.0+ License. See the [LICENSE](LICENSE) file for details.
@@ -46,7 +46,7 @@ This project is licensed under the GPL 3.0+ License. See the [LICENSE](LICENSE) 
 
 本プロジェクトは GPL3.0以降ライセンスの下で提供されています。詳細は [LICENSE](LICENSE) ファイルを参照してください。
 
-## Support and Contact
+## Support and Contact `{@readme:s-support-and-contact}`
 
 <!-- 
 For support, feature requests, or bug reports, please visit the [GitHub Issues](https://github.com/stein2nd/s2j-source-list/issues) page.
@@ -54,15 +54,15 @@ For support, feature requests, or bug reports, please visit the [GitHub Issues](
 
 サポート、機能リクエスト、またはバグ報告については、[GitHub Issues](https://github.com/stein2nd/s2j-source-list/issues) ページをご覧ください。
 
-## Installation
+## Installation `{@readme:s-installation}`
 
-### Requirements
+### Requirements `{@readme:s-requirements}`
 
 * macOS v14.6+ / iPadOS v17.6+
 * Xcode v26.5+
 * Swift v6.3+
 
-### Swift Package Manager
+### Swift Package Manager `{@readme:s-swift-package-manager}`
 
 <!-- 
 Add the following to your `Package.swift` file.
@@ -72,7 +72,7 @@ Add the following to your `Package.swift` file.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.15")
+    .package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.16")
 ]
 ```
 
@@ -92,9 +92,9 @@ Or add it through Xcode:
 2. リポジトリ URL を入力: `https://github.com/stein2nd/s2j-source-list.git`
 3. バージョンを選択し、ターゲットに追加
 
-## Usage
+## Usage `{@readme:s-usage}`
 
-### Basic Example
+### Basic Example `{@readme:s-basic-example}`
 
 ```swift
 import SwiftUI
@@ -126,7 +126,7 @@ struct ContentView: View {
 }
 ```
 
-### Advanced Example
+### Advanced Example `{@readme:s-advanced-example}`
 
 ```swift
 @StateObject private var selectionManager = SelectionManager(selectionMode: .multiple)
@@ -167,9 +167,9 @@ SidebarView(
 )
 ```
 
-## API Reference
+## API Reference `{@readme:s-api-reference}`
 
-### SourceItem
+### SourceItem `{@readme:s-sourceitem}`
 
 <!-- 
 Represents an item in the source list hierarchy.
@@ -188,7 +188,7 @@ let item = SourceItem(
 )
 ```
 
-### SourceListService
+### SourceListService `{@readme:s-sourcelistservice}`
 
 <!-- 
 Manages the data model and provides operations for manipulating items.
@@ -204,7 +204,7 @@ service.deleteItem(id: itemId)
 service.toggleExpansion(id: groupId)
 ```
 
-### SelectionManager
+### SelectionManager `{@readme:s-selectionmanager}`
 
 <!-- 
 Manages selection state.
@@ -219,7 +219,7 @@ selectionManager.isSelected(itemId)
 selectionManager.clearSelection()
 ```
 
-## Contributing
+## Contributing `{@readme:s-contributing}`
 
 <!-- 
 We look forward to your contributions. Please follow the steps below.
@@ -250,7 +250,7 @@ We look forward to your contributions. Please follow the steps below.
 <!-- 
  -->
 
-### 開発ガイドライン
+### 開発ガイドライン `{@readme:s-h016}`
 
 <!-- 
 * Follow the existing code style.
@@ -264,7 +264,7 @@ We look forward to your contributions. Please follow the steps below.
 * 新機能には、テストを含めましょう。
 * 必要に応じて、ドキュメントを更新してください。
 
-### ローカルでのテスト実行
+### ローカルでのテスト実行 `{@readme:s-h017}`
 
 コミット前に CI/CD と同じテストをローカルで実行して、問題を早期に発見できます。
 
@@ -291,13 +291,13 @@ SCHEME_NAME=S2JSourceList IOS_DEVICE="iPad Pro" IOS_VERSION="17.6" ./scripts/tes
 
 **注意**: iOS テストを実行するには、Xcode がインストールされている必要があります。
 
-## Contributors & Developers
+## Contributors & Developers `{@readme:s-contributors-developers}`
 
 **"S2J Source List"** はオープンソース・ソフトウェアです。以下の皆様がこのツールに貢献しています。
 
 * **開発者**: Koutarou ISHIKAWA
 
-## Acknowledgments
+## Acknowledgments `{@readme:s-acknowledgments}`
 
 <!-- 
 * Based on [PXSourceList](https://github.com/alexrozanski/PXSourceList) by Alex Rozanski

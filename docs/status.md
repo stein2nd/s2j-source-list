@@ -2,8 +2,8 @@
 
 | 項目 | 内容 |
 | --- | --- |
-| 最終更新 | 2026-11-16 |
-| リリース (npm / タグ) | **2.0.15** |
+| 最終更新 | 2026-11-20 |
+| リリース (npm / タグ) | **2.0.16** |
 | 最小 OS | macOS **14.6** / iPadOS **17.6** ([overview.md](./overview.md)) |
 
 ---
@@ -37,11 +37,119 @@
 
 **運用:** マイルストーン完了や完了率の再計算のたびに本ファイルの **最終更新** と下表を更新し、詳細は [SPEC.md §11](./SPEC.md) と同期する。
 
+**完了条件列:** 100% 到達用チェックリスト。`[x]` = 満たし済み、`[ ]` = 未。各§のアンカーが正本。実装％は当該§の `[x]` 数 ÷ 全項目数 ([§ゲート外](#status-gates) を除く)。
+
+## 機能一覧 `{@status:s-features}`
+
+| 機能名 | 実装済み/未実装 | 実装％ | 完了条件 (100%) |
+| --- | --- | --- | --- |
+| 仕様 (`docs/`) | 確定 | 100 | [§仕様・ドキュメント](#status-spec-docs) (5/5) |
+| コア Source List (Must) | 実装済み | 100 | [§コア](#status-core) (11/11) |
+| プラットフォーム・ローカライズ | 実装済み | 100 | [§プラットフォーム](#status-platform) (4/4) |
+| CI ・ユニットテスト | 実装済み | 100 | [§CI・品質](#status-quality-unit) (6/6) |
+| ドラッグ & ドロップ | 部分 | 33 | [§D&D](#status-dnd) (1/3) |
+| テスト拡張 (UI / Snapshot) | 部分 | 25 | [§テスト拡張](#status-quality-ui) (1/4) |
+| API ドキュメント、Preview | 部分 | 50 | [§ドキュメント](#status-devx) (2/4) |
+| アクセシビリティ拡張 | 部分 | 33 | [§アクセシビリティ](#status-a11y) (1/3) |
+
+**Must 範囲 (上表の先頭4行):** **100%** — SPM ライブラリとしてホストに組込み可能な水準。
+
+**全体 (D&D、拡張テスト等を含む):** チェックリスト **40項目中31項目** ≒ **約78%** (下記と [SPEC.md §11.4](./SPEC.md) に対応)。
+
+## 100% 完了条件チェックリスト `{@status:s100}`
+
+[s2j-about-window `docs/status.md`](https://github.com/stein2nd/s2j-about-window/blob/main/docs/status.md) 同型。検証は `npm run test:local` / CI を正本とする ([SPEC_CICD.md](./SPEC_CICD.md))。
+
+### 仕様・ドキュメント `{@status:s-status-spec-docs}`
+
+* [x] [specs.md](./specs.md) 索引とクイック参照
+* [x] [status.md](./status.md) による実装状況の入口
+* [x] ドメイン spec (`selection_spec` / `search_spec` / `drag_drop_spec`) と [SPEC.md](./SPEC.md) の整合
+* [x] GitHub Actions `Lint Docs` (`docs-lint.yml`)
+* [x] 見出しタグ規約と `npm run docs:heading-tags`
+
+### コア Source List (Must) `{@status:s-status-core}`
+
+正本: [SPEC.md §4.6](./SPEC.md)、[architecture.md](./architecture.md)
+
+* [x] `SourceItem` / `SourceListService` / `SelectionManager`
+* [x] 階層表示・展開/折り畳み (`SidebarView` + `DisclosureGroup`)
+* [x] 単一/複数選択 (タップ、`allowsMultipleSelection` + `toggleSelection`)
+* [x] `SidebarView` は `selectionMode` を書き換えない・行選択は `Task { @MainActor … }` ([selection_spec §2.5](./selection_spec.md))
+* [x] 検索フィルター ([search_spec](./search_spec.md))
+* [x] インラインリネーム (`InlineEditorView`)
+* [x] コンテキストメニュー (デフォルト + `contextMenuBuilder`)
+* [x] カスタム行 (`customContent`)、アイコン・バッジ (`SourceRowView` / `IconProvider`)
+* [x] `Package.swift` — 最小 OS **14.6** / **17.6** ([overview.md](./overview.md))
+* [x] 公開 API、使用例 ([README.md](../README.md))
+
+### プラットフォーム・ローカライズ `{@status:s-status-platform}`
+
+* [x] macOS `.listStyle(.sidebar)` と `AppKitBridge`
+* [x] iPadOS `.listStyle(.insetGrouped)` と `iPadOptimizations` (定数)
+* [x] `en` / `ja` / `Base` の `Localizable.strings`
+* [x] `SampleApp` (macOS) と XcodeGen `project.yml` (Periphery スキーム)
+
+### CI、ユニットテスト `{@status:s-ci-status-quality-unit}`
+
+正本: [SPEC_CICD.md](./SPEC_CICD.md)
+
+* [x] Workflow `Swift Test` (`test-macos` → `test-ios` 直列、末尾リリースビルド)
+* [x] `./scripts/test-local.sh` / `npm run test:local`
+* [x] `SourceItemTests` / `SelectionManagerTests` / `SourceListServiceTests`
+* [x] `npm run lint:docs`
+* [x] `npm run lint:swift` (SwiftLint / SwiftFormat / Periphery)
+* [x] Codecov 送信 (macOS / iOS、`fail_ci_if_error: false` は iOS 側)
+
+### ドラッグ & ドロップ `{@status:s-status-dnd}`
+
+正本: [drag_drop_spec.md](./drag_drop_spec.md)
+
+* [x] `allowsDragAndDrop` パラメータとアクセシビリティ識別子
+* [ ] `onDrag` / `onDrop` によるツリー内移動
+* [ ] ドロップ完了時の `SourceListService` 更新とホスト向け通知 API
+
+### テスト拡張 (UI / Snapshot) `{@status:s-status-quality-ui}`
+
+正本: [SPEC.md §11.3](./SPEC.md)、[SPEC.md §12.1](./SPEC.md)
+
+* [x] コアロジックのユニットテスト (上記§と重複可)
+* [ ] 主要操作の UI テスト (macOS / iPadOS)
+* [ ] SnapshotTesting による SwiftUI レンダリング検証
+* [ ] テスト・カバレッジ **70%** 以上 ([SPEC_CICD.md](./SPEC_CICD.md) 目標)
+
+### ドキュメント・開発体験 `{@status:s-status-devx}`
+
+* [x] README (導入、API 要約)
+* [x] 主要 API のコードコメント
+* [ ] DocC 形式の API Reference
+* [ ] Xcode Preview 用 `Preview Content`
+
+### アクセシビリティ拡張 `{@status:s-status-a11y}`
+
+* [x] VoiceOver (`accessibilityLabel` / `accessibilityValue`)
+* [ ] キーボードナビゲーションの強化 ([SPEC.md §11.4](./SPEC.md))
+* [ ] Dynamic Type の完全対応
+
+## ゲート外・任意 `{@status:s-status-gates}`
+
+**100% 分母外** (未完了でも `Must` 100% は維持)。
+
+| # | 内容 | 備考 |
+| --- | --- | --- |
+| G1 | Command+クリック / Shift 範囲選択 | [selection_spec §2.3](./selection_spec.md) 将来検討 |
+| G2 | iPad 編集モード (Edit mode) による複数選択 UI | 現状はタップトグルのみ |
+| G3 | `Assets.xcassets` | SF Symbols 中心で当面不要の可能性 |
+| G4 | Xcode Archive / Notarize のリリース自動化 | Artifacts は CI で生成済み |
+| G5 | GitHub Actions `workflow_dispatch` 手動起動 | runner 枯渇時の運用改善 ([SPEC_CICD.md §8](./SPEC_CICD.md)) |
+
+**補足:** 上表 [スナップショット](#status-s-h005) の **約90%** は [SPEC.md §11.4](./SPEC.md) のカテゴリー加重。本チェックリストの **約78%** は上記§の機械的な `[x]` 比率。
+
 ---
 
 ## スナップショット (カテゴリー別) `{@status:s-h005}`
 
-[SPEC.md §11.4](./SPEC.md) と同期した要約 (2026-11-16時点)。
+[SPEC.md §11.4](./SPEC.md) と同期した要約 (2026-11-20時点)。完了条件の機械集計は [§100% チェックリスト](#status-s100) を参照。
 
 | カテゴリー | 完了率 | 状態 |
 | --- | --- | --- |
@@ -62,7 +170,7 @@
 | 階層表示・展開/折り畳み | ✅ | `DisclosureGroup` |
 | 単一/複数選択 (タップ) | ✅ | `SelectionManager` + 行タップ ([selection_spec](./selection_spec.md) §2.5) |
 | Command+Shift / iPad 編集モード複数選択 | ❌ | 将来検討 |
-| 検索フィルタ | ✅ | [search_spec](./search_spec.md) |
+| 検索フィルター | ✅ | [search_spec](./search_spec.md) |
 | インラインリネーム | ✅ | `InlineEditorView` |
 | コンテキストメニュー | ✅ | デフォルト + ビルダ |
 | ドラッグ & ドロップ | ⚠️ | `allowsDragAndDrop` のみ。`onDrag`/`onDrop` 未 |
@@ -78,7 +186,8 @@
 | --- | --- |
 | 2.0.13 | CI 直列化、リリースビルドを `test-ios` 末尾に |
 | 2.0.14 | 行選択の二重タップ回避 ([#10](https://github.com/stein2nd/s2j-source-list/issues/10))、仕様と実装の同期 |
-| (docs) | `docs/status.md` 追加、見出しタグ運用 |
+| 2.0.15 | `docs/status.md` 追加、見出しタグ、`docs:heading-tags` |
+| 2.0.16 | `status.md` 100% 完了条件チェックリスト、README 見出しタグ、`docs-linter` 1.0.34 |
 
 ---
 
