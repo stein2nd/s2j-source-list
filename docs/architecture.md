@@ -21,7 +21,7 @@ Sources/S2JSourceList/
 │   ├── Selection/
 │   │   └── SelectionManager.swift  # 選択状態管理 (単一/複数選択、選択履歴、プログラム的選択)
 │   └── Services/
-│       └── SourceListService.swift # データ供給と永続化用インターフェース、rootItems、rename/expand/collapse
+│       └── SourceListService.swift # データ供給、rootItems、rename/expand/collapse、moveItem、itemsMoved
 ├── UI/
 │   ├── Views/
 │   │   ├── SidebarView.swift       # メインのサイドバーコンポーネント、検索・展開・コンテキストメニュー
@@ -33,6 +33,7 @@ Sources/S2JSourceList/
 │       └── iPadOS/
 │           └── iPadOptimizations.swift # iPadOS 向け最適化
 ├── Utils/
+│   ├── SourceListDragDrop.swift    # D&D 用 UUID 文字列ペイロード (s2j-source-item:)
 │   ├── IconProvider.swift          # アイコン提供ユーティリティ
 │   └── Bundle+Module.swift         # Bundle.module の代替実装 (Xcode プロジェクト用)
 └── Resources/                      # Localizable.strings (Base, en, ja)
@@ -42,8 +43,9 @@ Sources/S2JSourceList/
 | --- | --- | --- |
 | `SourceItem.swift` | 表示アイテムのデータモデル。`Identifiable`, `Equatable`。title、icon、badge、children、isEditable、metadata。 | — |
 | `SelectionManager.swift` | 選択状態の管理。単一/複数選択モード、selectedItemIds、selectionHistory、selectItem / deselectItem / toggleSelection。 | [selection_spec.md](./selection_spec.md) |
-| `SourceListService.swift` | データ供給。`@Published var rootItems`。renameItem、expandItem、collapseItem。Publisher (itemsChanged, itemRenamed, itemDeleted) 提供。 | — |
-| `SidebarView.swift` | メイン UI。検索バー、リスト表示、DisclosureGroup による階層、コンテキストメニュー、選択・編集の統合。 | [selection_spec.md](./selection_spec.md), [search_spec.md](./search_spec.md), [drag_drop_spec.md](./drag_drop_spec.md) |
+| `SourceListService.swift` | データ供給。`rootItems`、CRUD、展開、`moveItem` / `isDescendant`。Publisher: `itemsChanged`、`itemRenamed`、`itemDeleted`、**`itemsMoved`**。 | [drag_drop_spec.md](./drag_drop_spec.md) |
+| `SourceListDragDrop.swift` | D&D のドラッグペイロード生成・パース (モジュール内部)。 | [drag_drop_spec.md](./drag_drop_spec.md) |
+| `SidebarView.swift` | メイン UI。検索、階層、コンテキストメニュー、選択・編集。`allowsDragAndDrop` 時は `SourceListRowDragDropModifier`。 | [selection_spec.md](./selection_spec.md), [search_spec.md](./search_spec.md), [drag_drop_spec.md](./drag_drop_spec.md) |
 | `SourceRowView.swift` | 行の描画。アイコン・バッジ・ラベル。カスタムコンテンツ (customContent) 対応。選択・編集状態の表示。 | — |
 | `InlineEditorView.swift` | 行内編集 UI。TextField によるリネーム、コミット/キャンセル。 | [selection_spec.md](./selection_spec.md) |
 | `AppKitBridge.swift` | macOS 専用。AppKit のカラー取得、必要に応じて NSOutlineView の挙動を参考にした微調整。 | — |
@@ -57,6 +59,7 @@ Sources/S2JSourceList/
 * **SidebarView** は `SourceListService` と `SelectionManager` を `@ObservedObject` で参照。
 * **選択変更** → `SelectionManager.selectionChanged` (PassthroughSubject) でホストに通知。
 * **編集・削除** → `SourceListService` の `renameItem` 等を経由し、必要に応じて Publisher で通知。
+* **ドラッグ & ドロップ** → `SidebarView.handleDrop` が `SourceListService.moveItem` を呼び出し、`itemsMoved` でホストに通知。詳細は [drag_drop_spec.md](./drag_drop_spec.md)。
 * **検索** → `SidebarView` 内の `searchText` でフィルターし、`filteredItems` として表示。詳細は [search_spec.md](./search_spec.md) を参照。
 
 ## 5. プラットフォーム分岐のルール `{@architecture:s5}`

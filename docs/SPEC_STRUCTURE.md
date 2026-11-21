@@ -74,7 +74,7 @@ Swift アプリケーションでも、「何を明文化するか」はドメ�
 | [architecture.md](./architecture.md) | コード構造と責務 (Core/UI/Platform、ファイル配置)。 | §4 |
 | [selection_spec.md](./selection_spec.md) | 選択・インライン編集ルール。 | §4.6.3、§6 (利用例の補足) |
 | [search_spec.md](./search_spec.md) | 検索マッチング・親子表示ルール。 | 検索機能 (本文は本 spec に委譲) |
-| [drag_drop_spec.md](./drag_drop_spec.md) | ドラッグ & ドロップ (未実装含む) の設計指針。 | §4.6.4 |
+| [drag_drop_spec.md](./drag_drop_spec.md) | ドラッグ & ドロップの挙動・制約・`moveItem` / `itemsMoved` API。 | §4.6.4 |
 | [status.md](./status.md) | 実装状況の入口 (カテゴリー要約・短期 Backlog 索引)。 | §11・§12の要約 (詳細は SPEC に委譲) |
 | [SPEC.md](./SPEC.md) | 要件概要、実装状況、Backlog、品質評価、Appendix。 | 本体 (ハブ) |
 | [SPEC_CICD.md](./SPEC_CICD.md) | CI/CD、ローカルテスト、lint。 | §9、Appendix の CI 補足 |

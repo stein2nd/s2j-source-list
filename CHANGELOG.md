@@ -2,6 +2,26 @@
 
 ## unreleased
 
+## 2.0.17 - 2026-11-21
+
+### Added
+
+* `SourceListService` — `moveItem(id:to:)`、`SourceListMovePosition`、`itemsMoved` / `SourceListItemMoveEvent` (自己・子孫へのドロップは拒否)
+* `SidebarView` — `allowsDragAndDrop` かつ検索空のとき `.draggable` / `.dropDestination` でツリー内移動 (グループ行は子末尾+展開、葉行は兄弟直後)
+* `SourceListDragDrop` — D&D 用 UUID ペイロード (`s2j-source-item:`)
+* `SourceListServiceTests` — 移動・`itemsMoved`・子孫判定のユニットテスト
+
+### Changed
+
+* `docs/` (`drag_drop_spec` / `status` / `SPEC` / `architecture` / `SPEC_STRUCTURE`) と `README.md` — D&D 実装、API、完了率を同期
+* `docs/status.md` — ドラッグ & ドロップ完了条件 **3/3 (100%)**
+* `README.md` の `Package.swift` 依存指定を v2.0.16 → v2.0.17 に更新
+
+### Fixed
+
+* D&D 追加コードの SwiftLint / SwiftFormat (`line_length`、複数行 `guard` / `if`) を満たすよう整形
+* Periphery — `SidebarView.dropTargetId` をドロップ先ハイライトのアニメーションで参照
+
 ## 2.0.16 - 2026-11-20
 
 ### Added

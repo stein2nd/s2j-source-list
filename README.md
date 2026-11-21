@@ -72,7 +72,7 @@ Add the following to your `Package.swift` file.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.16")
+    .package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.17")
 ]
 ```
 
@@ -202,7 +202,16 @@ service.rootItems = [/* items */]
 service.renameItem(id: itemId, newTitle: "New Title")
 service.deleteItem(id: itemId)
 service.toggleExpansion(id: groupId)
+
+// Drag & drop completion (またはプログラム的な並び替え)
+service.moveItem(id: itemId, to: .afterSibling(siblingId: otherId))
+service.itemsMoved
+    .sink { event in
+        // event.itemId, event.newParentId, event.newIndex
+    }
 ```
+
+詳細は [drag_drop_spec.md](docs/drag_drop_spec.md) を参照してください。
 
 ### SelectionManager `{@readme:s-selectionmanager}`
 

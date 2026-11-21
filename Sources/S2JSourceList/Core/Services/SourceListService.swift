@@ -34,6 +34,11 @@ public final class SourceListService: ObservableObject {
     public let itemDeleted = PassthroughSubject<UUID, Never>()
 
     /**
+     * アイテム移動イベントのパブリッシャー (ドラッグ & ドロップ完了時)
+     */
+    public let itemsMoved = PassthroughSubject<SourceListItemMoveEvent, Never>()
+
+    /**
      * 新しいソースリストサービスを初期化します。
      * - Parameter rootItems: 初期のルートアイテム (デフォルトは空の配列)
      */
@@ -236,5 +241,208 @@ public final class SourceListService: ObservableObject {
             }
         }
         return false
+    }
+
+    // MARK: - Drag & Drop (Tree Move)
+
+    /**
+     * アイテムの移動先を表す位置
+     */
+    public enum SourceListMovePosition: Equatable {
+        case beforeSibling(siblingId: UUID)
+        case afterSibling(siblingId: UUID)
+        case appendToParent(parentId: UUID?)
+    }
+
+    /**
+     * ドロップ完了後の移動結果
+     */
+    public struct SourceListItemMoveEvent: Equatable {
+        public let itemId: UUID
+        public let newParentId: UUID?
+        public let newIndex: Int
+
+        public init(itemId: UUID, newParentId: UUID?, newIndex: Int) {
+            self.itemId = itemId
+            self.newParentId = newParentId
+            self.newIndex = newIndex
+        }
+    }
+
+    /**
+     * ツリー内でアイテムを移動します。
+     * - Parameters:
+     *   - id: 移動するアイテムの ID
+     *   - position: 挿入位置
+     * - Returns: 移動に成功した場合 `true`
+     */
+    @discardableResult
+    public func moveItem(id: UUID, to position: SourceListMovePosition) -> Bool {
+        guard findItem(id: id) != nil,
+              canMove(itemId: id, to: position),
+              let extracted = extractItem(id: id)
+        else { return false }
+
+        let event: SourceListItemMoveEvent? = switch position {
+        case let .beforeSibling(siblingId):
+            insert(extracted, before: siblingId)
+        case let .afterSibling(siblingId):
+            insert(extracted, after: siblingId)
+        case let .appendToParent(parentId):
+            append(extracted, toParent: parentId)
+        }
+
+        guard let event else {
+            rootItems.append(extracted)
+            return false
+        }
+
+        itemsChanged.send(rootItems)
+        itemsMoved.send(event)
+        return true
+    }
+
+    /**
+     * `potentialAncestorId` の子孫に `itemId` が含まれるかどうかを返します。
+     */
+    public func isDescendant(itemId: UUID, of potentialAncestorId: UUID) -> Bool {
+        guard potentialAncestorId != itemId,
+              let ancestor = findItem(id: potentialAncestorId)?.item
+        else {
+            return false
+        }
+        return containsDescendant(itemId: itemId, in: ancestor)
+    }
+
+    private func canMove(itemId: UUID, to position: SourceListMovePosition) -> Bool {
+        switch position {
+        case let .beforeSibling(siblingId), let .afterSibling(siblingId):
+            guard siblingId != itemId else { return false }
+            return !isDescendant(itemId: siblingId, of: itemId)
+        case let .appendToParent(parentId):
+            guard parentId != itemId else { return false }
+            if let parentId {
+                return !isDescendant(itemId: parentId, of: itemId)
+            }
+            return true
+        }
+    }
+
+    private func containsDescendant(itemId: UUID, in item: SourceItem) -> Bool {
+        guard let children = item.children else { return false }
+        for child in children {
+            if child.id == itemId {
+                return true
+            }
+            if containsDescendant(itemId: itemId, in: child) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private func extractItem(id: UUID) -> SourceItem? {
+        if let index = rootItems.firstIndex(where: { $0.id == id }) {
+            return rootItems.remove(at: index)
+        }
+        return extractItemFromChildren(id: id, children: &rootItems)
+    }
+
+    private func extractItemFromChildren(id: UUID, children: inout [SourceItem]) -> SourceItem? {
+        for index in children.indices {
+            if children[index].id == id {
+                return children.remove(at: index)
+            }
+            if var childChildren = children[index].children,
+               let extracted = extractItemFromChildren(id: id, children: &childChildren)
+            {
+                children[index].children = childChildren.isEmpty ? nil : childChildren
+                return extracted
+            }
+        }
+        return nil
+    }
+
+    private func insert(_ item: SourceItem, before siblingId: UUID) -> SourceListItemMoveEvent? {
+        if let index = rootItems.firstIndex(where: { $0.id == siblingId }) {
+            rootItems.insert(item, at: index)
+            return SourceListItemMoveEvent(itemId: item.id, newParentId: nil, newIndex: index)
+        }
+        return insertRelativeToSibling(item, siblingId: siblingId, before: true, children: &rootItems)
+    }
+
+    private func insert(_ item: SourceItem, after siblingId: UUID) -> SourceListItemMoveEvent? {
+        if let index = rootItems.firstIndex(where: { $0.id == siblingId }) {
+            let insertIndex = index + 1
+            rootItems.insert(item, at: insertIndex)
+            return SourceListItemMoveEvent(itemId: item.id, newParentId: nil, newIndex: insertIndex)
+        }
+        return insertRelativeToSibling(item, siblingId: siblingId, before: false, children: &rootItems)
+    }
+
+    private func insertRelativeToSibling(
+        _ item: SourceItem,
+        siblingId: UUID,
+        before: Bool,
+        children: inout [SourceItem]
+    ) -> SourceListItemMoveEvent? {
+        for index in children.indices {
+            if var childChildren = children[index].children {
+                if let siblingIndex = childChildren.firstIndex(where: { $0.id == siblingId }) {
+                    let insertIndex = before ? siblingIndex : siblingIndex + 1
+                    childChildren.insert(item, at: insertIndex)
+                    children[index].children = childChildren
+                    return SourceListItemMoveEvent(
+                        itemId: item.id,
+                        newParentId: children[index].id,
+                        newIndex: insertIndex
+                    )
+                }
+                if let event = insertRelativeToSibling(
+                    item,
+                    siblingId: siblingId,
+                    before: before,
+                    children: &childChildren
+                ) {
+                    children[index].children = childChildren
+                    return event
+                }
+            }
+        }
+        return nil
+    }
+
+    private func append(_ item: SourceItem, toParent parentId: UUID?) -> SourceListItemMoveEvent? {
+        if parentId == nil {
+            let newIndex = rootItems.count
+            rootItems.append(item)
+            return SourceListItemMoveEvent(itemId: item.id, newParentId: nil, newIndex: newIndex)
+        }
+        guard let parentId else { return nil }
+        return appendToParent(item, parentId: parentId, children: &rootItems)
+    }
+
+    private func appendToParent(
+        _ item: SourceItem,
+        parentId: UUID,
+        children: inout [SourceItem]
+    ) -> SourceListItemMoveEvent? {
+        for index in children.indices {
+            if children[index].id == parentId {
+                if children[index].children == nil {
+                    children[index].children = []
+                }
+                let newIndex = children[index].children?.count ?? 0
+                children[index].children?.append(item)
+                return SourceListItemMoveEvent(itemId: item.id, newParentId: parentId, newIndex: newIndex)
+            }
+            if var childChildren = children[index].children,
+               let event = appendToParent(item, parentId: parentId, children: &childChildren)
+            {
+                children[index].children = childChildren
+                return event
+            }
+        }
+        return nil
     }
 }

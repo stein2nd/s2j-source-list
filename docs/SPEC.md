@@ -78,7 +78,7 @@
     * 階層構造の表示 (展開/折り畳み) (✅ 実装済み)
     * 項目の選択 (単一選択/複数選択) (✅ 実装済み)
     * アイコン・バッジの表示 (✅ 実装済み)
-    * ドラッグ & ドロップ (⚠️ 未実装 - パラメータは用意されているが実装未完了)
+    * ドラッグ & ドロップ (✅ 実装済み — [drag_drop_spec.md](drag_drop_spec.md))
     * コンテキストメニュー (✅ 実装済み)
     * インライン編集 (ラベルのリネーム) (✅ 実装済み)
     * カスタム行表示 (✅ 実装済み)
@@ -116,7 +116,7 @@
 ### 4.4.1. 主要型 (例) `{@spec:s4-4-1}`
 
 * `public struct SourceItem: Identifiable, Equatable` — 表示アイテム (title、icon、badge、children、isEditable、metadata)
-* `public final class SourceListService: ObservableObject` — データ供給と永続化用インターフェース (`@Published var rootItems: [SourceItem]`)
+* `public final class SourceListService: ObservableObject` — データ供給 (`@Published var rootItems`)。`moveItem(id:to:)`、`itemsMoved` 等 ([drag_drop_spec.md](drag_drop_spec.md))
 * `public final class SelectionManager: ObservableObject` — 選択状態 (単一／複数選択)、選択履歴、プログラム的選択
 * `public struct SidebarView: View` — 組込みのサイドバーコンポーネント (カスタマイズ・ポイント多数)
 * `public struct SourceRowView: View` — 行のレンダラー (カスタム・コンテンツを受け取るために `Content` ジェネリクスを用意)
@@ -161,6 +161,7 @@
 │　│　└┬─ iPadOS/
 │　│　　└─ iPadOptimizations.swift  # iPadOS 最適化 (✅ 実装済み)
 │　├┬─ Utils/
+│　│├─ SourceListDragDrop.swift  # D&D 内部ペイロード (✅ 実装済み)
 │　│├─ IconProvider.swift  # アイコン提供ユーティリティ (✅ 実装済み)
 │　│└─ Bundle+Module.swift  # Bundle.module の代替実装 (Xcode プロジェクト用) (✅ 実装済み)
 │　└┬─ Resources/  # リソースファイル
@@ -203,11 +204,12 @@
 
 ### 4.6.4. ドラッグ & ドロップ `{@spec:s4-6-4}`
 
-**実装状況**: ⚠️ **未実装** - `SidebarView` に `allowsDragAndDrop` パラメータは用意されていますが、実際の `onDrag` / `onDrop` 実装は未完了です。
+**実装状況**: ✅ **実装済み** — `allowsDragAndDrop` 有効時に同一ツリー内の並び替え・親子移動。正本は [drag_drop_spec.md](drag_drop_spec.md)。
 
-* 詳細は [drag_drop_spec.md](drag_drop_spec.md) を参照してください。
-* `onDrag` / `onDrop` をラップした高レベル API を提供します。
-* 必要に応じて AppKit ブリッジを用い、より細かいドロップ挙動を実現します。
+* `SidebarView`: 検索が空のとき行に `.draggable` / `.dropDestination` (内部 `SourceListDragDrop` ペイロード)。
+* `SourceListService`: `moveItem(id:to:)`、`itemsMoved` / `SourceListItemMoveEvent`。自己・子孫へのドロップは拒否。
+* 未対応: 検索中の D&D、複数選択の一括移動、`beforeSibling` を UI から選ぶ操作、ドラッグ元の半透明。
+* 将来、AppKit ブリッジでドロップゾーン精度を上げる余地あり。
 
 ### 4.6.5. コンテキストメニュー `{@spec:s4-6-5}`
 
@@ -230,7 +232,7 @@
 * `SidebarView` に下記オプションを用意します:
   * `rowContent: (SourceItem) -> AnyView` (カスタム行レンダラー) (✅ 実装済み - `customRowContent` パラメータ)
   * `indentationWidth`, `iconSize`, `rowHeight` (✅ 実装済み - `indentationWidth`, `iconSize` パラメータ)
-  * `allowsMultipleSelection`, `allowsDragAndDrop` (✅ 実装済み - パラメータとして実装、ただしドラッグ & ドロップ機能は未実装)
+  * `allowsMultipleSelection`, `allowsDragAndDrop` (✅ 実装済み — D&D は `drag_drop_spec.md` を参照)
   * `searchBar: Bool` (組込み検索) (✅ 実装済み - `showsSearchBar` パラメータ) — 検索のマッチングルールは [search_spec.md](search_spec.md) を参照
 
 ### 4.8. 主要ファイルの実装状況 `{@spec:s4-8}`
@@ -247,7 +249,8 @@
     * `S2JSourceList-macOS`: macOS 専用スキーム (macOS ターゲットのみ)
     * `S2JSourceList-iOS`: iOS 専用スキーム (iOS ターゲットのみ)
 * `SourceItem.swift`: データモデル (title、icon、badge、children、isEditable、metadata) (✅ 実装済み)
-* `SourceListService.swift`: データ供給と永続化用インターフェース、`@Published var rootItems: [SourceItem]` (✅ 実装済み)
+* `SourceListService.swift`: データ供給、`moveItem` / `itemsMoved` 含む (✅ 実装済み)
+* `SourceListDragDrop.swift`: D&D 内部ペイロード (✅ 実装済み)
 * `SelectionManager.swift`: 選択状態 (単一／複数選択)、選択履歴、プログラム的選択 (✅ 実装済み)
 * `SidebarView.swift`: メインのサイドバーコンポーネント、カスタマイズポイント (✅ 実装済み)
 * `SourceRowView.swift`: 行のレンダラー、カスタムコンテンツ対応 (✅ 実装済み)
@@ -355,7 +358,7 @@ CI/CD に関する詳細な仕様は、[SPEC_CICD.md](./SPEC_CICD.md) を参照�
 1. v0.1.0… コアモデル + SidebarView (読み取り専用、展開/折り畳み、選択)
 2. v0.2.0… アイコン、バッジ、カスタム行、検索
 3. v0.3.0… 編集 (rename)、コンテキストメニュー
-4. v0.4.0… ドラッグ & ドロップ、多重選択の強化
+4. v0.4.0… ドラッグ & ドロップ (✅ 基本実装済み)、多重選択の強化 (一部未)
 5. v1.0.0… ドキュメント整備・安定版リリース
 
 ## 11. 実装状況サマリー `{@spec:s11}`
@@ -365,7 +368,7 @@ CI/CD に関する詳細な仕様は、[SPEC_CICD.md](./SPEC_CICD.md) を参照�
 S2J Source List は、当初の仕様の約90%を達成し、本番環境での使用に適した高品質な Swift Package として完成しています。
 
 **主要な成果**:
-* **コア機能の完全実装**: 階層表示、選択、編集、検索、コンテキスト・メニューなど主要機能は100%実装済み
+* **コア機能の完全実装**: 階層表示、選択、編集、検索、コンテキストメニュー、ドラッグ & ドロップなど主要機能は100%実装済み
 * **高品質なコード**: Swift、SwiftUI のベスト・プラクティスに準拠
 * **優れたユーザー体験**: プラットフォーム固有の最適化と包括的なアクセシビリティ対応
 * **堅牢なテスト**: ユニットテストによるコアロジックの検証
@@ -379,17 +382,18 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * ✅ **インライン編集**: ラベルのリネーム機能を `InlineEditorView` で実装
 * ✅ **カスタム行表示**: `SourceRowView` で `customContent` パラメータをサポート
 * ✅ **検索機能**: `SidebarView` で実装
+* ✅ **ドラッグ & ドロップ**: `SidebarView` の `allowsDragAndDrop` と `SourceListService.moveItem` / `itemsMoved` で実装
 * ✅ **プラットフォーム固有の最適化**: `AppKitBridge` (macOS) と `iPadOptimizations` (iPadOS) で実装
 * ✅ **国際化・ローカライズ**: Base、en、ja の `Localizable.strings` を実装
 * ✅ **ユニットテスト**: `SourceItemTests`、`SelectionManagerTests`、`SourceListServiceTests` を実装
 * ✅ **CI/CD**: GitHub Actions ワークフローとローカルテスト・スクリプトを実装、GitHub Actions「Swift Test」ワークフローが正常に動作し、すべてのテストが成功 (詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照)
-* ✅ **主要ファイル**: すべてのコアファイル (`SourceItem`、`SourceListService`、`SelectionManager`、`SidebarView`、`SourceRowView`、`InlineEditorView`、`AppKitBridge`、`iPadOptimizations`、`IconProvider`、`Bundle+Module`) を実装
+* ✅ **主要ファイル**: すべてのコアファイル (`SourceItem`、`SourceListService`、`SelectionManager`、`SidebarView`、`SourceRowView`、`InlineEditorView`、`SourceListDragDrop`、`AppKitBridge`、`iPadOptimizations`、`IconProvider`、`Bundle+Module`) を実装
 * ✅ **アクセシビリティ**: VoiceOver 用の `accessibilityLabel` / `accessibilityValue` を実装
 * ✅ **ダークモード対応**: SwiftUI の標準カラーを使用して実装
 
 ### 11.2. ほとんど実装済み機能 (85-95% 完了) `{@spec:s11-2}`
 
-* ⚠️ **ドラッグ & ドロップ**: 85% 完了 - `SidebarView` に `allowsDragAndDrop` パラメータは用意されていますが、実際の `onDrag` / `onDrop` 実装は未完了です。
+* (現時点で該当なし — ドラッグ & ドロップは [§11.1](#spec-s11-1) に移行)
 
 ### 11.3. 未実装機能 `{@spec:s11-3}`
 
@@ -412,7 +416,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 | | インライン編集 | ✅ 実装済み | 100% | `InlineEditorView` で実装 |
 | | カスタム行表示 | ✅ 実装済み | 100% | `SourceRowView` で `customContent` パラメータをサポート |
 | | 検索機能 | ✅ 実装済み | 100% | `SidebarView` で実装 |
-| | ドラッグ & ドロップ | ⚠️ 部分実装 | 85% | パラメータは実装済み、`onDrag` / `onDrop` 実装は未完了 |
+| | ドラッグ & ドロップ | ✅ 実装済み | 100% | `allowsDragAndDrop` + `moveItem` / `itemsMoved` ([drag_drop_spec](drag_drop_spec.md)) |
 | **UI コンポーネント** | `SidebarView` | ✅ 実装済み | 100% | メインのサイドバーコンポーネント |
 | | `SourceRowView` | ✅ 実装済み | 100% | 行のレンダラー、カスタムコンテンツ対応 |
 | | `InlineEditorView` | ✅ 実装済み | 100% | インライン編集ビュー |
@@ -446,7 +450,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * 全体の実装完了率は、各カテゴリーの完了率を重み付け平均で算出
 
 **カテゴリー別完了率**:
-* **コア機能**: 98.75% (8機能中7機能が100%。1機能は85%)
+* **コア機能**: 100% (8機能すべて実装済み)
 * **UI コンポーネント**: 100% (5コンポーネントすべて実装済み)
 * **データモデル**: 100% (3モジュールすべて実装済み)
 * **ユーティリティ**: 100% (`IconProvider` / `Bundle+Module` の2モジュール実装済み)
@@ -473,19 +477,14 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 本章では、「今後の予定」を記載します。
 
-**残りの未実装・部分実装の機能**: ドラッグ & ドロップ (85%完了、パラメータは実装済み)、UI テスト、リリース自動化など、現在の実装でも十分に実用的な機能です。詳細は「11. 実装状況サマリー」を参照してください。
+**残りの未実装・部分実装の機能**: UI / スナップショットテスト、DocC、リリース自動化、D&D の拡張 (一括移動・検索中 D&D 等)。詳細は「11. 実装状況サマリー」および [status.md](status.md) を参照してください。
 
 ### 12.1. 短期での改善予定 (1-3ヵ月) `{@spec:s12-1}`
 
 以下の機能は、短期間で実装可能な項目です。
 
-1. **ドラッグ & ドロップ機能の実装** (優先度: 高)
-   * 現状: `SidebarView` に `allowsDragAndDrop` パラメータは用意されていますが、実際の `onDrag` / `onDrop` 実装は未完了です。
-   * 実装内容:
-     * `onDrag` / `onDrop` をラップした高レベル API を実装します。
-     * 必要に応じて AppKit ブリッジを用いた細かいドロップ挙動を実現します。
-     * ドラッグ中の視覚的フィードバックを実装します。
-   * 見積もり: 1-2週間。
+1. **ドラッグ & ドロップの拡張** (優先度: 低〜中) (基本は ✅ 完了 — [drag_drop_spec.md](drag_drop_spec.md))
+   * 残タスク例: 検索フィルター中の D&D、複数選択の一括移動、`beforeSibling` / 子先頭の UI、`AppKitBridge` による精密ドロップゾーン、ドラッグ元の半透明。
 
 2. **UI テスト、スナップショットテストの実装** (優先度: 中)
    * 現状: ユニットテストは実装済み、UI テストは未実装です。
@@ -565,7 +564,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
    * 実装内容:
      * 展開/折り畳み時のアニメーションを実装します。
      * 選択時のトランジション効果を実装します。
-     * ドラッグ&ドロップ時の視覚的フィードバックを強化します。
+     * ドラッグ&ドロップ時の視覚的フィードバックをさらに強化します (ドロップ枠・アニメーションは実装済み)。
    * 見積もり: 1-2週間。
 
 4. **アクセシビリティ機能の強化** (優先度: 低)

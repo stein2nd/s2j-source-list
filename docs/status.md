@@ -2,8 +2,8 @@
 
 | 項目 | 内容 |
 | --- | --- |
-| 最終更新 | 2026-11-20 |
-| リリース (npm / タグ) | **2.0.16** |
+| 最終更新 | 2026-11-21 |
+| リリース (npm / タグ) | **2.0.17** |
 | 最小 OS | macOS **14.6** / iPadOS **17.6** ([overview.md](./overview.md)) |
 
 ---
@@ -47,14 +47,14 @@
 | コア Source List (Must) | 実装済み | 100 | [§コア](#status-core) (11/11) |
 | プラットフォーム・ローカライズ | 実装済み | 100 | [§プラットフォーム](#status-platform) (4/4) |
 | CI ・ユニットテスト | 実装済み | 100 | [§CI・品質](#status-quality-unit) (6/6) |
-| ドラッグ & ドロップ | 部分 | 33 | [§D&D](#status-dnd) (1/3) |
+| ドラッグ & ドロップ | 実装済み | 100 | [§D&D](#status-dnd) (3/3) |
 | テスト拡張 (UI / Snapshot) | 部分 | 25 | [§テスト拡張](#status-quality-ui) (1/4) |
 | API ドキュメント、Preview | 部分 | 50 | [§ドキュメント](#status-devx) (2/4) |
 | アクセシビリティ拡張 | 部分 | 33 | [§アクセシビリティ](#status-a11y) (1/3) |
 
 **Must 範囲 (上表の先頭4行):** **100%** — SPM ライブラリとしてホストに組込み可能な水準。
 
-**全体 (D&D、拡張テスト等を含む):** チェックリスト **40項目中31項目** ≒ **約78%** (下記と [SPEC.md §11.4](./SPEC.md) に対応)。
+**全体 (D&D、拡張テスト等を含む):** チェックリスト **40項目中33項目** ≒ **約83%** (下記と [SPEC.md §11.4](./SPEC.md) に対応)。
 
 ## 100% 完了条件チェックリスト `{@status:s100}`
 
@@ -106,8 +106,8 @@
 正本: [drag_drop_spec.md](./drag_drop_spec.md)
 
 * [x] `allowsDragAndDrop` パラメータとアクセシビリティ識別子
-* [ ] `onDrag` / `onDrop` によるツリー内移動
-* [ ] ドロップ完了時の `SourceListService` 更新とホスト向け通知 API
+* [x] `.draggable` / `.dropDestination` によるツリー内移動 ([drag_drop_spec](./drag_drop_spec.md) §5)
+* [x] ドロップ完了時の `SourceListService` 更新とホスト向け通知 API (`itemsMoved`)
 
 ### テスト拡張 (UI / Snapshot) `{@status:s-status-quality-ui}`
 
@@ -143,17 +143,17 @@
 | G4 | Xcode Archive / Notarize のリリース自動化 | Artifacts は CI で生成済み |
 | G5 | GitHub Actions `workflow_dispatch` 手動起動 | runner 枯渇時の運用改善 ([SPEC_CICD.md §8](./SPEC_CICD.md)) |
 
-**補足:** 上表 [スナップショット](#status-s-h005) の **約90%** は [SPEC.md §11.4](./SPEC.md) のカテゴリー加重。本チェックリストの **約78%** は上記§の機械的な `[x]` 比率。
+**補足:** 上表 [スナップショット](#status-s-h005) の **約90%** は [SPEC.md §11.4](./SPEC.md) のカテゴリー加重。本チェックリストの **約83%** は上記§の機械的な `[x]` 比率。
 
 ---
 
 ## スナップショット (カテゴリー別) `{@status:s-h005}`
 
-[SPEC.md §11.4](./SPEC.md) と同期した要約 (2026-11-20時点)。完了条件の機械集計は [§100% チェックリスト](#status-s100) を参照。
+[SPEC.md §11.4](./SPEC.md) と同期した要約 (2026-11-21時点)。完了条件の機械集計は [§100% チェックリスト](#status-s100) を参照。
 
 | カテゴリー | 完了率 | 状態 |
 | --- | --- | --- |
-| コア機能 (階層・選択・検索・編集等) | 98.75% | D&D のみ部分実装 |
+| コア機能 (階層・選択・検索・編集等) | 100% | D&D 含むコア Must |
 | UI コンポーネント | 100% | `SidebarView` ほか |
 | データモデル・サービス | 100% | `SourceItem` / `SourceListService` / `SelectionManager` |
 | リソース (Localizable) | 50% | `Assets.xcassets` 未 |
@@ -173,7 +173,7 @@
 | 検索フィルター | ✅ | [search_spec](./search_spec.md) |
 | インラインリネーム | ✅ | `InlineEditorView` |
 | コンテキストメニュー | ✅ | デフォルト + ビルダ |
-| ドラッグ & ドロップ | ⚠️ | `allowsDragAndDrop` のみ。`onDrag`/`onDrop` 未 |
+| ドラッグ & ドロップ | ✅ | `allowsDragAndDrop` + `moveItem` / `itemsMoved` |
 | SampleApp (macOS) | ✅ | Periphery 用スキーム |
 | GitHub Actions `Swift Test` | ✅ | `test-macos` → `test-ios` 直列 |
 | 見出しタグ (`{@doc:slug}`) | ✅ | [specs.md §見出しタグ](./specs.md) |
@@ -188,6 +188,7 @@
 | 2.0.14 | 行選択の二重タップ回避 ([#10](https://github.com/stein2nd/s2j-source-list/issues/10))、仕様と実装の同期 |
 | 2.0.15 | `docs/status.md` 追加、見出しタグ、`docs:heading-tags` |
 | 2.0.16 | `status.md` 100% 完了条件チェックリスト、README 見出しタグ、`docs-linter` 1.0.34 |
+| 2.0.17 | ドラッグ & ドロップ本実装 (`moveItem` / `itemsMoved`)、仕様同期 |
 
 ---
 
@@ -197,7 +198,7 @@
 
 | 項目 | 状態 | メモ |
 | --- | --- | --- |
-| ドラッグ & ドロップ本実装 | 未 | [drag_drop_spec](./drag_drop_spec.md) |
+| ドラッグ & ドロップ本実装 | 済 | [drag_drop_spec](./drag_drop_spec.md) |
 | UI / Snapshot テスト | 未 | SnapshotTesting 想定 |
 | Preview Content | 未 | Xcode Preview 用データ |
 | DocC API Reference | 未 | コメントはあり |

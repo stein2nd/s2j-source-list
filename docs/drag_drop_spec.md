@@ -2,27 +2,30 @@
 
 ## 1. 目的 `{@drag-drop:s1}`
 
-本ドキュメントは、階層ソースリストにおけるドラッグ & ドロップ (D & D) の挙動・制約・ホスト API を定義します。**現状は未実装**であり、本 spec は実装時の設計指針として用います。
+本ドキュメントは、階層ソースリストにおけるドラッグ & ドロップ (D & D) の挙動・制約・ホスト API を定義します。
 
 ## 2. 現状 `{@drag-drop:s2}`
 
-* `SidebarView` に `allowsDragAndDrop: Bool` パラメータは用意されているが、`onDrag` / `onDrop` の実装は未完了。
-* 実装完了率: 約85% (パラメータと UI フックは用意済み)。
+* `SidebarView` の `allowsDragAndDrop == true` かつ検索バーが空のとき、行に `.draggable` / `.dropDestination` を付与し、同一ツリー内で並び替え・親子移動。
+* グループ行へドロップした場合は子の末尾へ追加し、グループを自動展開する。葉行へドロップした場合は兄弟として直後に挿入する。
+* `SourceListService.moveItem(id:to:)` と `itemsMoved` でツリー更新とホスト通知。自己・子孫へのドロップは拒否する。
+* 複数選択の一括移動、行間の「前」挿入の精密制御、検索フィルター中の D&D は未対応。
 
 ## 3. 対象範囲 `{@drag-drop:s3}`
 
 ### 3.1. サポートする操作 `{@drag-drop:s3-1}`
 
-| 操作 | 説明 | 優先度 |
-| --- | --- | --- |
-| 同一ツリー内の並び替え | 兄弟間の順序変更、または親子関係の変更 | Must |
-| 別グループへの移動 | 異なる親の下への移動 | Should |
-| 複数項目の一括移動 | Command/Shift で複数選択した項目をまとめて移動 | Could |
+| 操作 | 説明 | 優先度 | 実装 |
+| --- | --- | --- | --- |
+| 同一ツリー内の並び替え | 兄弟間の順序変更、または親子関係の変更 | Must | ✅ 葉行へのドロップは「直後の兄弟」、グループ行は「子として末尾」 |
+| 別グループへの移動 | 異なる親の下への移動 | Should | ✅ グループ行へのドロップで子末尾へ移動 |
+| 複数項目の一括移動 | Command/Shift で複数選択した項目をまとめて移動 | Could | 未 |
 
 ### 3.2. ソース・ターゲット `{@drag-drop:s3-2}`
 
 * **ドラッグソース**: `SourceItem` の行 (`isSelectable` が true の項目)。グループ行もドラッグ可能とするかは将来検討。
-* **ドロップターゲット**: 他の `SourceItem` の行、またはグループの「子として末尾に追加」の専用ゾーン。
+* **ドロップターゲット**: 任意の `SourceItem` 行。`hasChildren` の行は子末尾、葉行は兄弟として直後 (`afterSibling`)。専用ドロップゾーンは未実装。
+* **検索中**: `showsSearchBar` でフィルター中 (`searchText` 非空) は D&D 修飾子を付けない。
 
 ## 4. 制約とルール `{@drag-drop:s4}`
 
@@ -30,26 +33,35 @@
 
 * ルート直下への移動は、`SourceListService.rootItems` の更新で表現する。
 * 自己へのドロップ、および自分の子孫へのドロップは禁止とする (循環参照の防止)。
-* ドロップ位置の候補:
-  * 兄弟の「前」「後」
-  * 親の「子として先頭」「子として末尾」
+* UI から利用するドロップ位置 (v1):
+  * 葉行ターゲット → `SourceListMovePosition.afterSibling`
+  * グループ行ターゲット → `SourceListMovePosition.appendToParent`
+* サービス API では追加で `beforeSibling` を利用可能。兄弟の「前」・子の先頭挿入を UI から選ぶ操作は未実装。
 
 ### 4.2. 視覚的フィードバック `{@drag-drop:s4-2}`
 
-* ドラッグ中: ドラッグ元の行を半透明またはハイライトで強調。
-* ドロップ可能なターゲット: ドロップ可能な行またはゾーンにインジケータ (例: 横線、背景色) を表示。
-* ドロップ不可: ドロップ不可の場合はカーソルを禁止アイコンに変更、またはフィードバックなし。
+* ドラッグ中: システムのドラッグプレビューに委ねる (行の半透明は未実装)。
+* ドロップ可能なターゲット: ターゲット行にアクセント色の枠 (`RoundedRectangle.stroke`)。
+* ドロップターゲット変更時: `SidebarView` の `List` で `dropTargetId` に連動する短いアニメーション。
+* ドロップ不可: `moveItem` が `false` を返す。専用カーソルは未実装。
 
 ### 4.3. ホストアプリケーションへの通知 `{@drag-drop:s4-3}`
 
-* D&D 完了時に、`SourceListService` 経由でツリーを更新する。
-* 必要に応じて、`itemsMoved` などの Publisher を追加し、ホストが「どの ID がどこに移動したか」を購読できるようにする。
+* D&D 完了時に `SourceListService.moveItem(id:to:)` が `rootItems` を更新し、`itemsChanged` と **`itemsMoved`** を発火する。
+* `SourceListItemMoveEvent`: `itemId`、`newParentId` (`nil` = ルート)、`newIndex` (親内の0始まりインデックス)。
+* ホストは `itemsMoved` を購読して永続化や副作用を行う。プログラム的移動にも同 API を利用可能。
+
+### 4.4. ペイロード `{@drag-drop:s4-4}`
+
+* D&D 用の内部文字列は `SourceListDragDrop` (`Utils/SourceListDragDrop.swift`)。接頭辞 `s2j-source-item:` に `UUID` を連結する。
+* SwiftUI: `String` の `.draggable` / `.dropDestination(for: String.self)`。
 
 ## 5. 実装方針 `{@drag-drop:s5}`
 
-* `onDrag` / `onDrop` をラップした高レベル API を `SidebarView` 内に実装。
+* `SidebarView` の `SourceListRowDragDropModifier` が行単位で `.draggable` / `.dropDestination` を付与する (SwiftUI Transferable 相当の `String` ペイロード)。
 * 細かいドロップ挙動 (行高さ、ドロップゾーンの精度) が必要な場合は、`AppKitBridge` で AppKit を利用することを検討。
-* `allowsDragAndDrop == false` の場合は、`onDrag` / `onDrop` を一切付けない。
+* `allowsDragAndDrop == false`、または検索フィルター中は D&D 修飾子を付けない。
+* ロジックの正本は `SourceListService` (抽出・挿入・循環参照ガード)。UI テストは [SPEC.md §12.1](./SPEC.md) Backlog。
 
 ## 6. 関連ドキュメント `{@drag-drop:s6}`
 

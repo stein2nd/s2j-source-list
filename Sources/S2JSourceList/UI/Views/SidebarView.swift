@@ -27,6 +27,7 @@ public struct SidebarView: View {
     @State private var searchText: String = ""
     @State private var editingItemId: UUID?
     @State private var expandedItemIds: Set<UUID> = []
+    @State private var dropTargetId: UUID?
 
     /**
      * コンテキストメニュー・アクション
@@ -148,6 +149,7 @@ public struct SidebarView: View {
         #else
         .listStyle(.insetGrouped)
         #endif
+        .animation(.easeInOut(duration: 0.15), value: dropTargetId)
     }
 
     /**
@@ -220,6 +222,12 @@ public struct SidebarView: View {
                 defaultContextMenu(for: item)
             }
         }
+        .modifier(SourceListRowDragDropModifier(
+            isEnabled: allowsDragAndDrop && searchText.isEmpty,
+            item: item,
+            dropTargetId: $dropTargetId,
+            onDropOnRow: handleDrop
+        ))
     }
 
     /// 行タップ時の選択を次ランループに遅延し、`Publishing changes from within view updates` を避ける。
@@ -337,5 +345,76 @@ public struct SidebarView: View {
         }
         collectExpanded(service.rootItems)
         expandedItemIds = expanded
+    }
+
+    private func handleDrop(draggedItemId: UUID, onto target: SourceItem) -> Bool {
+        guard allowsDragAndDrop,
+              searchText.isEmpty,
+              draggedItemId != target.id,
+              service.findItem(id: draggedItemId)?.item.isSelectable == true
+        else { return false }
+
+        let position: SourceListService.SourceListMovePosition = if target.hasChildren {
+            .appendToParent(parentId: target.id)
+        } else {
+            .afterSibling(siblingId: target.id)
+        }
+
+        let moved = service.moveItem(id: draggedItemId, to: position)
+        if moved, target.hasChildren {
+            service.expandItem(id: target.id)
+            expandedItemIds.insert(target.id)
+        }
+        return moved
+    }
+}
+
+// MARK: - Drag & Drop
+
+private struct SourceListRowDragDropModifier: ViewModifier {
+    let isEnabled: Bool
+    let item: SourceItem
+    @Binding var dropTargetId: UUID?
+    let onDropOnRow: (UUID, SourceItem) -> Bool
+
+    func body(content: Content) -> some View {
+        if isEnabled, item.isSelectable {
+            content
+                .draggable(SourceListDragDrop.payload(for: item.id))
+                .dropDestination(for: String.self) { payloads, _ in
+                    dropTargetId = nil
+                    guard let draggedId = payloads.compactMap({ SourceListDragDrop.parse($0) }).first else {
+                        return false
+                    }
+                    return onDropOnRow(draggedId, item)
+                } isTargeted: { isTargeted in
+                    dropTargetId = isTargeted ? item.id : (dropTargetId == item.id ? nil : dropTargetId)
+                }
+                .overlay {
+                    if dropTargetId == item.id {
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(Color.accentColor, lineWidth: 2)
+                    }
+                }
+        } else if isEnabled {
+            content
+                .dropDestination(for: String.self) { payloads, _ in
+                    dropTargetId = nil
+                    guard let draggedId = payloads.compactMap({ SourceListDragDrop.parse($0) }).first else {
+                        return false
+                    }
+                    return onDropOnRow(draggedId, item)
+                } isTargeted: { isTargeted in
+                    dropTargetId = isTargeted ? item.id : (dropTargetId == item.id ? nil : dropTargetId)
+                }
+                .overlay {
+                    if dropTargetId == item.id {
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(Color.accentColor, lineWidth: 2)
+                    }
+                }
+        } else {
+            content
+        }
     }
 }
