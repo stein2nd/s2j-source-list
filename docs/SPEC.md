@@ -267,13 +267,15 @@
 
 ### 4.10. アクセシビリティとローカライズ `{@spec:s4-10}`
 
-**実装状況**: ✅ **実装済み** - ローカライゼーション対応を完了、アクセシビリティ基本実装を完了
+**実装状況**: ✅ **実装済み** — ローカライズ完了、アクセシビリティ拡張完了 ([accessibility_spec.md](accessibility_spec.md))
 
 * ローカライズ対応は、必須 (英語・日本語) の為、Base、English、Japanese を初期追加します。(✅ 実装済み)
 * `Bundle.module` 経由で `Localizable.strings` を読み込みます (SwiftPM の `resources: [.process("Resources")]`)。(✅ 実装済み)
 * Xcode プロジェクトで使用する場合、`Bundle+Module.swift` が `Bundle.module` の代替実装を提供します。(✅ 実装済み)
 * 文字列キー例: `"SourceList.Empty"`、`"SourceList.Search.Placeholder"`、`"SourceList.Edit.Rename"`、`"SourceList.Edit.Delete"` (✅ 実装済み)
-* VoiceOver 用の `accessibilityLabel` / `accessibilityValue` を各行コンポーネントで提供します。(✅ 実装済み - `SourceRowView` で `accessibilityLabel`、`accessibilityValue`、`accessibilityAddTraits` を実装)
+* VoiceOver 用の `accessibilityLabel` / `accessibilityValue` / `accessibilityHint` を各行コンポーネントで提供します。(✅ 実装済み — 詳細は [accessibility_spec.md](accessibility_spec.md))
+* キーボード — `SidebarView` のリストで矢印キーによる選択・展開。(✅ 実装済み)
+* Dynamic Type — テキストスタイルと `@ScaledMetric` によるアイコン・インデント。(✅ 実装済み)
 * `Localizable.strings` を含め、API Reference のローカライズを想定します。
 
 ## 5. デザイン規約 `{@spec:s5}`
@@ -388,7 +390,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * ✅ **ユニットテスト**: `SourceItemTests`、`SelectionManagerTests`、`SourceListServiceTests` を実装
 * ✅ **CI/CD**: GitHub Actions ワークフローとローカルテスト・スクリプトを実装、GitHub Actions「Swift Test」ワークフローが正常に動作し、すべてのテストが成功 (詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照)
 * ✅ **主要ファイル**: すべてのコアファイル (`SourceItem`、`SourceListService`、`SelectionManager`、`SidebarView`、`SourceRowView`、`InlineEditorView`、`SourceListDragDrop`、`AppKitBridge`、`iPadOptimizations`、`IconProvider`、`Bundle+Module`) を実装
-* ✅ **アクセシビリティ**: VoiceOver 用の `accessibilityLabel` / `accessibilityValue` を実装
+* ✅ **アクセシビリティ**: VoiceOver / キーボード / Dynamic Type ([accessibility_spec.md](accessibility_spec.md))
 * ✅ **ダークモード対応**: SwiftUI の標準カラーを使用して実装
 
 ### 11.2. ほとんど実装済み機能 (85-95% 完了) `{@spec:s11-2}`
@@ -439,8 +441,8 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 | | API Reference (DocC) | ⚠️ 未実装 | 0% | DocC 形式の API ドキュメントが未整備 |
 | | README | ✅ 実装済み | 100% | 基本的な使用方法を記載 |
 | **アクセシビリティ** | VoiceOver 対応 | ✅ 実装済み | 100% | `accessibilityLabel` / `accessibilityValue` を実装 |
-| | キーボードナビゲーション | ⚠️ 部分実装 | 70% | 基本的な対応は実装済み、強化が必要 |
-| | 動的タイプ対応 | ⚠️ 部分実装 | 80% | SwiftUI の標準機能で対応、完全対応は未実装 |
+| | キーボードナビゲーション | ✅ 実装済み | 100% | 矢印キーで選択・展開 ([accessibility_spec](accessibility_spec.md)) |
+| | 動的タイプ対応 | ✅ 実装済み | 100% | `.body` / `@ScaledMetric` ([accessibility_spec](accessibility_spec.md)) |
 | **その他** | `SampleApp.swift` | ✅ 実装済み | 100% | macOS デモ、Periphery 用 (`project.yml` の SampleApp スキーム) |
 | | Preview Content | ⚠️ 未実装 | 0% | SwiftUI Preview 用のコンテンツが未実装 |
 | | `Package.swift` | ✅ 実装済み | 100% | Swift Package 定義、リソース設定 |
@@ -458,7 +460,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * **テスト**: 33.3% (ユニットテストは実装済み。UI テスト・スナップショットテストは未実装)
 * **CI/CD**: 75% (GitHub Actions ワークフローとローカルテスト・スクリプトは実装済み・テスト成功。リリース自動化は未実装)
 * **ドキュメント**: 66.7% (コードコメント、README は実装済み。API Reference は未整備)
-* **アクセシビリティ**: 83.3% (VoiceOver は実装済み。キーボードナビゲーション・動的タイプは部分実装)
+* **アクセシビリティ**: 100% (VoiceOver / キーボード / Dynamic Type)
 
 **全体実装の完了率**: 約 **90%** (コア機能、UI コンポーネント、データモデルは完全実装。テスト、CI/CD、ドキュメントは部分実装)
 
@@ -567,13 +569,8 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
      * ドラッグ&ドロップ時の視覚的フィードバックをさらに強化します (ドロップ枠・アニメーションは実装済み)。
    * 見積もり: 1-2週間。
 
-4. **アクセシビリティ機能の強化** (優先度: 低)
-   * 現状: 基本的なアクセシビリティ対応は実装済みです。
-   * 実装内容:
-     * VoiceOver のさらなる最適化を実装します。
-     * キーボードナビゲーションを強化します。
-     * 動的タイプ (Dynamic Type) の完全対応を実装します。
-   * 見積もり: 1-2週間。
+4. **アクセシビリティの拡張** (優先度: 低) (基本は ✅ — [accessibility_spec.md](accessibility_spec.md))
+   * 残タスク例: `accessibilityRotor`、VoiceOver カスタムアクション、ショートカット表の標準化。
 
 ---
 

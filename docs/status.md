@@ -3,7 +3,7 @@
 | 項目 | 内容 |
 | --- | --- |
 | 最終更新 | 2026-11-21 |
-| リリース (npm / タグ) | **2.0.17** |
+| リリース (npm / タグ) | **2.0.18** |
 | 最小 OS | macOS **14.6** / iPadOS **17.6** ([overview.md](./overview.md)) |
 
 ---
@@ -32,6 +32,7 @@
 | 選択・編集 | [selection_spec.md](./selection_spec.md) |
 | 検索 | [search_spec.md](./search_spec.md) |
 | ドラッグ & ドロップ | [drag_drop_spec.md](./drag_drop_spec.md) |
+| アクセシビリティ | [accessibility_spec.md](./accessibility_spec.md) |
 | CI / ローカルテスト | [SPEC_CICD.md](./SPEC_CICD.md) |
 | コード構成 | [architecture.md](./architecture.md) |
 
@@ -50,11 +51,11 @@
 | ドラッグ & ドロップ | 実装済み | 100 | [§D&D](#status-dnd) (3/3) |
 | テスト拡張 (UI / Snapshot) | 部分 | 25 | [§テスト拡張](#status-quality-ui) (1/4) |
 | API ドキュメント、Preview | 部分 | 50 | [§ドキュメント](#status-devx) (2/4) |
-| アクセシビリティ拡張 | 部分 | 33 | [§アクセシビリティ](#status-a11y) (1/3) |
+| アクセシビリティ拡張 | 実装済み | 100 | [§アクセシビリティ](#status-a11y) (3/3) |
 
 **Must 範囲 (上表の先頭4行):** **100%** — SPM ライブラリとしてホストに組込み可能な水準。
 
-**全体 (D&D、拡張テスト等を含む):** チェックリスト **40項目中33項目** ≒ **約83%** (下記と [SPEC.md §11.4](./SPEC.md) に対応)。
+**全体 (D&D、拡張テスト等を含む):** チェックリスト **40項目中35項目** ≒ **約88%** (下記と [SPEC.md §11.4](./SPEC.md) に対応)。
 
 ## 100% 完了条件チェックリスト `{@status:s100}`
 
@@ -64,7 +65,7 @@
 
 * [x] [specs.md](./specs.md) 索引とクイック参照
 * [x] [status.md](./status.md) による実装状況の入口
-* [x] ドメイン spec (`selection_spec` / `search_spec` / `drag_drop_spec`) と [SPEC.md](./SPEC.md) の整合
+* [x] ドメイン spec (`selection_spec` / `search_spec` / `drag_drop_spec` / `accessibility_spec`) と [SPEC.md](./SPEC.md) の整合
 * [x] GitHub Actions `Lint Docs` (`docs-lint.yml`)
 * [x] 見出しタグ規約と `npm run docs:heading-tags`
 
@@ -127,9 +128,11 @@
 
 ### アクセシビリティ拡張 `{@status:s-status-a11y}`
 
-* [x] VoiceOver (`accessibilityLabel` / `accessibilityValue`)
-* [ ] キーボードナビゲーションの強化 ([SPEC.md §11.4](./SPEC.md))
-* [ ] Dynamic Type の完全対応
+正本: [accessibility_spec.md](./accessibility_spec.md)
+
+* [x] VoiceOver (`accessibilityLabel` / `accessibilityValue` / `accessibilityHint`)
+* [x] キーボードナビゲーション (矢印キーで選択移動・グループ展開/折りたたみ)
+* [x] Dynamic Type (テキストスタイル + `@ScaledMetric` によるアイコン・インデント)
 
 ## ゲート外・任意 `{@status:s-status-gates}`
 
@@ -143,7 +146,7 @@
 | G4 | Xcode Archive / Notarize のリリース自動化 | Artifacts は CI で生成済み |
 | G5 | GitHub Actions `workflow_dispatch` 手動起動 | runner 枯渇時の運用改善 ([SPEC_CICD.md §8](./SPEC_CICD.md)) |
 
-**補足:** 上表 [スナップショット](#status-s-h005) の **約90%** は [SPEC.md §11.4](./SPEC.md) のカテゴリー加重。本チェックリストの **約83%** は上記§の機械的な `[x]` 比率。
+**補足:** 上表 [スナップショット](#status-s-h005) の **約90%** は [SPEC.md §11.4](./SPEC.md) のカテゴリー加重。本チェックリストの **約88%** は上記§の機械的な `[x]` 比率。
 
 ---
 
@@ -160,7 +163,7 @@
 | テスト (UT / UI / Snapshot) | 33% | ユニットテストのみ |
 | CI/CD | 75% | `swift-test` 直列2ジョブ。Notarize 等は未 |
 | ドキュメント | 67% | README + `docs/`。DocC 未 |
-| アクセシビリティ | 83% | VoiceOver 済。キーボード、Dynamic Type は部分 |
+| アクセシビリティ | 100% | VoiceOver / キーボード / Dynamic Type |
 | **全体 (概算)** | **約90%** | ライブラリとして実用可能 |
 
 ## 機能スナップショット `{@status:s-h006}`
@@ -189,6 +192,7 @@
 | 2.0.15 | `docs/status.md` 追加、見出しタグ、`docs:heading-tags` |
 | 2.0.16 | `status.md` 100% 完了条件チェックリスト、README 見出しタグ、`docs-linter` 1.0.34 |
 | 2.0.17 | ドラッグ & ドロップ本実装 (`moveItem` / `itemsMoved`)、仕様同期 |
+| 2.0.18 | アクセシビリティ拡張（キーボード / Dynamic Type / VoiceOver）、`accessibility_spec.md` |
 
 ---
 

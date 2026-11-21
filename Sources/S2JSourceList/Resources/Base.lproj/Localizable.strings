@@ -13,3 +13,8 @@
 
 /* Empty State */
 "SourceList.Empty" = "No items";
+
+/* Accessibility */
+"SourceList.Accessibility.Search.Label" = "Search source list";
+"SourceList.Accessibility.Row.Hint" = "Use arrow keys to move selection or expand and collapse groups.";
+"SourceList.Accessibility.Group" = "group";

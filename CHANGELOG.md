@@ -2,6 +2,22 @@
 
 ## unreleased
 
+## 2.0.18 - 2026-11-21
+
+### Added
+
+* `SidebarView` — 矢印キーで選択移動 (↑↓) とグループ展開/折りたたみ (←→)
+* `SourceListOutline` — 表示アウトラインの平坦化 (キーボードナビ用)
+* `docs/accessibility_spec.md` — VoiceOver / キーボード / Dynamic Type の正本
+* `SourceListOutlineTests`、ローカライズキー `SourceList.Accessibility.*` (en/ja)
+
+### Changed
+
+* `SourceRowView` — `@ScaledMetric`、`.font(.body)`、`accessibilityHint` / `accessibilityIdentifier`、グループ行ラベル
+* `docs/status.md` — アクセシビリティ拡張の完了条件 **3/3 (100%)**、全体チェックリスト **35/40≈88%**
+* `docs/SPEC.md` §4.10 / §11.4、`specs.md`、`architecture.md`、`SPEC_STRUCTURE.md` — a11y 実装を同期
+* `README.md` の `Package.swift` 依存指定を v2.0.17 → v2.0.18 に更新
+
 ## 2.0.17 - 2026-11-21
 
 ### Added
@@ -15,7 +31,7 @@
 
 * `docs/` (`drag_drop_spec` / `status` / `SPEC` / `architecture` / `SPEC_STRUCTURE`) と `README.md` — D&D 実装、API、完了率を同期
 * `docs/status.md` — ドラッグ & ドロップ完了条件 **3/3 (100%)**
-* `README.md` の `Package.swift` 依存指定を v2.0.16 → v2.0.17 に更新
+* `README.md` の `Package.swift` 依存指定を v2.0.16→ v2.0.17に更新
 
 ### Fixed
 

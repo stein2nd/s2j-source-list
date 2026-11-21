@@ -13,3 +13,8 @@
 
 /* Empty State */
 "SourceList.Empty" = "項目がありません";
+
+/* Accessibility */
+"SourceList.Accessibility.Search.Label" = "ソースリストを検索";
+"SourceList.Accessibility.Row.Hint" = "矢印キーで選択を移動し、グループを展開または折りたたみます。";
+"SourceList.Accessibility.Group" = "グループ";

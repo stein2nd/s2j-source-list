@@ -34,6 +34,7 @@ Sources/S2JSourceList/
 │           └── iPadOptimizations.swift # iPadOS 向け最適化
 ├── Utils/
 │   ├── SourceListDragDrop.swift    # D&D 用 UUID 文字列ペイロード (s2j-source-item:)
+│   ├── SourceListOutline.swift     # 表示アウトライン (キーボード・展開状態)
 │   ├── IconProvider.swift          # アイコン提供ユーティリティ
 │   └── Bundle+Module.swift         # Bundle.module の代替実装 (Xcode プロジェクト用)
 └── Resources/                      # Localizable.strings (Base, en, ja)
@@ -45,8 +46,9 @@ Sources/S2JSourceList/
 | `SelectionManager.swift` | 選択状態の管理。単一/複数選択モード、selectedItemIds、selectionHistory、selectItem / deselectItem / toggleSelection。 | [selection_spec.md](./selection_spec.md) |
 | `SourceListService.swift` | データ供給。`rootItems`、CRUD、展開、`moveItem` / `isDescendant`。Publisher: `itemsChanged`、`itemRenamed`、`itemDeleted`、**`itemsMoved`**。 | [drag_drop_spec.md](./drag_drop_spec.md) |
 | `SourceListDragDrop.swift` | D&D のドラッグペイロード生成・パース (モジュール内部)。 | [drag_drop_spec.md](./drag_drop_spec.md) |
-| `SidebarView.swift` | メイン UI。検索、階層、コンテキストメニュー、選択・編集。`allowsDragAndDrop` 時は `SourceListRowDragDropModifier`。 | [selection_spec.md](./selection_spec.md), [search_spec.md](./search_spec.md), [drag_drop_spec.md](./drag_drop_spec.md) |
-| `SourceRowView.swift` | 行の描画。アイコン・バッジ・ラベル。カスタムコンテンツ (customContent) 対応。選択・編集状態の表示。 | — |
+| `SidebarView.swift` | メイン UI。検索、階層、コンテキストメニュー、選択・編集、矢印キー。`allowsDragAndDrop` 時は `SourceListRowDragDropModifier`。 | [selection_spec.md](./selection_spec.md), [search_spec.md](./search_spec.md), [drag_drop_spec.md](./drag_drop_spec.md), [accessibility_spec.md](./accessibility_spec.md) |
+| `SourceListOutline.swift` | 展開状態にもとづく平坦な表示順。キーボードナビゲーション用。 | [accessibility_spec.md](./accessibility_spec.md) |
+| `SourceRowView.swift` | 行描画。アイコン・バッジ・`customContent`、`@ScaledMetric`、VoiceOver ラベル/ヒント/識別子。 | [accessibility_spec.md](./accessibility_spec.md) |
 | `InlineEditorView.swift` | 行内編集 UI。TextField によるリネーム、コミット/キャンセル。 | [selection_spec.md](./selection_spec.md) |
 | `AppKitBridge.swift` | macOS 専用。AppKit のカラー取得、必要に応じて NSOutlineView の挙動を参考にした微調整。 | — |
 | `iPadOptimizations.swift` | iPadOS 専用。行高・インデント・アイコンサイズ等のデフォルト定数。 | — |

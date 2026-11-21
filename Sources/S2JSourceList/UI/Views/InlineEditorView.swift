@@ -42,6 +42,7 @@ public struct InlineEditorView: View {
      */
     public var body: some View {
         TextField("", text: $text)
+            .font(.body)
             .textFieldStyle(.plain)
             .focused($isFocused)
             .onSubmit {

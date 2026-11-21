@@ -75,6 +75,7 @@ Swift アプリケーションでも、「何を明文化するか」はドメ�
 | [selection_spec.md](./selection_spec.md) | 選択・インライン編集ルール。 | §4.6.3、§6 (利用例の補足) |
 | [search_spec.md](./search_spec.md) | 検索マッチング・親子表示ルール。 | 検索機能 (本文は本 spec に委譲) |
 | [drag_drop_spec.md](./drag_drop_spec.md) | ドラッグ & ドロップの挙動・制約・`moveItem` / `itemsMoved` API。 | §4.6.4 |
+| [accessibility_spec.md](./accessibility_spec.md) | VoiceOver、キーボード、Dynamic Type。 | §4.10 |
 | [status.md](./status.md) | 実装状況の入口 (カテゴリー要約・短期 Backlog 索引)。 | §11・§12の要約 (詳細は SPEC に委譲) |
 | [SPEC.md](./SPEC.md) | 要件概要、実装状況、Backlog、品質評価、Appendix。 | 本体 (ハブ) |
 | [SPEC_CICD.md](./SPEC_CICD.md) | CI/CD、ローカルテスト、lint。 | §9、Appendix の CI 補足 |
@@ -82,7 +83,7 @@ Swift アプリケーションでも、「何を明文化するか」はドメ�
 
 ### 4.2. 改善の効果 `{@spec-structure:s4-2}`
 
-* **AI 伴走**: 選択の挙動→ [selection_spec.md](./selection_spec.md)、検索の親子表示→ [search_spec.md](./search_spec.md)、D&D → [drag_drop_spec.md](./drag_drop_spec.md)、どこにコードを書くか→ [architecture.md](./architecture.md) と、タスクごとに spec を1つ指定しやすい。
+* **AI 伴走**: 選択の挙動→ [selection_spec.md](./selection_spec.md)、検索の親子表示→ [search_spec.md](./search_spec.md)、D&D → [drag_drop_spec.md](./drag_drop_spec.md)、アクセシビリティ → [accessibility_spec.md](./accessibility_spec.md)、どこにコードを書くか→ [architecture.md](./architecture.md) と、タスクごとに spec を1つ指定しやすい。
 * **メンテナンス**: ワークフロー・`test-local.sh`・`npm run lint:*` は [SPEC_CICD.md](./SPEC_CICD.md) に集約。プラットフォーム差は [architecture.md](./architecture.md) §5と [SPEC.md](./SPEC.md) §4.6を実装とそろえる。
 * **オンボーディング**: [specs.md](./specs.md) から一覧し、必要な spec だけを開く。
 
@@ -91,7 +92,7 @@ Swift アプリケーションでも、「何を明文化するか」はドメ�
 新規の `docs/*.md` 名は増やさず、既存ファイルの責務を守ります。
 
 1. **[specs.md](./specs.md) を常に最新** にし、§4.1の一覧と [specs.md](./specs.md) の表を一致させる。
-2. **ドメインルールの追加・変更** は、先に `selection_spec` / `search_spec` / `drag_drop_spec` のいずれかに明文化し、`SPEC.md` には要約とリンクのみ残す。
+2. **ドメインルールの追加・変更** は、先に `selection_spec` / `search_spec` / `drag_drop_spec` / `accessibility_spec` のいずれかに明文化し、`SPEC.md` には要約とリンクのみ残す。
 3. **ディレクトリ・ファイル責務の変更** は [architecture.md](./architecture.md) を更新し、[overview.md](./overview.md) (最小 OS 等) と矛盾がないか確認する。
 4. **CI、ワークフロー、lint** は [SPEC_CICD.md](./SPEC_CICD.md) と `.github/workflows/` をセットで更新する (`SPEC.md` §9は概要リンクにとどめる)。
 5. **[SPEC.md](./SPEC.md)** は実装状況、Backlog、Appendix の更新が集中するハブとし、先頭から [specs.md](./specs.md) に誘導する。

@@ -15,12 +15,13 @@ public struct SourceRowView: View {
     let isSelected: Bool
     let isEditing: Bool
     let indentationLevel: Int
-    let indentationWidth: CGFloat
-    let iconSize: CGFloat
     let onSelect: () -> Void
     let onEdit: (String) -> Void
     let onCancelEdit: () -> Void
     let customContent: ((SourceItem) -> AnyView)?
+
+    @ScaledMetric(relativeTo: .body) private var scaledIconSize: CGFloat = 16
+    @ScaledMetric(relativeTo: .body) private var scaledIndentationStep: CGFloat = 20
 
     @State private var editedTitle: String
 
@@ -53,13 +54,13 @@ public struct SourceRowView: View {
         self.isSelected = isSelected
         self.isEditing = isEditing
         self.indentationLevel = indentationLevel
-        self.indentationWidth = indentationWidth
-        self.iconSize = iconSize
         self.onSelect = onSelect
         self.onEdit = onEdit
         self.onCancelEdit = onCancelEdit
         self.customContent = customContent
         _editedTitle = State(initialValue: item.title)
+        _scaledIconSize = ScaledMetric(wrappedValue: iconSize, relativeTo: .body)
+        _scaledIndentationStep = ScaledMetric(wrappedValue: indentationWidth, relativeTo: .body)
     }
 
     /**
@@ -71,7 +72,7 @@ public struct SourceRowView: View {
             // Indentation
             if indentationLevel > 0 {
                 Spacer()
-                    .frame(width: CGFloat(indentationLevel) * indentationWidth)
+                    .frame(width: CGFloat(indentationLevel) * scaledIndentationStep)
             }
 
             // Icon
@@ -79,7 +80,7 @@ public struct SourceRowView: View {
                 icon
                     .resizable()
                     .scaledToFit()
-                    .frame(width: iconSize, height: iconSize)
+                    .frame(width: scaledIconSize, height: scaledIconSize)
                     .foregroundColor(isSelected ? .white : .primary)
             }
 
@@ -95,7 +96,7 @@ public struct SourceRowView: View {
             // Badge
             if let badge = item.badge {
                 Text(badge)
-                    .font(.caption2)
+                    .font(.caption)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(
@@ -117,9 +118,21 @@ public struct SourceRowView: View {
                 onSelect()
             }
         }
-        .accessibilityLabel(item.title)
+        .accessibilityLabel(accessibilityLabelText)
         .accessibilityValue(item.badge ?? "")
+        .accessibilityHint(
+            NSLocalizedString("SourceList.Accessibility.Row.Hint", bundle: .module, comment: "Row a11y hint")
+        )
         .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .accessibilityIdentifier("SourceList.Row.\(item.id.uuidString)")
+    }
+
+    private var accessibilityLabelText: String {
+        if item.hasChildren {
+            let groupLabel = NSLocalizedString("SourceList.Accessibility.Group", bundle: .module, comment: "Group row")
+            return "\(item.title), \(groupLabel)"
+        }
+        return item.title
     }
 
     /**
@@ -141,8 +154,10 @@ public struct SourceRowView: View {
             )
         } else {
             Text(item.title)
+                .font(.body)
                 .foregroundColor(isSelected ? .white : .primary)
-                .lineLimit(1)
+                .lineLimit(2)
+                .minimumScaleFactor(0.85)
         }
     }
 }

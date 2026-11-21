@@ -118,7 +118,15 @@ public struct SidebarView: View {
                 NSLocalizedString("SourceList.Search.Placeholder", bundle: .module, comment: "Search placeholder"),
                 text: $searchText
             )
+            .font(.body)
             .textFieldStyle(.plain)
+            .accessibilityLabel(
+                NSLocalizedString(
+                    "SourceList.Accessibility.Search.Label",
+                    bundle: .module,
+                    comment: "Search field label"
+                )
+            )
             if !searchText.isEmpty {
                 Button(action: { searchText = "" }, label: {
                     Image(systemName: "xmark.circle.fill")
@@ -150,6 +158,19 @@ public struct SidebarView: View {
         .listStyle(.insetGrouped)
         #endif
         .animation(.easeInOut(duration: 0.15), value: dropTargetId)
+        .focusable()
+        .onKeyPress(.upArrow) {
+            handleKeyboardVerticalNavigation(offset: -1)
+        }
+        .onKeyPress(.downArrow) {
+            handleKeyboardVerticalNavigation(offset: 1)
+        }
+        .onKeyPress(.leftArrow) {
+            handleKeyboardHorizontalNavigation(expand: false)
+        }
+        .onKeyPress(.rightArrow) {
+            handleKeyboardHorizontalNavigation(expand: true)
+        }
     }
 
     /**
@@ -345,6 +366,59 @@ public struct SidebarView: View {
         }
         collectExpanded(service.rootItems)
         expandedItemIds = expanded
+    }
+
+    private func visibleOutlineItems() -> [SourceItem] {
+        SourceListOutline.visibleItems(from: filteredItems, isExpanded: isExpandedId)
+    }
+
+    private func isExpandedId(_ id: UUID) -> Bool {
+        if expandedItemIds.contains(id) {
+            return true
+        }
+        return service.findItem(id: id)?.item.isExpanded ?? false
+    }
+
+    private func keyboardContextItem() -> SourceItem? {
+        let outline = visibleOutlineItems()
+        guard !outline.isEmpty else { return nil }
+        if let selectedId = selectionManager.firstSelectedId,
+           let item = outline.first(where: { $0.id == selectedId })
+        {
+            return item
+        }
+        return outline.first
+    }
+
+    private func handleKeyboardVerticalNavigation(offset: Int) -> KeyPress.Result {
+        guard editingItemId == nil else { return .ignored }
+        let selectableIds = SourceListOutline.selectableItemIds(in: visibleOutlineItems())
+        guard !selectableIds.isEmpty else { return .ignored }
+
+        let currentId = selectionManager.firstSelectedId ?? selectableIds[0]
+        let index = selectableIds.firstIndex(of: currentId) ?? 0
+        let nextIndex = min(max(index + offset, 0), selectableIds.count - 1)
+        guard nextIndex != index || selectionManager.firstSelectedId == nil else {
+            return .handled
+        }
+        let nextId = selectableIds[nextIndex]
+        Task { @MainActor in
+            selectionManager.selectItem(nextId)
+        }
+        return .handled
+    }
+
+    private func handleKeyboardHorizontalNavigation(expand: Bool) -> KeyPress.Result {
+        guard editingItemId == nil, let item = keyboardContextItem(), item.hasChildren else { return .ignored }
+        let expanded = isItemExpanded(item)
+        if expand {
+            if !expanded {
+                toggleExpansion(item.id)
+            }
+        } else if expanded {
+            toggleExpansion(item.id)
+        }
+        return .handled
     }
 
     private func handleDrop(draggedItemId: UUID, onto target: SourceItem) -> Bool {
