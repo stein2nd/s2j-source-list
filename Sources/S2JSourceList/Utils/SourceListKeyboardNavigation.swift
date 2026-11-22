@@ -14,7 +14,9 @@ enum SourceListKeyboardNavigation {
         guard !selectableIds.isEmpty else { return nil }
         let currentIndex = currentId.flatMap { selectableIds.firstIndex(of: $0) } ?? 0
         let nextIndex = min(max(currentIndex + offset, 0), selectableIds.count - 1)
-        if nextIndex == currentIndex, currentId != nil { return nil }
+        if nextIndex == currentIndex, currentId != nil {
+            return nil
+        }
         return selectableIds[nextIndex]
     }
 
@@ -34,7 +36,9 @@ enum SourceListKeyboardNavigation {
         expand: Bool
     ) -> Bool {
         guard item.hasChildren else { return false }
-        if expand { return !isExpanded }
+        if expand {
+            return !isExpanded
+        }
         return isExpanded
     }
 }

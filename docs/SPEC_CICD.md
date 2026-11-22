@@ -32,6 +32,8 @@
     * `docs-lint.yml`: Markdown ドキュメントの表記揺れ検出 (Docs Linter) (✅ 直近の実行で成功)
         * **実行環境**: `ubuntu-24.04`
         * `actions/checkout@v6` / `actions/setup-node@v5` (Node.js v24)
+    * `record-ui-snapshots.yml`: `workflow_dispatch` で `macos-26` 上に参照 PNG を再記録 ([ui_test_spec.md](./ui_test_spec.md) §5)
+        * `actions/upload-artifact@v6` で `__Snapshots__` をアップロード (Node.js v24)
 
 ### 1.4. ジョブ構成 `{@spec-cicd:s1-4}`
 
@@ -168,6 +170,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 * **Xcode プロジェクトの生成**
     * `project.yml` が存在する場合、`xcodegen generate` で Xcode プロジェクトを生成します。
     * `project.yml` は `S2JSourceListTests-iOS` に SPM `swift-snapshot-testing` (`SnapshotTesting`) をリンクします ([ui_test_spec.md](./ui_test_spec.md))。
+    * `SourceListSnapshotTests` は iOS 上では実行時 XCTSkip ですが、**ビルドは必須**です (Swift v6向け iOS 分岐のコンパイルを含む)。
     * **検証**: 生成されたスキーム・ファイル (`S2JSourceList-iOS.xcscheme`) の存在と内容を確認します。
 * **シミュレーター・ランタイムとデバイスの選択 (フォールバック付き)**
     * 優先順位に従って、利用可能な iOS シミュレーター・ランタイムとデバイスを選択します。
@@ -439,7 +442,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 * **GitHub Actions ワークフロー**:
     * `swift-test.yml`: Swift Package のテスト (macOS / iOS) とカバレッジ収集、行カバレッジ70% ゲート、macOS リリース・ビルド Artifacts (✅ UT / UI フロー / SnapshotTesting を含む)
-    * `record-ui-snapshots.yml`: `workflow_dispatch` で `macos-26` 上に参照 PNG を再記録 (✅ UI スナップショット正本)
+    * `record-ui-snapshots.yml`: `workflow_dispatch` で `macos-26` 上に参照 PNG を再記録、`upload-artifact@v6` (✅ UI スナップショット正本)
     * `test-macos` ジョブ: macOS 向けテスト、カバレッジ収集 (✅テスト成功)
     * `test-ios` ジョブ末尾: macOS / iOS テスト成功後のリリース・ビルドと Artifacts 保存
     * `test-ios` ジョブ: iOS/iPadOS 向けテスト実行とカバレッジ収集 (✅テスト成功)

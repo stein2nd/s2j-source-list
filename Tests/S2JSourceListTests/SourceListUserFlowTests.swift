@@ -5,8 +5,8 @@
 //  主要操作の統合検証 (macOS / iPadOS 共通。XCUITest の代わりに Service + Selection でフローを再現)
 //
 
-@testable import S2JSourceList
 import Combine
+@testable import S2JSourceList
 import XCTest
 
 final class SourceListUserFlowTests: XCTestCase {

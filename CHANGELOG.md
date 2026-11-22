@@ -2,6 +2,20 @@
 
 ## unreleased
 
+## 2.0.23 - 2026-11-22
+
+### Fixed
+
+* CI — `test-ios`: `SourceListSnapshotTests` の iOS 分岐で SwiftUI `.image(perceptualPrecision:layout:)` の引数順を Swift v6準拠に修正
+* CI — `record-ui-snapshots`: `actions/upload-artifact@v4` → **v6** (Node.js v20非推奨 Annotation 回避)
+
+### Changed
+
+* `docs/ui_test_spec.md` / `SPEC_CICD.md` / `SPEC.md` / `status.md` — 上記 iOS ビルド要件と Record ワークフローの Actions v6を同期
+* `README.md` の `Package.swift` 依存指定を v2.0.22→ v2.0.23に更新
+* DocC `GettingStarted.md` — 同上
+* Swift ソース — SwiftLint `trailing_newline` / SwiftFormat 整合
+
 ## 2.0.22 - 2026-11-22
 
 ### Fixed

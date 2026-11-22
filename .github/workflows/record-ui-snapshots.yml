@@ -48,7 +48,7 @@ jobs:
       run: SNAPSHOT_TESTING_RECORD=all swift test --filter SourceListSnapshotTests || true
 
     - name: Upload reference PNGs
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: ui-snapshots
         path: Tests/S2JSourceListTests/__Snapshots__/

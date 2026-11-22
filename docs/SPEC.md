@@ -339,7 +339,7 @@ struct ContentView: View {
 **UI テスト環境**:
 
 * macOS: `swift test` (ローカルはスナップショット XCTSkip) / CI `swift test` + `__Snapshots__/`
-* iPadOS: `S2JSourceList-iOS` + `project.yml` (`SnapshotTesting` リンク、スナップショットは XCTSkip、UT / UI フロー)
+* iPadOS: `S2JSourceList-iOS` + `project.yml` (`SnapshotTesting` リンク、スナップショットは実行時 XCTSkip だがテストターゲットはビルド必須、UT / UI フロー)
 
 **CI/CD でのテスト実行**:
 

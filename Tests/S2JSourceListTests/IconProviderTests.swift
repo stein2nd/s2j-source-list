@@ -22,9 +22,9 @@ final class IconProviderTests: XCTestCase {
     }
 
     #if os(macOS)
-    func testNSImageSystemSymbol() {
-        XCTAssertNotNil(IconProvider.nsImage(for: "folder"))
-        XCTAssertNil(IconProvider.nsImage(for: ""))
-    }
+        func testNSImageSystemSymbol() {
+            XCTAssertNotNil(IconProvider.nsImage(for: "folder"))
+            XCTAssertNil(IconProvider.nsImage(for: ""))
+        }
     #endif
 }

@@ -117,7 +117,7 @@
 * [x] コアロジックのユニットテスト (上記§と重複可)
 * [x] 主要操作の UI テスト (macOS / iPadOS) — `SourceListUserFlowTests` / [ui_test_spec.md](./ui_test_spec.md)
 * [x] SnapshotTesting による SwiftUI レンダリング検証 (`SourceListSnapshotTests`、`NSHostingController`、CI `macos-26` 正本 PNG)
-* [x] スナップショット運用 — `record-ui-snapshots.yml`、`GITHUB_ACTIONS` のみ比較、iOS は XCTSkip、`project.yml` に `SnapshotTesting` ([ui_test_spec.md](./ui_test_spec.md) §5)
+* [x] スナップショット運用 — `record-ui-snapshots.yml` (`upload-artifact@v6`)、`GITHUB_ACTIONS` のみ比較、iOS は XCTSkip (ビルドは Swift v6向け iOS 分岐をコンパイル)、`project.yml` に `SnapshotTesting` ([ui_test_spec.md](./ui_test_spec.md) §5)
 * [x] テスト・カバレッジ **70%** 以上 — `check-coverage.sh` (lcov 集計) / `npm run test:coverage` ([SPEC_CICD.md](./SPEC_CICD.md))
 
 ### ドキュメント・開発体験 `{@status:s-status-devx}`

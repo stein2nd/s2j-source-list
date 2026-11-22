@@ -3,13 +3,13 @@
 //  S2JSourceListTests
 //
 
+@testable import S2JSourceList
 import SnapshotTesting
 import SwiftUI
-@testable import S2JSourceList
 import XCTest
 
 #if os(macOS)
-import AppKit
+    import AppKit
 #endif
 
 /// 参照 PNG は GitHub Actions `macos-26` を正本とする（`record-ui-snapshots` ワークフロー）。
@@ -18,14 +18,14 @@ private let snapshotPerceptualPrecision: Float = 0.97
 
 final class SourceListSnapshotTests: XCTestCase {
     override func setUpWithError() throws {
-#if os(iOS)
-        throw XCTSkip("UI スナップショットは macOS (GitHub Actions macos-26) で検証します。")
-#else
-        try XCTSkipIf(
-            ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] == nil,
-            "UI スナップショットは macos-26 CI で検証します。ローカル再記録は SNAPSHOT_TESTING_RECORD=all と ui_test_spec.md を参照。"
-        )
-#endif
+        #if os(iOS)
+            throw XCTSkip("UI スナップショットは macOS (GitHub Actions macos-26) で検証します。")
+        #else
+            try XCTSkipIf(
+                ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] == nil,
+                "UI スナップショットは macos-26 CI で検証します。ローカル再記録は SNAPSHOT_TESTING_RECORD=all と ui_test_spec.md を参照。"
+            )
+        #endif
     }
 
     @MainActor
@@ -124,57 +124,60 @@ final class SourceListSnapshotTests: XCTestCase {
 }
 
 @MainActor
-private func assertViewSnapshot<V: View>(
-    of view: V,
+private func assertViewSnapshot(
+    of view: some View,
     size: CGSize,
     filePath: StaticString = #filePath,
     testName: String = #function,
     line: UInt = #line
 ) {
     #if os(macOS)
-    let controller = snapshotHostingController(for: view, size: size)
-    SnapshotTesting.assertSnapshot(
-        of: controller,
-        as: .image(
-            precision: snapshotPrecision,
-            perceptualPrecision: snapshotPerceptualPrecision,
-            size: size
-        ),
-        file: filePath,
-        testName: testName,
-        line: line
-    )
+        let controller = snapshotHostingController(for: view, size: size)
+        SnapshotTesting.assertSnapshot(
+            of: controller,
+            as: .image(
+                precision: snapshotPrecision,
+                perceptualPrecision: snapshotPerceptualPrecision,
+                size: size
+            ),
+            file: filePath,
+            testName: testName,
+            line: line
+        )
     #elseif os(iOS)
-    let host = view.environment(\.colorScheme, .light)
-    SnapshotTesting.assertSnapshot(
-        of: host,
-        as: .image(layout: .fixed(width: size.width, height: size.height), perceptualPrecision: 0.92),
-        file: filePath,
-        testName: testName,
-        line: line
-    )
+        let host = view.environment(\.colorScheme, .light)
+        SnapshotTesting.assertSnapshot(
+            of: host,
+            as: .image(
+                perceptualPrecision: snapshotPerceptualPrecision,
+                layout: .fixed(width: size.width, height: size.height)
+            ),
+            file: filePath,
+            testName: testName,
+            line: line
+        )
     #else
-    XCTFail("Snapshot tests require macOS or iOS", file: filePath, line: line)
+        XCTFail("Snapshot tests require macOS or iOS", file: filePath, line: line)
     #endif
 }
 
 #if os(macOS)
-@MainActor
-private func snapshotHostingController<V: View>(for view: V, size: CGSize) -> NSHostingController<AnyView> {
-    let root = AnyView(
-        view
-            .environment(\.colorScheme, .light)
-            .environment(\.locale, Locale(identifier: "en_US"))
-            .environment(\.layoutDirection, .leftToRight)
-    )
-    let controller = NSHostingController(rootView: root)
-    let aqua = NSAppearance(named: .aqua)
-    if NSApp.appearance?.name != aqua?.name {
-        NSApp.appearance = aqua
+    @MainActor
+    private func snapshotHostingController(for view: some View, size: CGSize) -> NSHostingController<AnyView> {
+        let root = AnyView(
+            view
+                .environment(\.colorScheme, .light)
+                .environment(\.locale, Locale(identifier: "en_US"))
+                .environment(\.layoutDirection, .leftToRight)
+        )
+        let controller = NSHostingController(rootView: root)
+        let aqua = NSAppearance(named: .aqua)
+        if NSApp.appearance?.name != aqua?.name {
+            NSApp.appearance = aqua
+        }
+        controller.view.appearance = aqua
+        controller.view.frame = CGRect(origin: .zero, size: size)
+        controller.view.layoutSubtreeIfNeeded()
+        return controller
     }
-    controller.view.appearance = aqua
-    controller.view.frame = CGRect(origin: .zero, size: size)
-    controller.view.layoutSubtreeIfNeeded()
-    return controller
-}
 #endif

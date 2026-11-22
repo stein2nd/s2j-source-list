@@ -45,6 +45,8 @@
 
 **macOS 注意**: swift-snapshot-testing の SwiftUI `.image` は iOS 向けのため、macOS では `NSHostingController` を `Snapshotting<NSViewController, NSImage>.image` で比較する。
 
+**iOS 注意**: 実行時は `setUpWithError` で XCTSkip ですが、`xcodebuild test` (`S2JSourceListTests-iOS`) では `SourceListSnapshotTests` が **コンパイル対象** です。Swift v6 / SnapshotTesting の SwiftUI `.image` では `perceptualPrecision` を `layout` **より前**に指定します (`assertViewSnapshot` の `#elseif os(iOS)` 分岐)。
+
 **CI 安定化**: ホスティングで `en_US`・ライト・アクア外観を固定。`precision` 0.98 / `perceptualPrecision` 0.97。参照 PNG は `Package.swift` の `testTarget` で `exclude: ["__Snapshots__"]`。
 
 ## 6. 関連 `{@ui-test:s5}`
