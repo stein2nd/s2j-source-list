@@ -72,7 +72,7 @@ Add the following to your `Package.swift` file.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.18")
+    .package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.19")
 ]
 ```
 
@@ -297,6 +297,22 @@ SCHEME_NAME=S2JSourceList IOS_DEVICE="iPad Pro" IOS_VERSION="17.6" ./scripts/tes
 * macOS でのテスト実行
 * iOS シミュレーターでのテスト実行 (Xcode が必要)
 * テストカバレッジの有効化
+
+`Sources/S2JSourceList` の行カバレッジ **70%** ゲート (UT + UI フロー + スナップショット含む):
+
+```zsh
+npm run test:coverage
+```
+
+詳細は [docs/ui_test_spec.md](./docs/ui_test_spec.md) を参照してください。
+
+DocC API Reference (HTML) のローカル生成:
+
+```zsh
+npm run docs:docc
+```
+
+出力: `.build/docs/S2JSourceList/index.html` — [devx_spec.md](./docs/devx_spec.md)
 
 **注意**: iOS テストを実行するには、Xcode がインストールされている必要があります。
 

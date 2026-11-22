@@ -59,6 +59,8 @@ jobs:
     - name: Run tests on macOS
       run: |
         swift test --enable-code-coverage
+        ./scripts/export-coverage-xml.sh
+        MIN_COVERAGE=70 ./scripts/check-coverage.sh
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v6

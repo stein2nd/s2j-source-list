@@ -76,6 +76,8 @@ Swift アプリケーションでも、「何を明文化するか」はドメ�
 | [search_spec.md](./search_spec.md) | 検索マッチング・親子表示ルール。 | 検索機能 (本文は本 spec に委譲) |
 | [drag_drop_spec.md](./drag_drop_spec.md) | ドラッグ & ドロップの挙動・制約・`moveItem` / `itemsMoved` API。 | §4.6.4 |
 | [accessibility_spec.md](./accessibility_spec.md) | VoiceOver、キーボード、Dynamic Type。 | §4.10 |
+| [ui_test_spec.md](./ui_test_spec.md) | UI フロー、SnapshotTesting、行カバレッジ70% ゲート。 | §8 (テスト戦略) |
+| [devx_spec.md](./devx_spec.md) | DocC、Xcode Preview Content。 | §11 (ドキュメント) |
 | [status.md](./status.md) | 実装状況の入口 (カテゴリー要約・短期 Backlog 索引)。 | §11・§12の要約 (詳細は SPEC に委譲) |
 | [SPEC.md](./SPEC.md) | 要件概要、実装状況、Backlog、品質評価、Appendix。 | 本体 (ハブ) |
 | [SPEC_CICD.md](./SPEC_CICD.md) | CI/CD、ローカルテスト、lint。 | §9、Appendix の CI 補足 |
@@ -83,7 +85,7 @@ Swift アプリケーションでも、「何を明文化するか」はドメ�
 
 ### 4.2. 改善の効果 `{@spec-structure:s4-2}`
 
-* **AI 伴走**: 選択の挙動→ [selection_spec.md](./selection_spec.md)、検索の親子表示→ [search_spec.md](./search_spec.md)、D&D → [drag_drop_spec.md](./drag_drop_spec.md)、アクセシビリティ → [accessibility_spec.md](./accessibility_spec.md)、どこにコードを書くか→ [architecture.md](./architecture.md) と、タスクごとに spec を1つ指定しやすい。
+* **AI 伴走**: 選択の挙動→ [selection_spec.md](./selection_spec.md)、検索の親子表示→ [search_spec.md](./search_spec.md)、D&D → [drag_drop_spec.md](./drag_drop_spec.md)、アクセシビリティ → [accessibility_spec.md](./accessibility_spec.md)、テスト方針→ [ui_test_spec.md](./ui_test_spec.md)、DocC / Preview → [devx_spec.md](./devx_spec.md)、どこにコードを書くか→ [architecture.md](./architecture.md) と、タスクごとに spec を1つ指定しやすい。
 * **メンテナンス**: ワークフロー・`test-local.sh`・`npm run lint:*` は [SPEC_CICD.md](./SPEC_CICD.md) に集約。プラットフォーム差は [architecture.md](./architecture.md) §5と [SPEC.md](./SPEC.md) §4.6を実装とそろえる。
 * **オンボーディング**: [specs.md](./specs.md) から一覧し、必要な spec だけを開く。
 
@@ -107,6 +109,8 @@ Swift アプリケーションでも、「何を明文化するか」はドメ�
 * **実装状況 (要約)** → [status.md](./status.md)
 * **実装状況、Backlog (詳細)** → [SPEC.md](./SPEC.md)
 * **CI やローカルテスト** → [SPEC_CICD.md](./SPEC_CICD.md)
+* **UI / Snapshot テスト** → [ui_test_spec.md](./ui_test_spec.md)
+* **DocC / Preview** → [devx_spec.md](./devx_spec.md)
 
 ---
 

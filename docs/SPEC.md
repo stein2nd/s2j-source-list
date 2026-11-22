@@ -162,6 +162,8 @@
 │　│　　└─ iPadOptimizations.swift  # iPadOS 最適化 (✅ 実装済み)
 │　├┬─ Utils/
 │　│├─ SourceListDragDrop.swift  # D&D 内部ペイロード (✅ 実装済み)
+│　│├─ SourceListOutline.swift  # 表示アウトライン・検索フィルター (✅ 実装済み)
+│　│├─ SourceListKeyboardNavigation.swift  # 矢印キー用 ID 移動 (✅ 実装済み)
 │　│├─ IconProvider.swift  # アイコン提供ユーティリティ (✅ 実装済み)
 │　│└─ Bundle+Module.swift  # Bundle.module の代替実装 (Xcode プロジェクト用) (✅ 実装済み)
 │　└┬─ Resources/  # リソースファイル
@@ -171,12 +173,13 @@
 │　　├─ en.lproj/Localizable.strings  # ローカライゼーション (✅ 実装済み)
 │　　└─ ja.lproj/Localizable.strings  # ローカライゼーション (✅ 実装済み)
 ├┬─ Tests/
-│└┬─ S2JSourceListTests/  # テストコード
-│　├─ SelectionManagerTests.swift (✅ 実装済み)
-│　├─ SourceItemTests.swift (✅ 実装済み)
-│　└─ SourceListServiceTests.swift (✅ 実装済み)
-├── UITests/ (⚠️ 未実装)
-└── Preview Content/ (⚠️ 未実装)
+│└┬─ S2JSourceListTests/  # テストターゲット (swift-snapshot-testing 依存)
+│　├─ *Tests.swift  # コア UT (Item, Selection, Service, Outline, Keyboard, D&D, Icon, AppKitBridge 等) (✅)
+│　├─ SourceListUserFlowTests.swift  # 主要操作の統合フロー (✅)
+│　├─ SourceListSnapshotTests.swift  # SwiftUI スナップショット (✅)
+│　└─ __Snapshots__/SourceListSnapshotTests/  # 参照 PNG (✅)
+├── S2JSourceList.docc/  # DocC カタログ (✅)
+└── Preview Content/  # Preview データ・#Preview (✅)
 ```
 
 ### 4.6. UI 実装方針 (主要機能) `{@spec:s4-6}`
@@ -315,26 +318,27 @@ struct ContentView: View {
 
 ## 7. ドキュメント推奨項目 `{@spec:s7}`
 
-* Quick Start (Swift Package からの導入手順)
-* API Reference (DocC)
-* カスタマイズ・ガイド (カスタム行、検索、D&D)
-* Migration Guide (PXSourceList からの移行)
+* Quick Start (Swift Package からの導入手順) — ✅ `S2JSourceList.docc/GettingStarted.md`
+* API Reference (DocC) — ✅ `S2JSourceList.docc` / `npm run docs:docc` ([devx_spec.md](./devx_spec.md))
+* Xcode Preview — ✅ `Preview Content/`
+* カスタマイズ・ガイド (カスタム行、検索、D&D) — ドメイン spec (`docs/*_spec.md`) に分散
+* Migration Guide (PXSourceList からの移行) — ⚠️ Backlog
 
 ## 8. テスト戦略 `{@spec:s8}`
 
-**実装状況**: ✅ **部分実装** - ユニットテストは実装済み、UI テストは未実装
+**実装状況**: ✅ **実装済み** — ユニットテスト、統合 UI フロー、スナップショット、行カバレッジ70% ゲート ([ui_test_spec.md](./ui_test_spec.md))
 
 * **ユニットテスト** (swift test):
-    * モデル (SourceItem)、SelectionManager、Service ロジックのユニットテストを実施します。(✅ 実装済み - `SourceItemTests.swift`、`SelectionManagerTests.swift`、`SourceListServiceTests.swift`)
-* **UI テスト**:
-    * 主要なユーザー操作 (選択、展開/折り畳み、ドラッグ & ドロップ、編集) を XCTest / UI Test で検証します。(⚠️ 未実装)
-* スナップショット・テスト (任意):
-    * SwiftUI レンダリングの一貫性を SnapshotTesting で検証します。(⚠️ 未実装)
+    * モデル (SourceItem)、SelectionManager、Service ロジックのユニットテストを実施します。(✅ 実装済み)
+* **UI フロー**:
+    * 主要なユーザー操作 (選択、展開/折り畳み、移動、リネーム) を `SourceListUserFlowTests` で検証します。(✅ macOS `swift test` / iPadOS `xcodebuild test`)
+* **スナップショットテスト**:
+    * SwiftUI レンダリングの一貫性を SnapshotTesting で検証します。(✅ `SourceListSnapshotTests` — macOS は `NSHostingController` + 画像比較)
 
 **UI テスト環境**:
 
-* macOS: `List` を表示し、選択、展開/折り畳み、ドラッグ & ドロップを SnapshotTesting で検証します。(⚠️ 未実装)
-* iPadOS: `.sheet` 表示を `XCTest` + `ViewInspector` で検証可能にします。(⚠️ 未実装)
+* macOS: `swift test` + 参照画像 `Tests/S2JSourceListTests/__Snapshots__/`
+* iPadOS: 同一テストターゲットを `S2JSourceList-iOS` スキームで実行 (スナップショットは UIImage 戦略)
 
 **CI/CD でのテスト実行**:
 
@@ -399,10 +403,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 ### 11.3. 未実装機能 `{@spec:s11-3}`
 
-* ⚠️ **UI テスト、スナップショットテスト**: 主要なユーザー操作の検証、SwiftUI レンダリングの一貫性検証が未実装です。
-* ⚠️ **Preview Content**: SwiftUI Preview 用のコンテンツが未実装です。
 * ⚠️ **リリース自動化**: Xcode Archive、Notarize、Artifacts 管理、API Reference ドキュメントの提供が未実装です。
-* ⚠️ **API Reference ドキュメント (DocC)**: コードコメントは実装済みですが、DocC 形式の API ドキュメントは未整備です。
 * ⚠️ **Assets.xcassets**: 必要に応じて追加する予定ですが、現在は未実装です。
 
 ### 11.4. 実装完了率 `{@spec:s11-4}`
@@ -431,20 +432,21 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 | | `Bundle+Module` | ✅ 実装済み | 100% | `Bundle.module` の代替実装 (Xcode プロジェクト用) |
 | **リソース** | ローカライゼーション (Base/en/ja)  | ✅ 実装済み | 100% | `Localizable.strings` を実装 |
 | | `Assets.xcassets` | ⚠️ 未実装 | 0% | 必要に応じて追加予定 |
-| **テスト** | ユニットテスト | ✅ 実装済み | 100% | `SourceItemTests`、`SelectionManagerTests`、`SourceListServiceTests` |
-| | UI テスト | ⚠️ 未実装 | 0% | 主要なユーザー操作の検証が未実装 |
-| | スナップショットテスト | ⚠️ 未実装 | 0% | SwiftUI レンダリングの一貫性検証が未実装 |
+| **テスト** | ユニットテスト | ✅ 実装済み | 100% | コア + アウトライン + D&D + キーボード等 |
+| | UI / フロー | ✅ 実装済み | 100% | `SourceListUserFlowTests` ([ui_test_spec](ui_test_spec.md)) |
+| | スナップショットテスト | ✅ 実装済み | 100% | `SourceListSnapshotTests` + pointfreeco/swift-snapshot-testing |
+| | 行カバレッジ70% | ✅ 実装済み | 100% | `scripts/check-coverage.sh` (CI macOS) |
 | **CI/CD** | GitHub Actions ワークフロー | ✅ 実装済み・テスト成功 | 100% | GitHub Actions「Swift Test」ワークフローが正常に動作、詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照 |
 | | ローカルテスト・スクリプト | ✅ 実装済み | 100% | 詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照 |
 | | リリース自動化 | ⚠️ 未実装 | 0% | Xcode Archive、Notarize、Artifacts 管理が未実装 |
 | **ドキュメント** | コードコメント | ✅ 実装済み | 100% | 主要な API にコメントを実装 |
-| | API Reference (DocC) | ⚠️ 未実装 | 0% | DocC 形式の API ドキュメントが未整備 |
+| | API Reference (DocC) | ✅ 実装済み | 100% | `S2JSourceList.docc` ([devx_spec](devx_spec.md)) |
 | | README | ✅ 実装済み | 100% | 基本的な使用方法を記載 |
 | **アクセシビリティ** | VoiceOver 対応 | ✅ 実装済み | 100% | `accessibilityLabel` / `accessibilityValue` を実装 |
 | | キーボードナビゲーション | ✅ 実装済み | 100% | 矢印キーで選択・展開 ([accessibility_spec](accessibility_spec.md)) |
 | | 動的タイプ対応 | ✅ 実装済み | 100% | `.body` / `@ScaledMetric` ([accessibility_spec](accessibility_spec.md)) |
 | **その他** | `SampleApp.swift` | ✅ 実装済み | 100% | macOS デモ、Periphery 用 (`project.yml` の SampleApp スキーム) |
-| | Preview Content | ⚠️ 未実装 | 0% | SwiftUI Preview 用のコンテンツが未実装 |
+| | Preview Content | ✅ 実装済み | 100% | `Preview Content/` + `#Preview` ([devx_spec](devx_spec.md)) |
 | | `Package.swift` | ✅ 実装済み | 100% | Swift Package 定義、リソース設定 |
 
 **実装完了率の算出方法**:
@@ -457,12 +459,12 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * **データモデル**: 100% (3モジュールすべて実装済み)
 * **ユーティリティ**: 100% (`IconProvider` / `Bundle+Module` の2モジュール実装済み)
 * **リソース**: 50% (ローカライゼーションは実装済み。Assets は未実装)
-* **テスト**: 33.3% (ユニットテストは実装済み。UI テスト・スナップショットテストは未実装)
-* **CI/CD**: 75% (GitHub Actions ワークフローとローカルテスト・スクリプトは実装済み・テスト成功。リリース自動化は未実装)
-* **ドキュメント**: 66.7% (コードコメント、README は実装済み。API Reference は未整備)
+* **テスト**: 100% (UT / UI フロー / Snapshot / カバレッジゲート)
+* **CI/CD**: 80% (ワークフロー、ローカルテスト、macOS カバレッジゲートは実装済み。Notarize 等のリリース自動化は未実装)
+* **ドキュメント**: 100% (README、コードコメント、DocC、Preview)
 * **アクセシビリティ**: 100% (VoiceOver / キーボード / Dynamic Type)
 
-**全体実装の完了率**: 約 **90%** (コア機能、UI コンポーネント、データモデルは完全実装。テスト、CI/CD、ドキュメントは部分実装)
+**全体実装の完了率**: 約 **96%** (チェックリスト項目は [status.md](status.md) で100%。リリース自動化、Assets 等は Backlog)
 
 ### 11.5. 品質評価 `{@spec:s11-5}`
 
@@ -471,7 +473,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 * **セキュリティ**: A (良好) - Swift の型安全性と適切なデータ管理
 * **パフォーマンス**: A (良好) - 効率的な実装と最適化
 * **アクセシビリティ**: A (良好) - VoiceOver 対応と基本的なアクセシビリティ機能を実装
-* **保守性**: A (良好) - ユニットテストによるコアロジックの検証と明確なコード構造
+* **保守性**: A (良好) - UT / UI フロー / スナップショットと `Sources/S2JSourceList` 行カバレッジ70% ゲート ([ui_test_spec.md](./ui_test_spec.md))
 
 ---
 
@@ -479,7 +481,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 本章では、「今後の予定」を記載します。
 
-**残りの未実装・部分実装の機能**: UI / スナップショットテスト、DocC、リリース自動化、D&D の拡張 (一括移動・検索中 D&D 等)。詳細は「11. 実装状況サマリー」および [status.md](status.md) を参照してください。
+**残りの未実装・部分実装の機能**: リリース自動化、D&D の拡張 (一括移動・検索中 D&D 等)、`Assets.xcassets`。DocC / Preview は [devx_spec.md](./devx_spec.md) で **100%**。
 
 ### 12.1. 短期での改善予定 (1-3ヵ月) `{@spec:s12-1}`
 
@@ -487,21 +489,6 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 1. **ドラッグ & ドロップの拡張** (優先度: 低〜中) (基本は ✅ 完了 — [drag_drop_spec.md](drag_drop_spec.md))
    * 残タスク例: 検索フィルター中の D&D、複数選択の一括移動、`beforeSibling` / 子先頭の UI、`AppKitBridge` による精密ドロップゾーン、ドラッグ元の半透明。
-
-2. **UI テスト、スナップショットテストの実装** (優先度: 中)
-   * 現状: ユニットテストは実装済み、UI テストは未実装です。
-   * 実装内容:
-     * 主要なユーザー操作 (選択、展開/折り畳み、ドラッグ & ドロップ、編集) を XCTest / UI Test で検証します。
-     * SwiftUI レンダリングの一貫性を SnapshotTesting で検証します。
-     * macOS と iPadOS の両方で UI テストを実行します。
-   * 見積もり: 1-2週間。
-
-3. **Preview Content の実装** (優先度: 低)
-   * 現状: SwiftUI Preview 用のコンテンツが未実装です。
-   * 実装内容:
-     * Xcode Preview 用のサンプルデータを提供します。
-     * 開発時の視覚的確認を容易にします。
-   * 見積もり: 1-2日。
 
 ### 12.2. 中期での改善予定 (3-6ヵ月) `{@spec:s12-2}`
 
@@ -528,15 +515,6 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
      * Notarize / Notarization ステップの自動化スクリプトを実装します。
      * 生成されたリリース用ビルドの Artifacts 管理を実装します。
      * リリース・アセット: ソース + API Reference ドキュメントを提供します。
-   * 見積もり: 1-2週間。
-
-6. **API Reference ドキュメント (DocC) の整備** (優先度: 中)
-   * 現状: コードコメントは実装済み、DocC 形式の API ドキュメントは未整備です。
-   * 実装内容:
-     * DocC 形式での API Reference を生成します。
-     * Quick Start ガイドを作成します。
-     * カスタマイズ・ガイド (カスタム行、検索、ドラッグ & ドロップ) を作成します。
-     * Migration Guide (PXSourceList からの移行) を作成します。
    * 見積もり: 1-2週間。
 
 5. **Assets.xcassets の追加** (優先度: 低)
@@ -619,7 +597,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 
 ### 5. CI ワークフロー補足 `{@spec:s5-2}`
 
-**実装状況**: ✅ **実装済み** - GitHub Actions ワークフローは実装済み。UI スナップショット・テストは未実装です。
+**実装状況**: ✅ **実装済み** — `swift-test.yml` に UT / スナップショット・テストと macOS 行カバレッジ70% ゲートを含む ([SPEC_CICD.md](SPEC_CICD.md)、[ui_test_spec.md](./ui_test_spec.md))。
 
 * **重要**: CI/CD 関連の仕様は、[SPEC_CICD.md](SPEC_CICD.md) で規定します。本セクションでは概要のみを記載します。
 * 主な機能:

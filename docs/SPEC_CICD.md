@@ -90,7 +90,8 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
     * Swift v6.2系のみの環境では失敗させ、6.3+ を要求します。
 * **Run tests on macOS**
     * `swift test --enable-code-coverage` を実行して、macOS 向けのユニットテストを実行します。
-    * テスト・カバレッジを有効化します。
+    * `scripts/export-coverage-xml.sh` で Codecov 用 XML を生成します。
+    * `MIN_COVERAGE=70 ./scripts/check-coverage.sh` で `Sources/S2JSourceList` の行カバレッジを検証します。
 * **Upload coverage to Codecov**
     * `codecov/codecov-action@v6` を使用して、テスト・カバレッジを Codecov にアップロードします。
     * **設定**:
@@ -100,8 +101,9 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 #### 2.1.3. 期待される結果 `{@spec-cicd:s2-1-3}`
 
-* すべての macOS 向けユニットテストが成功すること。
-* テスト・カバレッジが Codecov に正常にアップロードされること。
+* すべての macOS 向けテスト (UT / UI フロー / スナップショット) が成功すること。
+* `Sources/S2JSourceList` の行カバレッジが **70%** 以上であること (`check-coverage.sh`)。
+* テスト・カバレッジが Codecov に正常にアップロードされること (`.build/coverage/coverage.xml`)。
 
 ### 2.2. test-ios ジョブ `{@spec-cicd:s2-2}`
 
@@ -359,6 +361,9 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 | `npm run lint:periphery` | `.periphery.yml` の **SampleApp** スキームで未使用コード検出 |
 | `npm run format:swift` | SwiftFormat で自動整形 |
 | `npm run lint:build` / `analyze:swift` | `S2JSourceList-macOS` スキームのビルド / 静的解析 |
+| `npm run test:coverage` | `scripts/check-coverage.sh` — 行カバレッジ70% ゲート ([ui_test_spec.md](./ui_test_spec.md)) |
+| `npm run docs:docc` | `scripts/build-docc.sh` — DocC HTML ([devx_spec.md](./devx_spec.md)) |
+| `npm run lint:docs` / `docs:heading-tags` | Markdown リンター、見出しタグ (`specs.md` 規約) |
 
 設定ファイル: `.swiftlint.yml`、`.swiftformat`、`.swift-version`、`.periphery.yml`。
 
@@ -373,6 +378,17 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 * **macOS**: `swift test --enable-code-coverage` でカバレッジを収集します。
 * **iOS**: `xcodebuild test -enableCodeCoverage YES` でカバレッジを収集します。
+
+### 4.1.1. 補助スクリプト `{@spec-cicd:s4-1-1}`
+
+| スクリプト | 役割 |
+| --- | --- |
+| `scripts/export-coverage-xml.sh` | `llvm-cov export` で `.build/coverage/coverage.xml` を生成 (Codecov 用) |
+| `scripts/check-coverage.sh` | `Sources/S2JSourceList` の行カバレッジが `MIN_COVERAGE` (デフォルト70) 以上か検証 |
+| `scripts/build-docc.sh` | シンボルグラフ生成 + `docc convert` → `.build/docs/S2JSourceList/` |
+
+* **npm**: `npm run test:coverage` → `check-coverage.sh` (テスト実行込み)。`npm run docs:docc` → `build-docc.sh`。
+* **正本**: カバレッジは [ui_test_spec.md](./ui_test_spec.md)、DocC / Preview は [devx_spec.md](./devx_spec.md)。
 
 ### 4.2. カバレッジ・アップロード `{@spec-cicd:s4-2}`
 
@@ -420,7 +436,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 以下の機能は完全に実装され、テストも完了しています。
 
 * **GitHub Actions ワークフロー**:
-    * `swift-test.yml`: Swift Package のユニットテスト (macOS / iOS) とカバレッジ収集、macOS リリース・ビルド Artifacts の自動実行 (✅100% 実装完了・テスト成功。UI / スナップショットテストは未導入)
+    * `swift-test.yml`: Swift Package のテスト (macOS / iOS) とカバレッジ収集、行カバレッジ70% ゲート、macOS リリース・ビルド Artifacts (✅ UT / UI フロー / SnapshotTesting を含む)
     * `test-macos` ジョブ: macOS 向けテスト、カバレッジ収集 (✅テスト成功)
     * `test-ios` ジョブ末尾: macOS / iOS テスト成功後のリリース・ビルドと Artifacts 保存
     * `test-ios` ジョブ: iOS/iPadOS 向けテスト実行とカバレッジ収集 (✅テスト成功)
@@ -447,8 +463,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 ### 8.1. 短期での改善予定 (1-3ヵ月) `{@spec-cicd:s8-1}`
 
-* **テスト・カバレッジの向上**: 現在のテスト・カバレッジを向上させ、目標値 (70%以上) を達成します。
-* **UI テストの追加**: SnapshotTesting フレームワークを使用した UI テストを追加します。
+* **iOS カバレッジゲート**: macOS と同様に `check-coverage.sh` を iOS ジョブへ適用するか検討します。
 
 ### 8.2. 中期での改善予定 (3-6ヵ月) `{@spec-cicd:s8-2}`
 

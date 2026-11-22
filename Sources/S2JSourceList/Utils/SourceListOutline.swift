@@ -26,4 +26,22 @@ enum SourceListOutline {
     static func selectableItemIds(in outline: [SourceItem]) -> [UUID] {
         outline.filter(\.isSelectable).map(\.id)
     }
+
+    static func filterItems(_ items: [SourceItem], searchText: String) -> [SourceItem] {
+        let lowercased = searchText.lowercased()
+        return items.compactMap { item in
+            var filtered = item
+            if let children = item.children {
+                let filteredChildren = filterItems(children, searchText: searchText)
+                if !filteredChildren.isEmpty || item.title.lowercased().contains(lowercased) {
+                    filtered.children = filteredChildren
+                    filtered.isExpanded = true
+                    return filtered
+                }
+            } else if item.title.lowercased().contains(lowercased) {
+                return filtered
+            }
+            return nil
+        }
+    }
 }

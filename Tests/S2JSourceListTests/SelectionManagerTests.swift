@@ -99,4 +99,51 @@ final class SelectionManagerTests: XCTestCase {
         selectionManager.selectItem(id2)
         XCTAssertEqual(selectionManager.firstSelectedId, id2)
     }
+
+    func testDeselectItem() {
+        let id = UUID()
+        selectionManager.selectItem(id)
+        selectionManager.deselectItem(id)
+        XCTAssertFalse(selectionManager.isSelected(id))
+    }
+
+    func testSelectItemsInMultipleMode() {
+        selectionManager.selectionMode = .multiple
+        let id1 = UUID()
+        let id2 = UUID()
+        selectionManager.selectItems([id1, id2])
+        XCTAssertTrue(selectionManager.isSelected(id1))
+        XCTAssertTrue(selectionManager.isSelected(id2))
+    }
+
+    func testSelectItemsInSingleModeSelectsOneMember() {
+        let id1 = UUID()
+        let id2 = UUID()
+        selectionManager.selectItems([id1, id2])
+        XCTAssertEqual(selectionManager.selectedItemIds.count, 1)
+        XCTAssertTrue(selectionManager.isSelected(id1) || selectionManager.isSelected(id2))
+    }
+
+    func testNavigateToPrevious() {
+        let id1 = UUID()
+        let id2 = UUID()
+        selectionManager.selectItem(id1)
+        selectionManager.selectItem(id2)
+        XCTAssertEqual(selectionManager.navigateToPrevious(), id1)
+        XCTAssertTrue(selectionManager.isSelected(id1))
+    }
+
+    func testNavigateToNextReturnsNil() {
+        let id = UUID()
+        selectionManager.selectItem(id)
+        XCTAssertNil(selectionManager.navigateToNext())
+    }
+
+    func testHistoryTrimsToMaxSize() {
+        selectionManager.maxHistorySize = 2
+        selectionManager.selectItem(UUID())
+        selectionManager.selectItem(UUID())
+        selectionManager.selectItem(UUID())
+        XCTAssertEqual(selectionManager.selectionHistory.count, 2)
+    }
 }

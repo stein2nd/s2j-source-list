@@ -56,6 +56,7 @@ public struct SidebarView: View {
      * - Parameter indentationWidth: インデントの幅
      * - Parameter iconSize: アイコンのサイズ
      * - Parameter customRowContent: カスタム行コンテンツ
+     * - Parameter contextMenuBuilder: 行ごとのカスタムコンテキストメニュー (未指定時はデフォルトメニュー)
      */
     public init(
         service: SourceListService,
@@ -299,31 +300,7 @@ public struct SidebarView: View {
         if searchText.isEmpty {
             return service.rootItems
         }
-        return filterItems(service.rootItems, searchText: searchText)
-    }
-
-    /**
-     * アイテムをフィルタリングします。
-     * - Parameter items: アイテムの配列
-     * - Parameter searchText: 検索テキスト
-     * - Returns: フィルタリングされたアイテムの配列
-     */
-    private func filterItems(_ items: [SourceItem], searchText: String) -> [SourceItem] {
-        let lowercased = searchText.lowercased()
-        return items.compactMap { item in
-            var filtered = item
-            if let children = item.children {
-                let filteredChildren = filterItems(children, searchText: searchText)
-                if !filteredChildren.isEmpty || item.title.lowercased().contains(lowercased) {
-                    filtered.children = filteredChildren
-                    filtered.isExpanded = true
-                    return filtered
-                }
-            } else if item.title.lowercased().contains(lowercased) {
-                return filtered
-            }
-            return nil
-        }
+        return SourceListOutline.filterItems(service.rootItems, searchText: searchText)
     }
 
     /**
@@ -379,29 +356,19 @@ public struct SidebarView: View {
         return service.findItem(id: id)?.item.isExpanded ?? false
     }
 
-    private func keyboardContextItem() -> SourceItem? {
-        let outline = visibleOutlineItems()
-        guard !outline.isEmpty else { return nil }
-        if let selectedId = selectionManager.firstSelectedId,
-           let item = outline.first(where: { $0.id == selectedId })
-        {
-            return item
-        }
-        return outline.first
-    }
-
     private func handleKeyboardVerticalNavigation(offset: Int) -> KeyPress.Result {
         guard editingItemId == nil else { return .ignored }
         let selectableIds = SourceListOutline.selectableItemIds(in: visibleOutlineItems())
-        guard !selectableIds.isEmpty else { return .ignored }
+        guard let nextId = SourceListKeyboardNavigation.nextSelectableId(
+            selectableIds: selectableIds,
+            currentId: selectionManager.firstSelectedId,
+            offset: offset
+        ) else { return .ignored }
 
-        let currentId = selectionManager.firstSelectedId ?? selectableIds[0]
-        let index = selectableIds.firstIndex(of: currentId) ?? 0
-        let nextIndex = min(max(index + offset, 0), selectableIds.count - 1)
-        guard nextIndex != index || selectionManager.firstSelectedId == nil else {
+        let currentId = selectionManager.firstSelectedId ?? selectableIds.first
+        guard nextId != currentId || selectionManager.firstSelectedId == nil else {
             return .handled
         }
-        let nextId = selectableIds[nextIndex]
         Task { @MainActor in
             selectionManager.selectItem(nextId)
         }
@@ -409,13 +376,14 @@ public struct SidebarView: View {
     }
 
     private func handleKeyboardHorizontalNavigation(expand: Bool) -> KeyPress.Result {
-        guard editingItemId == nil, let item = keyboardContextItem(), item.hasChildren else { return .ignored }
+        guard editingItemId == nil else { return .ignored }
+        let item = SourceListKeyboardNavigation.contextItem(
+            in: visibleOutlineItems(),
+            selectedId: selectionManager.firstSelectedId
+        )
+        guard let item, item.hasChildren else { return .ignored }
         let expanded = isItemExpanded(item)
-        if expand {
-            if !expanded {
-                toggleExpansion(item.id)
-            }
-        } else if expanded {
+        if SourceListKeyboardNavigation.shouldToggleExpansion(item: item, isExpanded: expanded, expand: expand) {
             toggleExpansion(item.id)
         }
         return .handled

@@ -34,9 +34,12 @@ Sources/S2JSourceList/
 │           └── iPadOptimizations.swift # iPadOS 向け最適化
 ├── Utils/
 │   ├── SourceListDragDrop.swift    # D&D 用 UUID 文字列ペイロード (s2j-source-item:)
-│   ├── SourceListOutline.swift     # 表示アウトライン (キーボード・展開状態)
+│   ├── SourceListOutline.swift     # 表示アウトライン (`visibleItems` / `selectableItemIds` / `filterItems`)
+│   ├── SourceListKeyboardNavigation.swift # 矢印キー用の次 ID・展開判定・コンテキスト行
 │   ├── IconProvider.swift          # アイコン提供ユーティリティ
 │   └── Bundle+Module.swift         # Bundle.module の代替実装 (Xcode プロジェクト用)
+├── S2JSourceList.docc/              # DocC カタログ (ランディング + Getting Started)
+├── Preview Content/                # `SourceListPreviewData`、コンポーネント用 `#Preview`
 └── Resources/                      # Localizable.strings (Base, en, ja)
 ```
 
@@ -47,7 +50,8 @@ Sources/S2JSourceList/
 | `SourceListService.swift` | データ供給。`rootItems`、CRUD、展開、`moveItem` / `isDescendant`。Publisher: `itemsChanged`、`itemRenamed`、`itemDeleted`、**`itemsMoved`**。 | [drag_drop_spec.md](./drag_drop_spec.md) |
 | `SourceListDragDrop.swift` | D&D のドラッグペイロード生成・パース (モジュール内部)。 | [drag_drop_spec.md](./drag_drop_spec.md) |
 | `SidebarView.swift` | メイン UI。検索、階層、コンテキストメニュー、選択・編集、矢印キー。`allowsDragAndDrop` 時は `SourceListRowDragDropModifier`。 | [selection_spec.md](./selection_spec.md), [search_spec.md](./search_spec.md), [drag_drop_spec.md](./drag_drop_spec.md), [accessibility_spec.md](./accessibility_spec.md) |
-| `SourceListOutline.swift` | 展開状態にもとづく平坦な表示順。キーボードナビゲーション用。 | [accessibility_spec.md](./accessibility_spec.md) |
+| `SourceListOutline.swift` | 展開状態にもとづく平坦な表示順、検索フィルター (`filterItems`)。キーボードナビ用。 | [search_spec.md](./search_spec.md), [accessibility_spec.md](./accessibility_spec.md) |
+| `SourceListKeyboardNavigation.swift` | 選択可能 ID 列上の前後移動、グループ展開判定、キーボードのコンテキスト行。 | [accessibility_spec.md](./accessibility_spec.md) |
 | `SourceRowView.swift` | 行描画。アイコン・バッジ・`customContent`、`@ScaledMetric`、VoiceOver ラベル/ヒント/識別子。 | [accessibility_spec.md](./accessibility_spec.md) |
 | `InlineEditorView.swift` | 行内編集 UI。TextField によるリネーム、コミット/キャンセル。 | [selection_spec.md](./selection_spec.md) |
 | `AppKitBridge.swift` | macOS 専用。AppKit のカラー取得、必要に応じて NSOutlineView の挙動を参考にした微調整。 | — |
@@ -62,7 +66,7 @@ Sources/S2JSourceList/
 * **選択変更** → `SelectionManager.selectionChanged` (PassthroughSubject) でホストに通知。
 * **編集・削除** → `SourceListService` の `renameItem` 等を経由し、必要に応じて Publisher で通知。
 * **ドラッグ & ドロップ** → `SidebarView.handleDrop` が `SourceListService.moveItem` を呼び出し、`itemsMoved` でホストに通知。詳細は [drag_drop_spec.md](./drag_drop_spec.md)。
-* **検索** → `SidebarView` 内の `searchText` でフィルターし、`filteredItems` として表示。詳細は [search_spec.md](./search_spec.md) を参照。
+* **検索** → `SidebarView` の `searchText` → `SourceListOutline.filterItems` → `filteredItems` として表示 ([search_spec.md](./search_spec.md))。
 
 ## 5. プラットフォーム分岐のルール `{@architecture:s5}`
 
@@ -79,8 +83,10 @@ Swift Package 本体 (`Sources/`) に加え、Xcode プロジェクト向けに�
 | `project.yml` | XcodeGen 定義。`S2JSourceList-macOS` / `S2JSourceList-iOS` フレームワーク、ユニットテスト、**SampleApp** スキーム。最小 OS は macOS **14.6** / iOS **17.6** (`settings.base` 構成)。 |
 | `SampleApp.swift` | macOS の最小デモアプリ (`NavigationSplitView` + `SidebarView`)。手動での動作確認および Periphery 用ビルドに使用。 |
 | `.periphery.yml` | 未使用コード検出。**SampleApp** スキームを対象 (`lint:periphery`)。 |
+| `Tests/S2JSourceListTests/` | UT、UI フロー、スナップショット。`Package.swift` で `swift-snapshot-testing` に依存。 |
+| `scripts/build-docc.sh` | DocC HTML 生成 ([devx_spec.md](./devx_spec.md))。 |
 
-ローカル品質チェック (`npm run lint:swift` 等) の詳細は [SPEC_CICD.md](./SPEC_CICD.md) を参照してください。
+ローカル品質チェック (`npm run lint:swift` 等)、カバレッジ (`npm run test:coverage`)、DocC (`npm run docs:docc`) は [SPEC_CICD.md](./SPEC_CICD.md)・[ui_test_spec.md](./ui_test_spec.md)・[devx_spec.md](./devx_spec.md) を参照してください。
 
 ## 7. 関連ドキュメント `{@architecture:s7}`
 
@@ -91,3 +97,5 @@ Swift Package 本体 (`Sources/`) に加え、Xcode プロジェクト向けに�
 * 選択・編集ルール: [selection_spec.md](./selection_spec.md)
 * 検索ルール: [search_spec.md](./search_spec.md)
 * ドラッグ & ドロップ: [drag_drop_spec.md](./drag_drop_spec.md)
+* UI / スナップショット・テスト: [ui_test_spec.md](./ui_test_spec.md)
+* DocC / Preview: [devx_spec.md](./devx_spec.md)

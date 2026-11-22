@@ -27,4 +27,19 @@ final class SourceListOutlineTests: XCTestCase {
 
         XCTAssertEqual(SourceListOutline.selectableItemIds(in: outline), [leaf.id])
     }
+
+    func testFilterItemsMatchesTitleAndDescendants() {
+        let child = SourceItem(title: "Target Leaf")
+        let group = SourceItem.group(title: "Folder", children: [child])
+        let other = SourceItem(title: "Other")
+
+        let byChild = SourceListOutline.filterItems([group, other], searchText: "target")
+        XCTAssertEqual(byChild.count, 1)
+        XCTAssertEqual(byChild.first?.children?.first?.title, "Target Leaf")
+
+        let byGroup = SourceListOutline.filterItems([group, other], searchText: "folder")
+        XCTAssertEqual(byGroup.map(\.title), ["Folder"])
+
+        XCTAssertTrue(SourceListOutline.filterItems([other], searchText: "missing").isEmpty)
+    }
 }

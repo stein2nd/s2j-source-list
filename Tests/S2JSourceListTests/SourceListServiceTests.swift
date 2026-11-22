@@ -158,6 +158,26 @@ final class SourceListServiceTests: XCTestCase {
         XCTAssertEqual(received?.newIndex, 1)
     }
 
+    func testMoveItemBeforeSiblingAtRoot() {
+        let item1 = SourceItem(title: "A")
+        let item2 = SourceItem(title: "B")
+        service.rootItems = [item1, item2]
+
+        XCTAssertTrue(service.moveItem(id: item2.id, to: .beforeSibling(siblingId: item1.id)))
+        XCTAssertEqual(service.rootItems.map(\.id), [item2.id, item1.id])
+    }
+
+    func testMoveItemAppendToRoot() {
+        let parent = SourceItem.group(title: "Parent", children: [])
+        let child = SourceItem(title: "Child")
+        service.rootItems = [parent]
+        service.addItem(child, parentId: parent.id)
+
+        XCTAssertTrue(service.moveItem(id: child.id, to: .appendToParent(parentId: nil)))
+        XCTAssertEqual(service.rootItems.count, 2)
+        XCTAssertTrue(service.rootItems.contains { $0.id == child.id })
+    }
+
     func testIsDescendant() {
         let leaf = SourceItem(title: "Leaf")
         let child = SourceItem.group(title: "Child", children: [leaf])

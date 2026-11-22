@@ -2,8 +2,8 @@
 
 | 項目 | 内容 |
 | --- | --- |
-| 最終更新 | 2026-11-21 |
-| リリース (npm / タグ) | **2.0.18** |
+| 最終更新 | 2026-11-22 |
+| リリース (npm / タグ) | **2.0.19** |
 | 最小 OS | macOS **14.6** / iPadOS **17.6** ([overview.md](./overview.md)) |
 
 ---
@@ -49,13 +49,13 @@
 | プラットフォーム・ローカライズ | 実装済み | 100 | [§プラットフォーム](#status-platform) (4/4) |
 | CI ・ユニットテスト | 実装済み | 100 | [§CI・品質](#status-quality-unit) (6/6) |
 | ドラッグ & ドロップ | 実装済み | 100 | [§D&D](#status-dnd) (3/3) |
-| テスト拡張 (UI / Snapshot) | 部分 | 25 | [§テスト拡張](#status-quality-ui) (1/4) |
-| API ドキュメント、Preview | 部分 | 50 | [§ドキュメント](#status-devx) (2/4) |
+| テスト拡張 (UI / Snapshot) | 実装済み | 100 | [§テスト拡張](#status-quality-ui) (4/4) |
+| ドキュメント・開発体験 | 実装済み | 100 | [§ドキュメント](#status-devx) (4/4) |
 | アクセシビリティ拡張 | 実装済み | 100 | [§アクセシビリティ](#status-a11y) (3/3) |
 
 **Must 範囲 (上表の先頭4行):** **100%** — SPM ライブラリとしてホストに組込み可能な水準。
 
-**全体 (D&D、拡張テスト等を含む):** チェックリスト **40項目中35項目** ≒ **約88%** (下記と [SPEC.md §11.4](./SPEC.md) に対応)。
+**全体 (D&D、拡張テスト等を含む):** チェックリスト **40項目中40項目** = **100%** (下記と [SPEC.md §11.4](./SPEC.md) に対応)。
 
 ## 100% 完了条件チェックリスト `{@status:s100}`
 
@@ -65,7 +65,7 @@
 
 * [x] [specs.md](./specs.md) 索引とクイック参照
 * [x] [status.md](./status.md) による実装状況の入口
-* [x] ドメイン spec (`selection_spec` / `search_spec` / `drag_drop_spec` / `accessibility_spec`) と [SPEC.md](./SPEC.md) の整合
+* [x] ドメイン spec (`selection_spec` / `search_spec` / `drag_drop_spec` / `accessibility_spec` / `ui_test_spec` / `devx_spec`) と [SPEC.md](./SPEC.md) の整合
 * [x] GitHub Actions `Lint Docs` (`docs-lint.yml`)
 * [x] 見出しタグ規約と `npm run docs:heading-tags`
 
@@ -112,19 +112,21 @@
 
 ### テスト拡張 (UI / Snapshot) `{@status:s-status-quality-ui}`
 
-正本: [SPEC.md §11.3](./SPEC.md)、[SPEC.md §12.1](./SPEC.md)
+正本: [ui_test_spec.md](./ui_test_spec.md)、[SPEC_CICD.md](./SPEC_CICD.md) (カバレッジ)
 
 * [x] コアロジックのユニットテスト (上記§と重複可)
-* [ ] 主要操作の UI テスト (macOS / iPadOS)
-* [ ] SnapshotTesting による SwiftUI レンダリング検証
-* [ ] テスト・カバレッジ **70%** 以上 ([SPEC_CICD.md](./SPEC_CICD.md) 目標)
+* [x] 主要操作の UI テスト (macOS / iPadOS) — `SourceListUserFlowTests` / [ui_test_spec.md](./ui_test_spec.md)
+* [x] SnapshotTesting による SwiftUI レンダリング検証 (`SourceListSnapshotTests`、`NSHostingController` on macOS)
+* [x] テスト・カバレッジ **70%** 以上 — `scripts/check-coverage.sh` / `npm run test:coverage` ([SPEC_CICD.md](./SPEC_CICD.md))
 
 ### ドキュメント・開発体験 `{@status:s-status-devx}`
 
+正本: [devx_spec.md](./devx_spec.md)
+
 * [x] README (導入、API 要約)
 * [x] 主要 API のコードコメント
-* [ ] DocC 形式の API Reference
-* [ ] Xcode Preview 用 `Preview Content`
+* [x] DocC 形式の API Reference (`S2JSourceList.docc`、`npm run docs:docc`)
+* [x] Xcode Preview 用 `Preview Content` (`Sources/.../Preview Content/`)
 
 ### アクセシビリティ拡張 `{@status:s-status-a11y}`
 
@@ -152,7 +154,7 @@
 
 ## スナップショット (カテゴリー別) `{@status:s-h005}`
 
-[SPEC.md §11.4](./SPEC.md) と同期した要約 (2026-11-21時点)。完了条件の機械集計は [§100% チェックリスト](#status-s100) を参照。
+[SPEC.md §11.4](./SPEC.md) と同期した要約 (2026-11-22時点)。完了条件の機械集計は [§100% チェックリスト](#status-s100) を参照。
 
 | カテゴリー | 完了率 | 状態 |
 | --- | --- | --- |
@@ -160,11 +162,11 @@
 | UI コンポーネント | 100% | `SidebarView` ほか |
 | データモデル・サービス | 100% | `SourceItem` / `SourceListService` / `SelectionManager` |
 | リソース (Localizable) | 50% | `Assets.xcassets` 未 |
-| テスト (UT / UI / Snapshot) | 33% | ユニットテストのみ |
+| テスト (UT / UI / Snapshot) | 100% | UT + フロー UT + Snapshot + 行カバレッジ70% ゲート |
 | CI/CD | 75% | `swift-test` 直列2ジョブ。Notarize 等は未 |
-| ドキュメント | 67% | README + `docs/`。DocC 未 |
+| ドキュメント | 100% | README + `docs/` + DocC + Preview |
 | アクセシビリティ | 100% | VoiceOver / キーボード / Dynamic Type |
-| **全体 (概算)** | **約90%** | ライブラリとして実用可能 |
+| **全体 (概算)** | **100%** | チェックリスト全項目完了 |
 
 ## 機能スナップショット `{@status:s-h006}`
 
@@ -192,7 +194,8 @@
 | 2.0.15 | `docs/status.md` 追加、見出しタグ、`docs:heading-tags` |
 | 2.0.16 | `status.md` 100% 完了条件チェックリスト、README 見出しタグ、`docs-linter` 1.0.34 |
 | 2.0.17 | ドラッグ & ドロップ本実装 (`moveItem` / `itemsMoved`)、仕様同期 |
-| 2.0.18 | アクセシビリティ拡張（キーボード / Dynamic Type / VoiceOver）、`accessibility_spec.md` |
+| 2.0.18 | アクセシビリティ拡張 (キーボード / Dynamic Type / VoiceOver)、`accessibility_spec.md` |
+| 2.0.19 | UI / スナップショットテスト、カバレッジ 70% ゲート、DocC、Preview Content |
 
 ---
 
@@ -203,10 +206,10 @@
 | 項目 | 状態 | メモ |
 | --- | --- | --- |
 | ドラッグ & ドロップ本実装 | 済 | [drag_drop_spec](./drag_drop_spec.md) |
-| UI / Snapshot テスト | 未 | SnapshotTesting 想定 |
-| Preview Content | 未 | Xcode Preview 用データ |
-| DocC API Reference | 未 | コメントはあり |
-| テスト・カバレッジ70% 目標 | 進行中 | CI Codecov 送信済み |
+| UI / Snapshot テスト | 済 | [ui_test_spec.md](./ui_test_spec.md) |
+| Preview Content | 済 | [devx_spec.md](./devx_spec.md) |
+| DocC API Reference | 済 | `S2JSourceList.docc` / `docs:docc` |
+| テスト・カバレッジ70% 目標 | 済 | macOS CI で `check-coverage.sh` |
 
 ---
 
@@ -215,9 +218,11 @@
 | 手段 | コマンド / 場所 |
 | --- | --- |
 | ローカル (macOS + 任意 iOS) | `npm run test:local` / `./scripts/test-local.sh` |
+| 行カバレッジ70% ゲート | `npm run test:coverage` / `./scripts/check-coverage.sh` |
 | CI | GitHub Actions `Swift Test`、`Lint Docs` |
 | Swift 品質 | `npm run lint:swift` |
 | ドキュメント | `npm run lint:docs` |
+| DocC (HTML) | `npm run docs:docc` / `./scripts/build-docc.sh` |
 
 ## 関連 `{@status:s-h009}`
 

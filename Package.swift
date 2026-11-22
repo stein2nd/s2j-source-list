@@ -15,7 +15,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        // Add dependencies here if needed
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.18.0")
     ],
     targets: [
         .target(
@@ -27,7 +27,10 @@ let package = Package(
         ),
         .testTarget(
             name: "S2JSourceListTests",
-            dependencies: ["S2JSourceList"]
+            dependencies: [
+                "S2JSourceList",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ]
         )
     ]
 )

@@ -2,6 +2,28 @@
 
 ## unreleased
 
+## 2.0.19 - 2026-11-22
+
+### Added
+
+* **テスト拡張** — `SourceListUserFlowTests`、`SourceListSnapshotTests` (macOS: `NSHostingController` + SnapshotTesting)、`swift-snapshot-testing` 依存
+* `SourceListKeyboardNavigation` — 矢印キー用ナビロジックの分離と `SourceListKeyboardNavigationTests`
+* `SourceListOutline.filterItems` — 検索フィルターのユーティリティ化と `SourceListOutlineTests`
+* `AppKitBridgeTests`、その他 UT 拡充 (`IconProvider` / `SelectionManager` / `SourceListService` 等)
+* `scripts/check-coverage.sh` / `export-coverage-xml.sh` — `Sources/S2JSourceList` 行カバレッジ **70%** ゲート
+* **DocC** — `S2JSourceList.docc`、`scripts/build-docc.sh`、`npm run docs:docc`
+* **Xcode Preview** — `Preview Content/` (`SourceListPreviewData`、`S2JSourceListPreviews`)
+* `docs/ui_test_spec.md` / `docs/devx_spec.md`
+
+### Changed
+
+* `SidebarView` — 検索フィルターを `SourceListOutline.filterItems` に委譲、キーボード処理を `SourceListKeyboardNavigation` に委譲
+* CI (`swift-test.yml`) — カバレッジ XML 出力と `macOS` 70% ゲート
+* `docs/status.md` — テスト拡張・開発体験 **100%**、チェックリスト **40/40**
+* `docs/` (`SPEC` / `SPEC_CICD` / `architecture` / `specs` ほか) と `README.md` — UI テスト、DocC、Preview を同期
+* `package.json` — `test:coverage`、`docs:docc`
+* `README.md` の `Package.swift` 依存指定を v2.0.18 → v2.0.19に更新
+
 ## 2.0.18 - 2026-11-21
 
 ### Added
@@ -16,7 +38,7 @@
 * `SourceRowView` — `@ScaledMetric`、`.font(.body)`、`accessibilityHint` / `accessibilityIdentifier`、グループ行ラベル
 * `docs/status.md` — アクセシビリティ拡張の完了条件 **3/3 (100%)**、全体チェックリスト **35/40≈88%**
 * `docs/SPEC.md` §4.10 / §11.4、`specs.md`、`architecture.md`、`SPEC_STRUCTURE.md` — a11y 実装を同期
-* `README.md` の `Package.swift` 依存指定を v2.0.17 → v2.0.18 に更新
+* `README.md` の `Package.swift` 依存指定を v2.0.17→ v2.0.18に更新
 
 ## 2.0.17 - 2026-11-21
 

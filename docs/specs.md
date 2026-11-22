@@ -11,6 +11,8 @@
 | [search_spec.md](./search_spec.md) | 検索マッチング・親子表示ルール |
 | [drag_drop_spec.md](./drag_drop_spec.md) | ドラッグ & ドロップの挙動、制約、API |
 | [accessibility_spec.md](./accessibility_spec.md) | VoiceOver、キーボード、Dynamic Type |
+| [ui_test_spec.md](./ui_test_spec.md) | UI フロー、SnapshotTesting、行カバレッジ70% ゲート |
+| [devx_spec.md](./devx_spec.md) | DocC API Reference、Xcode Preview Content |
 | [status.md](./status.md) | **実装状況の入口** (スナップショット・短期 Backlog 索引) |
 | [SPEC.md](./SPEC.md) | 要件概要、実装状況サマリ、Backlog、品質評価、Appendix |
 | [SPEC_CICD.md](./SPEC_CICD.md) | CI/CD 仕様 (ワークフロー・ローカルテスト・カバレッジ) |
@@ -37,6 +39,8 @@
 * **検索のマッチングルール** → [search_spec.md](./search_spec.md)
 * **D&D の仕様** → [drag_drop_spec.md](./drag_drop_spec.md)
 * **アクセシビリティ** → [accessibility_spec.md](./accessibility_spec.md)
+* **UI / スナップショット・テスト** → [ui_test_spec.md](./ui_test_spec.md)
+* **DocC / Preview** → [devx_spec.md](./devx_spec.md)
 * **実装状況 (一覧)** → [status.md](./status.md)
 * **実装状況、Backlog (詳細)** → [SPEC.md](./SPEC.md)
 * **CI やローカルテストの仕様** → [SPEC_CICD.md](./SPEC_CICD.md)

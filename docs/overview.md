@@ -23,3 +23,5 @@
 * 実装状況 (要約): [status.md](./status.md)
 * 要件、実装状況、Backlog (詳細): [SPEC.md](./SPEC.md)
 * CI/CD: [SPEC_CICD.md](./SPEC_CICD.md)
+* テスト (UI / Snapshot / カバレッジ): [ui_test_spec.md](./ui_test_spec.md)
+* DocC / Xcode Preview: [devx_spec.md](./devx_spec.md)

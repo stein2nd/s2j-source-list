@@ -61,7 +61,7 @@
 * `SidebarView` の `SourceListRowDragDropModifier` が行単位で `.draggable` / `.dropDestination` を付与する (SwiftUI Transferable 相当の `String` ペイロード)。
 * 細かいドロップ挙動 (行高さ、ドロップゾーンの精度) が必要な場合は、`AppKitBridge` で AppKit を利用することを検討。
 * `allowsDragAndDrop == false`、または検索フィルター中は D&D 修飾子を付けない。
-* ロジックの正本は `SourceListService` (抽出・挿入・循環参照ガード)。UI テストは [SPEC.md §12.1](./SPEC.md) Backlog。
+* ロジックの正本は `SourceListService` (抽出・挿入・循環参照ガード)。`moveItem` / ペイロードは `SourceListDragDropTests`、D&D 有効な `SidebarView` 見た目は `SourceListSnapshotTests` ([ui_test_spec.md](./ui_test_spec.md))。
 
 ## 6. 関連ドキュメント `{@drag-drop:s6}`
 

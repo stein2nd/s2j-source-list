@@ -34,6 +34,7 @@
 
 ### 3.4. フィルターの再帰 `{@search:s3-4}`
 
+* 実装: `SourceListOutline.filterItems(_:searchText:)` ([architecture.md](./architecture.md))。`SidebarView` の `filteredItems` から呼び出す。
 * `filterItems(_:searchText:)` は再帰的に子を処理する。
 * 子配列に対して同様にフィルターを適用し、マッチした子だけを `filteredChildren` として保持する。
 * 親がマッチするか、`filteredChildren` が空でない場合に、その親を結果に含める。
@@ -65,4 +66,5 @@ filterItems(items, searchText):
 * 仕様の入口: [specs.md](./specs.md)
 * アーキテクチャー: [architecture.md](./architecture.md)
 * 選択・編集ルール: [selection_spec.md](./selection_spec.md)
+* テスト: `SourceListOutlineTests.testFilterItemsMatchesTitleAndDescendants` ([ui_test_spec.md](./ui_test_spec.md))
 * 実装状況、Backlog: [SPEC.md](./SPEC.md)
