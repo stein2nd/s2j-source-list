@@ -90,6 +90,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
     * Swift v6.2系のみの環境では失敗させ、6.3+ を要求します。
 * **Run tests on macOS**
     * `swift test --enable-code-coverage` を実行して、macOS 向けのユニットテストを実行します。
+    * 含まれる `SourceListSnapshotTests` は [ui_test_spec.md](./ui_test_spec.md) §5の許容精度で参照 PNG と比較します (ランナー間フォント差)。
     * `scripts/export-coverage-xml.sh` で Codecov 用 XML を生成します。
     * `MIN_COVERAGE=70 ./scripts/check-coverage.sh` で `Sources/S2JSourceList` の行カバレッジを検証します。
 * **Upload coverage to Codecov**

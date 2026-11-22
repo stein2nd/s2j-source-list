@@ -9,7 +9,7 @@
 | 種別 | 実装 | 実行環境 |
 | --- | --- | --- |
 | 統合 UI フロー | `SourceListUserFlowTests` — 選択・展開・リネーム・移動 | macOS (`swift test`)、iPadOS (`xcodebuild test`) |
-| スナップショット | `SourceListSnapshotTests` + [pointfreeco/swift-snapshot-testing](https://github.com/pointfreeco/swift-snapshot-testing) | macOS は `NSHostingController` → `.image`、参照画像は `Tests/S2JSourceListTests/__Snapshots__/` |
+| スナップショット | `SourceListSnapshotTests` + [pointfreeco/swift-snapshot-testing](https://github.com/pointfreeco/swift-snapshot-testing) | macOS は `NSHostingController` → `.image` (§5の許容精度)、参照 PNG は `__Snapshots__/`、`Package.swift` で exclude |
 | カバレッジ70% | `scripts/check-coverage.sh` — `Sources/S2JSourceList` 行カバレッジ | ローカル / CI (`MIN_COVERAGE=70`) |
 
 ## 3. 実装マッピング `{@ui-test:s3-impl}`
@@ -39,6 +39,8 @@
 記録更新: `SNAPSHOT_TESTING_RECORD=1 swift test --filter SourceListSnapshotTests`
 
 **macOS 注意**: swift-snapshot-testing の SwiftUI `.image` は iOS 向けのため、macOS では `NSHostingController` を `Snapshotting<NSViewController, NSImage>.image` で比較する。
+
+**CI 安定化**: ランナー間のフォント差を吸収するため `precision` 0.95 / `perceptualPrecision` 0.92とし、比較前に `.environment(\.colorScheme, .light)` を固定する。参照 PNG は `Package.swift` の `testTarget` で `exclude: ["__Snapshots__"]` とし SPM の unhandled 警告を抑止する (リポジトリ上のパスは従来どおり)。
 
 ## 6. 関連 `{@ui-test:s5}`
 

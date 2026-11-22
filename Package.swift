@@ -30,7 +30,8 @@ let package = Package(
             dependencies: [
                 "S2JSourceList",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
-            ]
+            ],
+            exclude: ["__Snapshots__"]
         )
     ]
 )

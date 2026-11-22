@@ -173,11 +173,11 @@
 │　　├─ en.lproj/Localizable.strings  # ローカライゼーション (✅ 実装済み)
 │　　└─ ja.lproj/Localizable.strings  # ローカライゼーション (✅ 実装済み)
 ├┬─ Tests/
-│└┬─ S2JSourceListTests/  # テストターゲット (swift-snapshot-testing 依存)
+│└┬─ S2JSourceListTests/  # テストターゲット (swift-snapshot-testing 依存、`exclude: ["__Snapshots__"]`)
 │　├─ *Tests.swift  # コア UT (Item, Selection, Service, Outline, Keyboard, D&D, Icon, AppKitBridge 等) (✅)
 │　├─ SourceListUserFlowTests.swift  # 主要操作の統合フロー (✅)
 │　├─ SourceListSnapshotTests.swift  # SwiftUI スナップショット (✅)
-│　└─ __Snapshots__/SourceListSnapshotTests/  # 参照 PNG (✅)
+│　└─ __Snapshots__/SourceListSnapshotTests/  # 参照 PNG (リポジトリ上、SPM ターゲット外) (✅)
 ├── S2JSourceList.docc/  # DocC カタログ (✅)
 └── Preview Content/  # Preview データ・#Preview (✅)
 ```
@@ -334,10 +334,11 @@ struct ContentView: View {
     * 主要なユーザー操作 (選択、展開/折り畳み、移動、リネーム) を `SourceListUserFlowTests` で検証します。(✅ macOS `swift test` / iPadOS `xcodebuild test`)
 * **スナップショットテスト**:
     * SwiftUI レンダリングの一貫性を SnapshotTesting で検証します。(✅ `SourceListSnapshotTests` — macOS は `NSHostingController` + 画像比較)
+    * CI (GitHub Actions `macos-26`) ではランナー間の描画差を `precision` / `perceptualPrecision` と `.colorScheme` 固定で吸収します。(詳細 [ui_test_spec.md](./ui_test_spec.md) §5)
 
 **UI テスト環境**:
 
-* macOS: `swift test` + 参照画像 `Tests/S2JSourceListTests/__Snapshots__/`
+* macOS: `swift test` + 参照画像 `Tests/S2JSourceListTests/__Snapshots__/` (`Package.swift` の `testTarget` は `exclude: ["__Snapshots__"]`)
 * iPadOS: 同一テストターゲットを `S2JSourceList-iOS` スキームで実行 (スナップショットは UIImage 戦略)
 
 **CI/CD でのテスト実行**:
@@ -434,7 +435,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 | | `Assets.xcassets` | ⚠️ 未実装 | 0% | 必要に応じて追加予定 |
 | **テスト** | ユニットテスト | ✅ 実装済み | 100% | コア + アウトライン + D&D + キーボード等 |
 | | UI / フロー | ✅ 実装済み | 100% | `SourceListUserFlowTests` ([ui_test_spec](ui_test_spec.md)) |
-| | スナップショットテスト | ✅ 実装済み | 100% | `SourceListSnapshotTests` + pointfreeco/swift-snapshot-testing |
+| | スナップショットテスト | ✅ 実装済み | 100% | `SourceListSnapshotTests` + perceptual 比較、CI 安定化 ([ui_test_spec](ui_test_spec.md)) |
 | | 行カバレッジ70% | ✅ 実装済み | 100% | `scripts/check-coverage.sh` (CI macOS) |
 | **CI/CD** | GitHub Actions ワークフロー | ✅ 実装済み・テスト成功 | 100% | GitHub Actions「Swift Test」ワークフローが正常に動作、詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照 |
 | | ローカルテスト・スクリプト | ✅ 実装済み | 100% | 詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照 |

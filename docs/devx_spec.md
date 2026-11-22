@@ -36,7 +36,7 @@ README / コードコメントに加え、DocC API Reference と Xcode Preview �
 | 手段 | 目的 | 正本 |
 | --- | --- | --- |
 | Xcode `#Preview` | 開発中の Canvas 確認 | 本 spec §4 |
-| SnapshotTesting (`SourceListSnapshotTests`) | CI 回归・ピクセル一致 | [ui_test_spec.md](./ui_test_spec.md) |
+| SnapshotTesting (`SourceListSnapshotTests`) | CI 回帰・レンダリング比較 (知覚の許容精度) | [ui_test_spec.md](./ui_test_spec.md) |
 
 プレビュー用サンプルツリー (`SourceListPreviewData`) はスナップショットテストとは別データですが、同じ公開型 (`SidebarView` / `SourceRowView` 等) を対象にします。
 

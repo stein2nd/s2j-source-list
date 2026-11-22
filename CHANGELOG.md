@@ -2,6 +2,26 @@
 
 ## unreleased
 
+## 2.0.21 - 2026-11-22
+
+### Changed
+
+* `docs/status.md` — リリース **2.0.20**、スナップショット CI 安定化の完了条件、チェックリスト **41/41**、マイルストーン v2.0.20
+* `docs/SPEC.md` / `SPEC_CICD.md` / `architecture.md` / `devx_spec.md` / `specs.md` / `SPEC_STRUCTURE.md` — スナップショット許容精度・`__Snapshots__` exclude を `ui_test_spec.md` と同期
+* `README.md` の `Package.swift` 依存指定を v2.0.20→ v2.0.21に更新
+* DocC `GettingStarted.md` — 同上
+
+## 2.0.20 - 2026-11-22
+
+### Fixed
+
+* CI — `SourceListSnapshotTests` が GitHub Actions で参照 PNG とピクセル不一致になる問題 (`precision` / `perceptualPrecision`、`.colorScheme` ライト固定、`layoutSubtreeIfNeeded`)
+
+### Changed
+
+* `Package.swift` — テストターゲットで `__Snapshots__` を `exclude` し SPM の unhandled ファイル警告を解消
+* `docs/ui_test_spec.md` — スナップショット比較の CI 安定化方針を追記
+
 ## 2.0.19 - 2026-11-22
 
 ### Added

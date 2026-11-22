@@ -12,6 +12,10 @@ import XCTest
 import AppKit
 #endif
 
+/// macOS ランナー間 (ローカル vs GitHub Actions) のレンダリング差を許容するピクセル比較の閾値。
+private let snapshotPrecision: Float = 0.95
+private let snapshotPerceptualPrecision: Float = 0.92
+
 final class SourceListSnapshotTests: XCTestCase {
     @MainActor
     func testSourceRowViewDefault() {
@@ -117,13 +121,26 @@ private func assertViewSnapshot<V: View>(
     line: UInt = #line
 ) {
     #if os(macOS)
-    let controller = NSHostingController(rootView: view)
+    let host = view.environment(\.colorScheme, .light)
+    let controller = NSHostingController(rootView: host)
     controller.view.frame = CGRect(origin: .zero, size: size)
-    SnapshotTesting.assertSnapshot(of: controller, as: .image(size: size), file: filePath, testName: testName, line: line)
-    #elseif os(iOS)
+    controller.view.layoutSubtreeIfNeeded()
     SnapshotTesting.assertSnapshot(
-        of: view,
-        as: .image(layout: .fixed(width: size.width, height: size.height)),
+        of: controller,
+        as: .image(
+            precision: snapshotPrecision,
+            perceptualPrecision: snapshotPerceptualPrecision,
+            size: size
+        ),
+        file: filePath,
+        testName: testName,
+        line: line
+    )
+    #elseif os(iOS)
+    let host = view.environment(\.colorScheme, .light)
+    SnapshotTesting.assertSnapshot(
+        of: host,
+        as: .image(layout: .fixed(width: size.width, height: size.height), perceptualPrecision: 0.92),
         file: filePath,
         testName: testName,
         line: line

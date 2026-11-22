@@ -76,7 +76,7 @@ Swift アプリケーションでも、「何を明文化するか」はドメ�
 | [search_spec.md](./search_spec.md) | 検索マッチング・親子表示ルール。 | 検索機能 (本文は本 spec に委譲) |
 | [drag_drop_spec.md](./drag_drop_spec.md) | ドラッグ & ドロップの挙動・制約・`moveItem` / `itemsMoved` API。 | §4.6.4 |
 | [accessibility_spec.md](./accessibility_spec.md) | VoiceOver、キーボード、Dynamic Type。 | §4.10 |
-| [ui_test_spec.md](./ui_test_spec.md) | UI フロー、SnapshotTesting、行カバレッジ70% ゲート。 | §8 (テスト戦略) |
+| [ui_test_spec.md](./ui_test_spec.md) | UI フロー、SnapshotTesting (CI 安定化)、行カバレッジ70% ゲート。 | §8 (テスト戦略) |
 | [devx_spec.md](./devx_spec.md) | DocC、Xcode Preview Content。 | §11 (ドキュメント) |
 | [status.md](./status.md) | 実装状況の入口 (カテゴリー要約・短期 Backlog 索引)。 | §11・§12の要約 (詳細は SPEC に委譲) |
 | [SPEC.md](./SPEC.md) | 要件概要、実装状況、Backlog、品質評価、Appendix。 | 本体 (ハブ) |

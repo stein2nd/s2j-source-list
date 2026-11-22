@@ -3,7 +3,7 @@
 | 項目 | 内容 |
 | --- | --- |
 | 最終更新 | 2026-11-22 |
-| リリース (npm / タグ) | **2.0.19** |
+| リリース (npm / タグ) | **2.0.21** |
 | 最小 OS | macOS **14.6** / iPadOS **17.6** ([overview.md](./overview.md)) |
 
 ---
@@ -49,13 +49,13 @@
 | プラットフォーム・ローカライズ | 実装済み | 100 | [§プラットフォーム](#status-platform) (4/4) |
 | CI ・ユニットテスト | 実装済み | 100 | [§CI・品質](#status-quality-unit) (6/6) |
 | ドラッグ & ドロップ | 実装済み | 100 | [§D&D](#status-dnd) (3/3) |
-| テスト拡張 (UI / Snapshot) | 実装済み | 100 | [§テスト拡張](#status-quality-ui) (4/4) |
+| テスト拡張 (UI / Snapshot) | 実装済み | 100 | [§テスト拡張](#status-quality-ui) (5/5) |
 | ドキュメント・開発体験 | 実装済み | 100 | [§ドキュメント](#status-devx) (4/4) |
 | アクセシビリティ拡張 | 実装済み | 100 | [§アクセシビリティ](#status-a11y) (3/3) |
 
 **Must 範囲 (上表の先頭4行):** **100%** — SPM ライブラリとしてホストに組込み可能な水準。
 
-**全体 (D&D、拡張テスト等を含む):** チェックリスト **40項目中40項目** = **100%** (下記と [SPEC.md §11.4](./SPEC.md) に対応)。
+**全体 (D&D、拡張テスト等を含む):** チェックリスト **41項目中41項目** = **100%** (下記と [SPEC.md §11.4](./SPEC.md) に対応)。
 
 ## 100% 完了条件チェックリスト `{@status:s100}`
 
@@ -117,6 +117,7 @@
 * [x] コアロジックのユニットテスト (上記§と重複可)
 * [x] 主要操作の UI テスト (macOS / iPadOS) — `SourceListUserFlowTests` / [ui_test_spec.md](./ui_test_spec.md)
 * [x] SnapshotTesting による SwiftUI レンダリング検証 (`SourceListSnapshotTests`、`NSHostingController` on macOS)
+* [x] スナップショットの CI 安定化 — 知覚の許容精度・ライト固定、`Package.swift` で `__Snapshots__` を exclude ([ui_test_spec.md](./ui_test_spec.md) §5)
 * [x] テスト・カバレッジ **70%** 以上 — `scripts/check-coverage.sh` / `npm run test:coverage` ([SPEC_CICD.md](./SPEC_CICD.md))
 
 ### ドキュメント・開発体験 `{@status:s-status-devx}`
@@ -148,7 +149,7 @@
 | G4 | Xcode Archive / Notarize のリリース自動化 | Artifacts は CI で生成済み |
 | G5 | GitHub Actions `workflow_dispatch` 手動起動 | runner 枯渇時の運用改善 ([SPEC_CICD.md §8](./SPEC_CICD.md)) |
 
-**補足:** 上表 [スナップショット](#status-s-h005) の **約90%** は [SPEC.md §11.4](./SPEC.md) のカテゴリー加重。本チェックリストの **約88%** は上記§の機械的な `[x]` 比率。
+**補足:** 上表 [スナップショット](#status-s-h005) の要約は [SPEC.md §11.4](./SPEC.md) のカテゴリー加重。本チェックリストは上記§の機械的な `[x]` 比率 (**41/41**) を正本とします。
 
 ---
 
@@ -196,6 +197,8 @@
 | 2.0.17 | ドラッグ & ドロップ本実装 (`moveItem` / `itemsMoved`)、仕様同期 |
 | 2.0.18 | アクセシビリティ拡張 (キーボード / Dynamic Type / VoiceOver)、`accessibility_spec.md` |
 | 2.0.19 | UI / スナップショットテスト、カバレッジ70% ゲート、DocC、Preview Content |
+| 2.0.20 | スナップショット CI 安定化 (許容精度、SPM `exclude`) |
+| 2.0.21 | 仕様同期・チェックリスト **41/41** |
 
 ---
 

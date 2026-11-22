@@ -83,7 +83,7 @@ Swift Package 本体 (`Sources/`) に加え、Xcode プロジェクト向けに�
 | `project.yml` | XcodeGen 定義。`S2JSourceList-macOS` / `S2JSourceList-iOS` フレームワーク、ユニットテスト、**SampleApp** スキーム。最小 OS は macOS **14.6** / iOS **17.6** (`settings.base` 構成)。 |
 | `SampleApp.swift` | macOS の最小デモアプリ (`NavigationSplitView` + `SidebarView`)。手動での動作確認および Periphery 用ビルドに使用。 |
 | `.periphery.yml` | 未使用コード検出。**SampleApp** スキームを対象 (`lint:periphery`)。 |
-| `Tests/S2JSourceListTests/` | UT、UI フロー、スナップショット。`Package.swift` で `swift-snapshot-testing` に依存。 |
+| `Tests/S2JSourceListTests/` | UT、UI フロー、スナップショット。`Package.swift` で `swift-snapshot-testing` に依存。参照 PNG は `__Snapshots__/` (`testTarget` の `exclude`)。 |
 | `scripts/build-docc.sh` | DocC HTML 生成 ([devx_spec.md](./devx_spec.md))。 |
 
 ローカル品質チェック (`npm run lint:swift` 等)、カバレッジ (`npm run test:coverage`)、DocC (`npm run docs:docc`) は [SPEC_CICD.md](./SPEC_CICD.md)・[ui_test_spec.md](./ui_test_spec.md)・[devx_spec.md](./devx_spec.md) を参照してください。
