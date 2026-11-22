@@ -44,7 +44,8 @@ jobs:
         fi
 
     - name: Record SourceListSnapshotTests
-      run: SNAPSHOT_TESTING_RECORD=all swift test --filter SourceListSnapshotTests
+      # record モードは XCTest を意図的に失敗させるが、参照 PNG はディスクに書き込まれる
+      run: SNAPSHOT_TESTING_RECORD=all swift test --filter SourceListSnapshotTests || true
 
     - name: Upload reference PNGs
       uses: actions/upload-artifact@v4
