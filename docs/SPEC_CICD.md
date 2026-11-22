@@ -96,7 +96,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 * **Upload coverage to Codecov**
     * `codecov/codecov-action@v6` を使用して、テスト・カバレッジを Codecov にアップロードします。
     * **設定**:
-        * `files`: `.build/coverage/coverage.xml`
+        * `files`: `.build/coverage/coverage.lcov`
         * `flags`: `macos`
         * `name`: `macos-coverage`
 
@@ -104,7 +104,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 * すべての macOS 向けテスト (UT / UI フロー / スナップショット) が成功すること。
 * `Sources/S2JSourceList` の行カバレッジが **70%** 以上であること (`check-coverage.sh`)。
-* テスト・カバレッジが Codecov に正常にアップロードされること (`.build/coverage/coverage.xml`)。
+* テスト・カバレッジが Codecov に正常にアップロードされること (`.build/coverage/coverage.lcov`)。
 
 ### 2.2. test-ios ジョブ `{@spec-cicd:s2-2}`
 
@@ -235,7 +235,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 * **カバレッジのアップロード (Codecov) (ベスト・エフォート)**
     * `codecov/codecov-action@v6` を使用して、テスト・カバレッジを Codecov にアップロードします。
     * **設定**:
-        * `files`: `.build/coverage/coverage.xml`
+        * `files`: `.build/coverage/coverage.lcov`
         * `flags`: `ios`
         * `name`: `ios-coverage`
         * `fail_ci_if_error`: `false` (失敗しても CI を継続)
@@ -384,7 +384,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 | スクリプト | 役割 |
 | --- | --- |
-| `scripts/export-coverage-xml.sh` | `llvm-cov export` で `.build/coverage/coverage.xml` を生成 (Codecov 用) |
+| `scripts/export-coverage-xml.sh` | `llvm-cov export -format=lcov` で `.build/coverage/coverage.lcov` を生成 (Codecov 用) |
 | `scripts/check-coverage.sh` | `Sources/S2JSourceList` の行カバレッジが `MIN_COVERAGE` (デフォルト70) 以上か検証 |
 | `scripts/build-docc.sh` | シンボルグラフ生成 + `docc convert` → `.build/docs/S2JSourceList/` |
 

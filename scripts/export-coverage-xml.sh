@@ -15,5 +15,5 @@ if [[ -z "$PROF" || -z "$BIN" ]]; then
 fi
 
 mkdir -p .build/coverage
-xcrun llvm-cov export "$BIN" -instr-profile="$PROF" -format=codecov > .build/coverage/coverage.xml
-echo "Wrote .build/coverage/coverage.xml"
+xcrun llvm-cov export "$BIN" -instr-profile="$PROF" -format=lcov > .build/coverage/coverage.lcov
+echo "Wrote .build/coverage/coverage.lcov"

@@ -8,26 +8,21 @@ cd "$ROOT"
 
 swift test --enable-code-coverage -q
 
-PROF=$(find .build -path '*/codecov/default.profdata' 2>/dev/null | head -1)
-BIN=$(find .build -name S2JSourceListTests -path '*/MacOS/*' -type f 2>/dev/null | head -1)
-if [[ -z "$BIN" ]]; then
-  BIN=$(find .build -name 's2j-source-listPackageTests' -path '*/MacOS/*' -type f 2>/dev/null | head -1)
-fi
+"$ROOT/scripts/export-coverage-xml.sh"
 
-if [[ -z "$PROF" || -z "$BIN" ]]; then
-  echo "check-coverage: profdata またはテストバイナリが見つかりません" >&2
-  exit 1
-fi
-
-LINE_PCT=$(xcrun llvm-cov report "$BIN" -instr-profile="$PROF" 2>/dev/null | awk '
-  /^Sources\/S2JSourceList\// {
-    lines += $8
-    missed += $9
+LINE_PCT=$(awk '
+  /^SF:.*Sources\/S2JSourceList\// { infile = 1; next }
+  infile && /^DA:/ {
+    split(substr($0, 4), a, ",");
+    total++;
+    if (a[2] == 0) { missed++; }
   }
+  /^end_of_record/ { infile = 0 }
   END {
-    if (lines == 0) { print "0"; exit }
-    printf("%.2f", 100.0 * (lines - missed) / lines)
-  }')
+    if (total == 0) { print "0"; exit }
+    printf("%.2f", 100.0 * (total - missed) / total)
+  }
+' .build/coverage/coverage.lcov)
 
 echo "S2JSourceList line coverage: ${LINE_PCT}% (min ${MIN_COVERAGE}%)"
 
