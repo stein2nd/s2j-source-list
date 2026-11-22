@@ -131,13 +131,14 @@
 ├── README.md
 ├── SampleApp.swift  # macOS デモアプリ・Periphery 用 (✅ 実装済み)
 ├── Package.swift  # Swift Package 定義 (✅ 実装済み)
-├── project.yml  # XcodeGen (フレームワーク・テスト・SampleApp スキーム) (✅ 実装済み)
+├── project.yml  # XcodeGen (+ テスト向け swift-snapshot-testing) (✅ 実装済み)
 ├── .swiftlint.yml / .swiftformat / .periphery.yml / .swift-version  # ローカル Swift 品質チェック (✅)
 ├┬─ docs/  # 仕様 (`specs.md` が入口)
 │　├─ SPEC.md / SPEC_CICD.md / overview.md / architecture.md ほか
 ├┬─ .github/workflows/
 │　├─ docs-lint.yml  # Docs Linter (`npm run lint:docs`) (✅)
-│　└─ swift-test.yml  # Swift テスト・カバレッジ (✅)
+│　├─ swift-test.yml  # Swift テスト・カバレッジ (✅)
+│　└─ record-ui-snapshots.yml  # UI 参照 PNG 再記録 workflow_dispatch (✅)
 ├┬─ scripts/
 │└─ test-local.sh  # ローカル CI 相当テスト (✅)
 ├┬─ tools/docs-linter/  # (任意) Docs Linter サブモジュール。通常は npm の `@s2j/docs-linter` を使用
@@ -241,12 +242,11 @@
 ### 4.8. 主要ファイルの実装状況 `{@spec:s4-8}`
 
 * `Package.swift`: Swift Package 定義、リソース設定 (✅ 実装済み)
-* `project.yml` : XcodeGen 設定ファイル、macOS/iOS ターゲット定義、プラットフォーム専用スキーム定義
+* `project.yml` : XcodeGen 設定ファイル、macOS/iOS ターゲット定義、プラットフォーム専用スキーム定義、テスト向け `swift-snapshot-testing` パッケージ依存
   * **ターゲット構成**:
     * `S2JSourceList-macOS`: macOS 向けフレームワーク
     * `S2JSourceList-iOS`: iOS 向けフレームワーク
-    * `S2JSourceListTests-macOS`: macOS 向けテストバンドル
-    * `S2JSourceListTests-iOS`: iOS 向けテストバンドル (署名設定: `CODE_SIGN_STYLE: Automatic`、`DEVELOPMENT_TEAM: ""`)
+    * `S2JSourceListTests-macOS` / `S2JSourceListTests-iOS`: テストバンドル (依存: `SnapshotTesting`)
   * **スキーム構成**:
     * `S2JSourceList`: 統合スキーム (macOS + iOS)
     * `S2JSourceList-macOS`: macOS 専用スキーム (macOS ターゲットのみ)
@@ -333,13 +333,13 @@ struct ContentView: View {
 * **UI フロー**:
     * 主要なユーザー操作 (選択、展開/折り畳み、移動、リネーム) を `SourceListUserFlowTests` で検証します。(✅ macOS `swift test` / iPadOS `xcodebuild test`)
 * **スナップショットテスト**:
-    * SwiftUI レンダリングの一貫性を SnapshotTesting で検証します。(✅ `SourceListSnapshotTests` — macOS は `NSHostingController` + 画像比較)
-    * CI (GitHub Actions `macos-26`) ではランナー間の描画差を `precision` / `perceptualPrecision` と `.colorScheme` 固定で吸収します。(詳細 [ui_test_spec.md](./ui_test_spec.md) §5)
+    * SwiftUI レンダリングの一貫性を SnapshotTesting で検証します。(✅ `SourceListSnapshotTests` — macOS `NSHostingController` + 画像比較)
+    * 実行は GitHub Actions `macos-26` の `test-macos` のみ。参照 PNG は同ランナーで記録した正本。(詳細 [ui_test_spec.md](./ui_test_spec.md) §5)
 
 **UI テスト環境**:
 
-* macOS: `swift test` + 参照画像 `Tests/S2JSourceListTests/__Snapshots__/` (`Package.swift` の `testTarget` は `exclude: ["__Snapshots__"]`)
-* iPadOS: 同一テストターゲットを `S2JSourceList-iOS` スキームで実行 (スナップショットは UIImage 戦略)
+* macOS: `swift test` (ローカルはスナップショット XCTSkip) / CI `swift test` + `__Snapshots__/`
+* iPadOS: `S2JSourceList-iOS` + `project.yml` (`SnapshotTesting` リンク、スナップショットは XCTSkip、UT / UI フロー)
 
 **CI/CD でのテスト実行**:
 
@@ -435,7 +435,7 @@ S2J Source List は、当初の仕様の約90%を達成し、本番環境での�
 | | `Assets.xcassets` | ⚠️ 未実装 | 0% | 必要に応じて追加予定 |
 | **テスト** | ユニットテスト | ✅ 実装済み | 100% | コア + アウトライン + D&D + キーボード等 |
 | | UI / フロー | ✅ 実装済み | 100% | `SourceListUserFlowTests` ([ui_test_spec](ui_test_spec.md)) |
-| | スナップショットテスト | ✅ 実装済み | 100% | `SourceListSnapshotTests` + perceptual 比較、CI 安定化 ([ui_test_spec](ui_test_spec.md)) |
+| | スナップショットテスト | ✅ 実装済み | 100% | `SourceListSnapshotTests` + `macos-26` 正本・`project.yml` ([ui_test_spec](ui_test_spec.md)) |
 | | 行カバレッジ70% | ✅ 実装済み | 100% | `scripts/check-coverage.sh` (CI macOS) |
 | **CI/CD** | GitHub Actions ワークフロー | ✅ 実装済み・テスト成功 | 100% | GitHub Actions「Swift Test」ワークフローが正常に動作、詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照 |
 | | ローカルテスト・スクリプト | ✅ 実装済み | 100% | 詳細は [SPEC_CICD.md](SPEC_CICD.md) を参照 |

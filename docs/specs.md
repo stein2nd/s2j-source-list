@@ -11,7 +11,7 @@
 | [search_spec.md](./search_spec.md) | 検索マッチング・親子表示ルール |
 | [drag_drop_spec.md](./drag_drop_spec.md) | ドラッグ & ドロップの挙動、制約、API |
 | [accessibility_spec.md](./accessibility_spec.md) | VoiceOver、キーボード、Dynamic Type |
-| [ui_test_spec.md](./ui_test_spec.md) | UI フロー、SnapshotTesting (CI 許容精度)、行カバレッジ70% ゲート |
+| [ui_test_spec.md](./ui_test_spec.md) | UI フロー、SnapshotTesting (`macos-26` 正本 / iOS スキップ)、lcov カバレッジ70% ゲート |
 | [devx_spec.md](./devx_spec.md) | DocC API Reference、Xcode Preview Content |
 | [status.md](./status.md) | **実装状況の入口** (スナップショット・短期 Backlog 索引) |
 | [SPEC.md](./SPEC.md) | 要件概要、実装状況サマリ、Backlog、品質評価、Appendix |

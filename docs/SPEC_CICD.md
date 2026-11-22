@@ -90,9 +90,9 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
     * Swift v6.2系のみの環境では失敗させ、6.3+ を要求します。
 * **Run tests on macOS**
     * `swift test --enable-code-coverage` を実行して、macOS 向けのユニットテストを実行します。
-    * 含まれる `SourceListSnapshotTests` は [ui_test_spec.md](./ui_test_spec.md) §5の許容精度で参照 PNG と比較します (ランナー間フォント差)。
-    * `scripts/export-coverage-xml.sh` で Codecov 用 XML を生成します。
-    * `MIN_COVERAGE=70 ./scripts/check-coverage.sh` で `Sources/S2JSourceList` の行カバレッジを検証します。
+    * `SourceListSnapshotTests` は `GITHUB_ACTIONS` 上の macOS のみ実行 ([ui_test_spec.md](./ui_test_spec.md) §5)。
+    * `scripts/export-coverage-xml.sh` で Codecov 用 `.build/coverage/coverage.lcov` を生成 (`llvm-cov export -format=lcov`、テストバイナリは `s2j-source-listPackageTests` にフォールバック可)。
+    * `MIN_COVERAGE=70 ./scripts/check-coverage.sh` で lcov から `Sources/S2JSourceList` 行カバレッジを検証します。
 * **Upload coverage to Codecov**
     * `codecov/codecov-action@v6` を使用して、テスト・カバレッジを Codecov にアップロードします。
     * **設定**:
@@ -167,6 +167,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
     * `brew install xcodegen` で XcodeGen をインストールします。
 * **Xcode プロジェクトの生成**
     * `project.yml` が存在する場合、`xcodegen generate` で Xcode プロジェクトを生成します。
+    * `project.yml` は `S2JSourceListTests-iOS` に SPM `swift-snapshot-testing` (`SnapshotTesting`) をリンクします ([ui_test_spec.md](./ui_test_spec.md))。
     * **検証**: 生成されたスキーム・ファイル (`S2JSourceList-iOS.xcscheme`) の存在と内容を確認します。
 * **シミュレーター・ランタイムとデバイスの選択 (フォールバック付き)**
     * 優先順位に従って、利用可能な iOS シミュレーター・ランタイムとデバイスを選択します。
@@ -385,7 +386,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 | スクリプト | 役割 |
 | --- | --- |
 | `scripts/export-coverage-xml.sh` | `llvm-cov export -format=lcov` で `.build/coverage/coverage.lcov` を生成 (Codecov 用) |
-| `scripts/check-coverage.sh` | `Sources/S2JSourceList` の行カバレッジが `MIN_COVERAGE` (デフォルト70) 以上か検証 |
+| `scripts/check-coverage.sh` | `swift test --enable-code-coverage` 後に lcov を集計し、`MIN_COVERAGE` (デフォルト70) 以上か検証 |
 | `scripts/build-docc.sh` | シンボルグラフ生成 + `docc convert` → `.build/docs/S2JSourceList/` |
 
 * **npm**: `npm run test:coverage` → `check-coverage.sh` (テスト実行込み)。`npm run docs:docc` → `build-docc.sh`。

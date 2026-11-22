@@ -12,6 +12,11 @@ options:
   xcodeVersion: "26.3"
   projectFormat: xcode16_3
 
+packages:
+  swift-snapshot-testing:
+    url: https://github.com/pointfreeco/swift-snapshot-testing
+    from: "1.18.0"
+
 targets:
   S2JSourceList-macOS:
     type: framework
@@ -82,6 +87,8 @@ targets:
       - path: Tests/S2JSourceListTests
     dependencies:
       - target: S2JSourceList-macOS
+      - package: swift-snapshot-testing
+        product: SnapshotTesting
     settings:
       base:
         PRODUCT_NAME: S2JSourceListTests
@@ -108,6 +115,8 @@ targets:
       - path: Tests/S2JSourceListTests
     dependencies:
       - target: S2JSourceList-iOS
+      - package: swift-snapshot-testing
+        product: SnapshotTesting
     settings:
       base:
         PRODUCT_NAME: S2JSourceListTests

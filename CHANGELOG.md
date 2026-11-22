@@ -2,6 +2,27 @@
 
 ## unreleased
 
+## 2.0.22 - 2026-11-22
+
+### Fixed
+
+* CI — `SourceListSnapshotTests` を `macos-26` 参照 PNG 正本に合わせ、`GITHUB_ACTIONS` 上の macOS のみ画像比較
+* CI — `test-macos` カバレッジ出力を `llvm-cov export -format=lcov` に変更 (Xcode v26)、`s2j-source-listPackageTests` バイナリ解決のフォールバック
+* CI — `test-ios` ビルド失敗 (`SnapshotTesting` 未解決)
+
+### Added
+
+* `.github/workflows/record-ui-snapshots.yml` — 参照 PNG を `macos-26` で再記録 (`workflow_dispatch`)
+
+### Changed
+
+* `SourceListSnapshotTests` — ホスティング固定、`en_US` / Aqua、iOS は XCTSkip
+* `project.yml` — `S2JSourceListTests-macOS` / `-iOS` に SPM `swift-snapshot-testing` (`SnapshotTesting`) をリンク
+* `scripts/check-coverage.sh` — lcov 集計、`scripts/export-coverage-xml.sh` — `.build/coverage/coverage.lcov` 出力
+* `docs/ui_test_spec.md` / `SPEC.md` / `SPEC_CICD.md` / `status.md` ほか — 上記 CI、スナップショット運用を同期
+* `README.md` の `Package.swift` 依存指定を v2.0.21→ v2.0.22に更新
+* DocC `GettingStarted.md` — 同上
+
 ## 2.0.21 - 2026-11-22
 
 ### Changed

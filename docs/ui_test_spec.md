@@ -8,8 +8,8 @@
 
 | 種別 | 実装 | 実行環境 |
 | --- | --- | --- |
-| 統合 UI フロー | `SourceListUserFlowTests` — 選択・展開・リネーム・移動 | macOS (`swift test`)、iPadOS (`xcodebuild test`) |
-| スナップショット | `SourceListSnapshotTests` + [pointfreeco/swift-snapshot-testing](https://github.com/pointfreeco/swift-snapshot-testing) | **GITHUB_ACTIONS** 上のみ実行。参照 PNG は `macos-26` 正本、`__Snapshots__/` |
+| 統合 UI フロー | `SourceListUserFlowTests` — 選択・展開・リネーム・移動 | macOS (`swift test`)、iPadOS (`xcodebuild test` / `project.yml`) |
+| スナップショット | `SourceListSnapshotTests` + [pointfreeco/swift-snapshot-testing](https://github.com/pointfreeco/swift-snapshot-testing) | **macOS** かつ `GITHUB_ACTIONS` のみ画像比較。iOS は XCTSkip。参照 PNG は `macos-26` 正本 |
 | カバレッジ70% | `scripts/check-coverage.sh` — `Sources/S2JSourceList` 行カバレッジ | ローカル / CI (`MIN_COVERAGE=70`) |
 
 ## 3. 実装マッピング `{@ui-test:s3-impl}`
@@ -38,8 +38,10 @@
 
 記録更新:
 
-* 正本ランナー: GitHub Actions `macos-26`（ワークフロー **Record UI Snapshots** / `SNAPSHOT_TESTING_RECORD=all`）
-* ローカル: `swift test` では `SourceListSnapshotTests` をスキップ（参照 PNG と描画が一致しないため）。再記録後に CI で比較する
+* 正本ランナー: GitHub Actions `macos-26` (ワークフロー **Record UI Snapshots** / `SNAPSHOT_TESTING_RECORD=all`)
+* ローカル macOS: `swift test` では `SourceListSnapshotTests` をスキップ (参照 PNG と描画が一致しないため)
+* iOS (`xcodebuild`): スナップショットはスキップ。UT / UI フローのみ
+* **XcodeGen**: `project.yml` の `S2JSourceListTests-macOS` / `-iOS` が SPM `SnapshotTesting` にリンク (`Package.swift` とは別経路)
 
 **macOS 注意**: swift-snapshot-testing の SwiftUI `.image` は iOS 向けのため、macOS では `NSHostingController` を `Snapshotting<NSViewController, NSImage>.image` で比較する。
 

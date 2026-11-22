@@ -7,7 +7,7 @@ S2J Source List をホストプロジェクトに組み込む手順の要約で�
 `Package.swift` の依存に追加します。
 
 ```swift
-.package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.21")
+.package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.22")
 ```
 
 ターゲット依存:

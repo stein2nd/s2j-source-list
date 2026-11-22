@@ -18,10 +18,14 @@ private let snapshotPerceptualPrecision: Float = 0.97
 
 final class SourceListSnapshotTests: XCTestCase {
     override func setUpWithError() throws {
+#if os(iOS)
+        throw XCTSkip("UI スナップショットは macOS (GitHub Actions macos-26) で検証します。")
+#else
         try XCTSkipIf(
             ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] == nil,
             "UI スナップショットは macos-26 CI で検証します。ローカル再記録は SNAPSHOT_TESTING_RECORD=all と ui_test_spec.md を参照。"
         )
+#endif
     }
 
     @MainActor

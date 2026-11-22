@@ -3,7 +3,7 @@
 | 項目 | 内容 |
 | --- | --- |
 | 最終更新 | 2026-11-22 |
-| リリース (npm / タグ) | **2.0.21** |
+| リリース (npm / タグ) | **2.0.22** |
 | 最小 OS | macOS **14.6** / iPadOS **17.6** ([overview.md](./overview.md)) |
 
 ---
@@ -116,9 +116,9 @@
 
 * [x] コアロジックのユニットテスト (上記§と重複可)
 * [x] 主要操作の UI テスト (macOS / iPadOS) — `SourceListUserFlowTests` / [ui_test_spec.md](./ui_test_spec.md)
-* [x] SnapshotTesting による SwiftUI レンダリング検証 (`SourceListSnapshotTests`、`NSHostingController` on macOS)
-* [x] スナップショットの CI 安定化 — 知覚の許容精度・ライト固定、`Package.swift` で `__Snapshots__` を exclude ([ui_test_spec.md](./ui_test_spec.md) §5)
-* [x] テスト・カバレッジ **70%** 以上 — `scripts/check-coverage.sh` / `npm run test:coverage` ([SPEC_CICD.md](./SPEC_CICD.md))
+* [x] SnapshotTesting による SwiftUI レンダリング検証 (`SourceListSnapshotTests`、`NSHostingController`、CI `macos-26` 正本 PNG)
+* [x] スナップショット運用 — `record-ui-snapshots.yml`、`GITHUB_ACTIONS` のみ比較、iOS は XCTSkip、`project.yml` に `SnapshotTesting` ([ui_test_spec.md](./ui_test_spec.md) §5)
+* [x] テスト・カバレッジ **70%** 以上 — `check-coverage.sh` (lcov 集計) / `npm run test:coverage` ([SPEC_CICD.md](./SPEC_CICD.md))
 
 ### ドキュメント・開発体験 `{@status:s-status-devx}`
 
@@ -199,6 +199,7 @@
 | 2.0.19 | UI / スナップショットテスト、カバレッジ70% ゲート、DocC、Preview Content |
 | 2.0.20 | スナップショット CI 安定化 (許容精度、SPM `exclude`) |
 | 2.0.21 | 仕様同期・チェックリスト **41/41** |
+| 2.0.22 | スナップショット `macos-26` 正本、`project.yml` + SnapshotTesting、lcov カバレッジ |
 
 ---
 
