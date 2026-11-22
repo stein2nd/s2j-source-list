@@ -438,6 +438,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 * **GitHub Actions ワークフロー**:
     * `swift-test.yml`: Swift Package のテスト (macOS / iOS) とカバレッジ収集、行カバレッジ70% ゲート、macOS リリース・ビルド Artifacts (✅ UT / UI フロー / SnapshotTesting を含む)
+    * `record-ui-snapshots.yml`: `workflow_dispatch` で `macos-26` 上に参照 PNG を再記録 (✅ UI スナップショット正本)
     * `test-macos` ジョブ: macOS 向けテスト、カバレッジ収集 (✅テスト成功)
     * `test-ios` ジョブ末尾: macOS / iOS テスト成功後のリリース・ビルドと Artifacts 保存
     * `test-ios` ジョブ: iOS/iPadOS 向けテスト実行とカバレッジ収集 (✅テスト成功)

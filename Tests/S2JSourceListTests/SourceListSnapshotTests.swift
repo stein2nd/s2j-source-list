@@ -12,11 +12,18 @@ import XCTest
 import AppKit
 #endif
 
-/// 参照 PNG は GitHub Actions `macos-26` を正本とする。ローカル差は許容精度で吸収。
-private let snapshotPrecision: Float = 0.96
-private let snapshotPerceptualPrecision: Float = 0.93
+/// 参照 PNG は GitHub Actions `macos-26` を正本とする（`record-ui-snapshots` ワークフロー）。
+private let snapshotPrecision: Float = 0.98
+private let snapshotPerceptualPrecision: Float = 0.97
 
 final class SourceListSnapshotTests: XCTestCase {
+    override func setUpWithError() throws {
+        try XCTSkipIf(
+            ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] == nil,
+            "UI スナップショットは macos-26 CI で検証します。ローカル再記録は SNAPSHOT_TESTING_RECORD=all と ui_test_spec.md を参照。"
+        )
+    }
+
     @MainActor
     func testSourceRowViewDefault() {
         let item = SourceItem(title: "Documents", icon: "doc.fill", badge: "3")
