@@ -195,7 +195,7 @@
 | 2.0.16 | `status.md` 100% 完了条件チェックリスト、README 見出しタグ、`docs-linter` 1.0.34 |
 | 2.0.17 | ドラッグ & ドロップ本実装 (`moveItem` / `itemsMoved`)、仕様同期 |
 | 2.0.18 | アクセシビリティ拡張 (キーボード / Dynamic Type / VoiceOver)、`accessibility_spec.md` |
-| 2.0.19 | UI / スナップショットテスト、カバレッジ 70% ゲート、DocC、Preview Content |
+| 2.0.19 | UI / スナップショットテスト、カバレッジ70% ゲート、DocC、Preview Content |
 
 ---
 
