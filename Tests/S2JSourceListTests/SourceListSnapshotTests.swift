@@ -12,9 +12,9 @@ import XCTest
 import AppKit
 #endif
 
-/// macOS ランナー間 (ローカル vs GitHub Actions) のレンダリング差を許容するピクセル比較の閾値。
-private let snapshotPrecision: Float = 0.95
-private let snapshotPerceptualPrecision: Float = 0.92
+/// 参照 PNG は GitHub Actions `macos-26` を正本とする。ローカル差は許容精度で吸収。
+private let snapshotPrecision: Float = 0.96
+private let snapshotPerceptualPrecision: Float = 0.93
 
 final class SourceListSnapshotTests: XCTestCase {
     @MainActor
@@ -121,10 +121,7 @@ private func assertViewSnapshot<V: View>(
     line: UInt = #line
 ) {
     #if os(macOS)
-    let host = view.environment(\.colorScheme, .light)
-    let controller = NSHostingController(rootView: host)
-    controller.view.frame = CGRect(origin: .zero, size: size)
-    controller.view.layoutSubtreeIfNeeded()
+    let controller = snapshotHostingController(for: view, size: size)
     SnapshotTesting.assertSnapshot(
         of: controller,
         as: .image(
@@ -149,3 +146,24 @@ private func assertViewSnapshot<V: View>(
     XCTFail("Snapshot tests require macOS or iOS", file: filePath, line: line)
     #endif
 }
+
+#if os(macOS)
+@MainActor
+private func snapshotHostingController<V: View>(for view: V, size: CGSize) -> NSHostingController<AnyView> {
+    let root = AnyView(
+        view
+            .environment(\.colorScheme, .light)
+            .environment(\.locale, Locale(identifier: "en_US"))
+            .environment(\.layoutDirection, .leftToRight)
+    )
+    let controller = NSHostingController(rootView: root)
+    let aqua = NSAppearance(named: .aqua)
+    if NSApp.appearance?.name != aqua?.name {
+        NSApp.appearance = aqua
+    }
+    controller.view.appearance = aqua
+    controller.view.frame = CGRect(origin: .zero, size: size)
+    controller.view.layoutSubtreeIfNeeded()
+    return controller
+}
+#endif
