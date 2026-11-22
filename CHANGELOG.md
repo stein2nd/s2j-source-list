@@ -22,7 +22,7 @@
 * `docs/status.md` — テスト拡張・開発体験 **100%**、チェックリスト **40/40**
 * `docs/` (`SPEC` / `SPEC_CICD` / `architecture` / `specs` ほか) と `README.md` — UI テスト、DocC、Preview を同期
 * `package.json` — `test:coverage`、`docs:docc`
-* `README.md` の `Package.swift` 依存指定を v2.0.18 → v2.0.19に更新
+* `README.md` の `Package.swift` 依存指定を v2.0.18→ v2.0.19に更新
 
 ## 2.0.18 - 2026-11-21
 
