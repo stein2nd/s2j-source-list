@@ -252,8 +252,6 @@ When using `allowsMultipleSelection`, we recommend using `SelectionManager(selec
 
 ## Contributing
 
-## Contributing
-
 <!-- 
 We welcome your contributions. Please follow these steps:
  -->
