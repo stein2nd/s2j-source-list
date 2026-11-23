@@ -29,7 +29,6 @@ TARGETS = [
     "docs/selection_spec.md",
     "docs/overview.md",
     "docs/specs.md",
-    "README.md",
 ]
 
 
