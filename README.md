@@ -6,7 +6,7 @@
 [![macOS](https://img.shields.io/badge/macOS-14.6+-blue?logo=apple&logoColor=white)](https://www.apple.com/macos/)
 [![iPadOS](https://img.shields.io/badge/iPadOS-17.6+-blue?logo=apple&logoColor=white)](https://www.apple.com/ipados/)
 
-## Description `{@readme:s-description}`
+## Description
 
 <!-- 
 S2J Source List is a SwiftUI-based hierarchical sidebar component for macOS and iPadOS. This library has been ported from the popular PXSourceList project, bringing its functionality to the SwiftUI ecosystem. It provides a modern, declarative API for displaying tree-structured data with support for such as selection, editing, icons, badges, and more.
@@ -14,39 +14,49 @@ S2J Source List is a SwiftUI-based hierarchical sidebar component for macOS and 
 
 S2J Source List は、macOS および iPadOS 向けの SwiftUI ベースの階層型サイドバーコンポーネントです。本ライブラリは、人気の [PXSourceList](https://github.com/alexrozanski/PXSourceList) プロジェクトから移植され、その機能を SwiftUI エコシステムにもたらします。ツリー構造のデータを表示するためのモダンな宣言型 API を提供し、選択、編集、アイコン、バッジなどの機能をサポートします。
 
-## Features `{@readme:s-features}`
+## Features
 
 <!-- 
-* ✅ Hierarchical display with expand/collapse
-* ✅ Single and multiple selection modes
-* ✅ Icon and badge display
-* ✅ Inline editing (rename)
-* ✅ Context menu support
-* ✅ Search functionality
-* ✅ Custom row content
-* ✅ Dark mode support
-* ✅ Localization (English, Japanese)
+* ✅ Hierarchical view with expand/collapse (`DisclosureGroup` + `SourceListService` expansion state)
+* ✅ Single selection / Multiple selection (`SelectionManager` + `SidebarView.allowsMultipleSelection`)
+* ✅ Icon and badge display (`IconProvider`; AppKit fallback on macOS)
+* ✅ Inline editing (`InlineEditorView` / `renameItem`)
+* ✅ Context menu (default + `contextMenuBuilder`)
+* ✅ Search filter (`showsSearchBar` + `SourceListOutline.filterItems`) — [search_spec.md](docs/search_spec.md)
+* ✅ Custom rows (`customRowContent`)
+* ✅ Drag-and-drop within the tree (`allowsDragAndDrop` + `moveItem` / `itemsMoved`) — [drag_drop_spec.md](docs/drag_drop_spec.md)
+* ✅ Keyboard navigation support (`SourceListKeyboardNavigation`) — [accessibility_spec.md](docs/accessibility_spec.md)
+* ✅ Accessibility identifiers for VoiceOver and Dynamic Type — [accessibility_spec.md](docs/accessibility_spec.md)
+* ✅ Platform-specific list styles (macOS `.sidebar`, iPadOS `.insetGrouped`)
+* ✅ Dark Mode and Light Mode
+* ✅ Localization (`en` / `ja` / `Base`)
+* ✅ Xcode Preview (`S2JSourceListPreviews`) and `SampleApp` for macOS (`project.yml` / XcodeGen)
  -->
 
-* ✅ 展開/折り畳み機能付き階層表示
-* ✅ 単一選択モードと複数選択モード
-* ✅ アイコンとバッジ表示
-* ✅ インライン編集 (名称変更)
-* ✅ コンテキストメニュー対応
-* ✅ 検索機能
-* ✅ カスタム行コンテンツ
-* ✅ ダークモード対応
-* ✅ ローカライズ (英語、日本語)
+* ✅ 展開/折り畳み付き階層表示 (`DisclosureGroup` + `SourceListService` の展開状態)
+* ✅ 単一選択 / 複数選択 (`SelectionManager` + `SidebarView.allowsMultipleSelection`)
+* ✅ アイコン・バッジ表示 (`IconProvider`、macOS は AppKit フォールバック)
+* ✅ インライン編集 (`InlineEditorView` / `renameItem`)
+* ✅ コンテキストメニュー (デフォルト + `contextMenuBuilder`)
+* ✅ 検索フィルター (`showsSearchBar` + `SourceListOutline.filterItems`) — [search_spec.md](docs/search_spec.md)
+* ✅ カスタム行 (`customRowContent`)
+* ✅ ツリー内ドラッグ & ドロップ (`allowsDragAndDrop` + `moveItem` / `itemsMoved`) — [drag_drop_spec.md](docs/drag_drop_spec.md)
+* ✅ キーボードナビゲーション補助 (`SourceListKeyboardNavigation`) — [accessibility_spec.md](docs/accessibility_spec.md)
+* ✅ VoiceOver / Dynamic Type 向けアクセシビリティ識別子 — [accessibility_spec.md](docs/accessibility_spec.md)
+* ✅ プラットフォーム別リストスタイル (macOS `.sidebar`、iPadOS `.insetGrouped`)
+* ✅ ダークモード・ライトモード
+* ✅ ローカライズ (`en` / `ja` / `Base`)
+* ✅ Xcode Preview (`S2JSourceListPreviews`) と macOS 用 `SampleApp` (`project.yml` / XcodeGen)
 
-## License `{@readme:s-license}`
+## License
 
 <!-- 
-This project is licensed under the GPL 3.0+ License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPL v3.0 or later. For details, please refer to the [LICENSE](LICENSE) file.
  -->
 
 本プロジェクトは GPL3.0以降ライセンスの下で提供されています。詳細は [LICENSE](LICENSE) ファイルを参照してください。
 
-## Support and Contact `{@readme:s-support-and-contact}`
+## Support and Contact
 
 <!-- 
 For support, feature requests, or bug reports, please visit the [GitHub Issues](https://github.com/stein2nd/s2j-source-list/issues) page.
@@ -54,15 +64,15 @@ For support, feature requests, or bug reports, please visit the [GitHub Issues](
 
 サポート、機能リクエスト、またはバグ報告については、[GitHub Issues](https://github.com/stein2nd/s2j-source-list/issues) ページをご覧ください。
 
-## Installation `{@readme:s-installation}`
+## Installation
 
-### Requirements `{@readme:s-requirements}`
+### Requirements
 
 * macOS v14.6+ / iPadOS v17.6+
 * Xcode v26.5+
 * Swift v6.3+
 
-### Swift Package Manager `{@readme:s-swift-package-manager}`
+### Swift Package Manager
 
 <!-- 
 Add the following to your `Package.swift` file.
@@ -83,18 +93,18 @@ Or add it through Xcode:
 あるいは Xcode から追加します。
 
 <!-- 
-1. File → Add Package Dependencies
+1. File → Add Package Dependency
 2. Enter the repository URL: `https://github.com/stein2nd/s2j-source-list.git`
-3. Choose the version and add to your target
+3. Select a version and add it to the target
  -->
 
 1. ファイル → パッケージ依存関係を追加
 2. リポジトリ URL を入力: `https://github.com/stein2nd/s2j-source-list.git`
 3. バージョンを選択し、ターゲットに追加
 
-## Usage `{@readme:s-usage}`
+## Usage
 
-### Basic Example `{@readme:s-basic-example}`
+### Basic Example
 
 ```swift
 import SwiftUI
@@ -126,9 +136,10 @@ struct ContentView: View {
 }
 ```
 
-### Advanced Example `{@readme:s-advanced-example}`
+### Advanced Example
 
 ```swift
+// Ensure that `allowsMultipleSelection` and `SelectionManager.selectionMode` match (SidebarView does not overwrite the mode)
 @StateObject private var selectionManager = SelectionManager(selectionMode: .multiple)
 
 SidebarView(
@@ -167,12 +178,12 @@ SidebarView(
 )
 ```
 
-## API Reference `{@readme:s-api-reference}`
+## API Reference
 
-### SourceItem `{@readme:s-sourceitem}`
+### SourceItem
 
 <!-- 
-Represents an item in the source list hierarchy.
+Represents an item within the source list hierarchy.
  -->
 
 source list 階層内の項目を表します。
@@ -188,10 +199,10 @@ let item = SourceItem(
 )
 ```
 
-### SourceListService `{@readme:s-sourcelistservice}`
+### SourceListService
 
 <!-- 
-Manages the data model and provides operations for manipulating items.
+It manages the data model and provides operations for working with items.
  -->
 
 データモデルを管理し、アイテムを操作するための操作を提供します。
@@ -203,7 +214,7 @@ service.renameItem(id: itemId, newTitle: "New Title")
 service.deleteItem(id: itemId)
 service.toggleExpansion(id: groupId)
 
-// Drag & drop completion (またはプログラム的な並び替え)
+// Drag-and-drop completion (or programmatic sorting)
 service.moveItem(id: itemId, to: .afterSibling(siblingId: otherId))
 service.itemsMoved
     .sink { event in
@@ -211,12 +222,16 @@ service.itemsMoved
     }
 ```
 
+<!-- 
+For more details, see [drag_drop_spec.md](docs/drag_drop_spec.md).
+ -->
+
 詳細は [drag_drop_spec.md](docs/drag_drop_spec.md) を参照してください。
 
-### SelectionManager `{@readme:s-selectionmanager}`
+### SelectionManager
 
 <!-- 
-Manages selection state.
+Manages the selection state.
  -->
 
 選択状態を管理します。
@@ -224,105 +239,178 @@ Manages selection state.
 ```swift
 let selectionManager = SelectionManager(selectionMode: .single)
 selectionManager.selectItem(itemId)
+selectionManager.toggleSelection(itemId) // When multiple selections are made
 selectionManager.isSelected(itemId)
 selectionManager.clearSelection()
 ```
 
-## Contributing `{@readme:s-contributing}`
+<!-- 
+When using `allowsMultipleSelection`, we recommend using `SelectionManager(selectionMode: .multiple)`. For more details, see [selection_spec.md](docs/selection_spec.md).
+ -->
+
+`allowsMultipleSelection` を使う場合は `SelectionManager(selectionMode: .multiple)` を推奨します。詳細は [selection_spec.md](docs/selection_spec.md) を参照してください。
+
+## Contributing
+
+## Contributing
 
 <!-- 
-We look forward to your contributions. Please follow the steps below.
+We welcome your contributions. Please follow these steps:
  -->
 
 貢献をお待ちしています。以下の手順に従ってください。
 
 <!-- 
 1. Fork the repository.
-3. Create a feature branch (`git checkout -b feature/amazing-feature`).
-4. Commit your changes (`git commit -m 'Add some amazing feature'`).
-5. Push to the feature branch (`git push origin feature/amazing-feature`).
-6. Open a Pull Request.
+2. Create a feature branch (`git checkout -b feature/amazing-feature`).
+3. Commit your changes (`git commit -m ‘Add some amazing feature’`).
+4. Push to the feature branch (`git push origin feature/amazing-feature`).
+5. Open a Pull Request.
  -->
 
 1. リポジトリをフォークしてください。
-3. 機能ブランチを作成してください (`git checkout -b feature/amazing-feature`)。
-4. 変更をコミットしてください (`git commit -m 'Add some amazing feature'`)。
-5. 機能ブランチにプッシュしてください (`git push origin feature/amazing-feature`)。
-6. Pull Request を開いてください。
+2. 機能ブランチを作成してください (`git checkout -b feature/amazing-feature`)。
+3. 変更をコミットしてください (`git commit -m 'Add some amazing feature'`)。
+4. 機能ブランチにプッシュしてください (`git push origin feature/amazing-feature`)。
+5. Pull Request を開いてください。
 
 <!-- 
-*For detailed information, refer to the [SPEC.md](SPEC.md) file.*
+*For detailed information, please refer to the [SPEC.md](SPEC.md) file.*
  -->
 
 *詳細な情報については、[SPEC.md](SPEC.md) ファイルを参照してください。*
 
-<!-- 
- -->
-
-### 開発ガイドライン `{@readme:s-h016}`
+### Development Guidelines
 
 <!-- 
-* Follow the existing code style.
-* Add Swift types for new features.
-* Include tests for new features.
-* Update documentation as needed.
+* Please follow the existing coding style (`npm run lint:swift` / `npm run format:swift`).
+* For new features, add Swift types and tests, and update the corresponding spec in `docs/`.
+* You can check the formatting of Markdown files using `npm run lint:docs`.
  -->
 
-* 既存のコードスタイルに従ってください。
-* 新機能には、Swift 型を追加しましょう。
-* 新機能には、テストを含めましょう。
-* 必要に応じて、ドキュメントを更新してください。
+* 既存のコードスタイルに従ってください (`npm run lint:swift` / `npm run format:swift`)。
+* 新機能には Swift 型とテストを追加し、`docs/` の該当 spec を更新してください。
+* Markdown は `npm run lint:docs` で表記を確認できます。
 
-### ローカルでのテスト実行 `{@readme:s-h017}`
+### Running Tests Locally
 
-コミット前に CI/CD と同じテストをローカルで実行して、問題を早期に発見できます。
+<!-- 
+To run a workflow similar to the [GitHub Actions “Swift Test”](.github/workflows/swift-test.yml) locally before committing, use `scripts/test-local.sh` ([SPEC_CICD.md](docs/SPEC_CICD.md)).
+ -->
+
+[GitHub Actions「Swift Test」](.github/workflows/swift-test.yml) に近い流れを、コミット前にローカルで回すには `scripts/test-local.sh` を使います ([SPEC_CICD.md](docs/SPEC_CICD.md))。
 
 ```zsh
-# 基本的な使用方法 (Package.swift から自動検出)
-./scripts/test-local.sh
+# Recommended Entries (If `project.yml` exists, XcodeGen and iOS tests will also be attempted)
+npm run test:local
 
-# npm スクリプトからの引数でカスタマイズ (最優先)
-npm run test:local -- --scheme-name S2JSourceList --ios-device "iPad Pro" --ios-version "17.6"
+# Configure the Xcode project for the iPad simulator (similar to “test-ios” in CI)
+npm run test:local:iOSfull
 
-# コマンドライン引数でカスタマイズ
-./scripts/test-local.sh --scheme-name S2JSourceList --ios-device "iPad Pro" --ios-version "17.6"
-
-# 環境変数でカスタマイズ (引数と自動検出が優先されない場合に使用)
-SCHEME_NAME=S2JSourceList IOS_DEVICE="iPad Pro" IOS_VERSION="17.6" ./scripts/test-local.sh
+# Omit iOS and include only macOS
+npm run test:local -- --skip-ios
 ```
 
-**優先順位**: 1. npm スクリプトからの引数 (コマンドライン引数) > 2. Package.swift から自動検出 > 3. 環境変数 > 4. デフォルト値
+<!-- 
+**Priority**: 1. Command-line arguments (`npm run test:local -- …`) > 2. Automatic detection from `Package.swift` / `project.yml` > 3. Environment variables > 4. Default values
+ -->
 
-このスクリプトは以下を実行します:
-* macOS でのテスト実行
-* iOS シミュレーターでのテスト実行 (Xcode が必要)
-* テストカバレッジの有効化
+**優先順位**: 1. コマンドライン引数 (`npm run test:local -- …`) > 2. `Package.swift` / `project.yml` からの自動検出 > 3. 環境変数 > 4. デフォルト値
 
-`Sources/S2JSourceList` の行カバレッジ **70%** ゲート (UT + UI フロー + スナップショット含む):
+<!-- 
+| Stage | Details |
+| --- | --- |
+| macOS (SPM) | `swift test --enable-code-coverage` (explicitly specify the macOS SDK) |
+| macOS (XcodeGen) | If `project.yml` exists, run `xcodegen generate`, then run `xcodebuild test` with `S2JSourceList-macOS` |
+| iPadOS | Run `xcodebuild` with `S2JSourceList-iOS` (simulator; default device is iPad Pro / iOS **17.6**) |
+ -->
+
+| 段階 | 内容 |
+| --- | --- |
+| macOS (SPM) | `swift test --enable-code-coverage` (macOS SDK を明示) |
+| macOS (XcodeGen) | `project.yml` があるとき `xcodegen generate` のうえ `S2JSourceList-macOS` で `xcodebuild test` |
+| iPadOS | `S2JSourceList-iOS` で `xcodebuild` (シミュレーター、デフォルト端末は iPad Pro / iOS **17.6**) |
+
+<!-- 
+In repositories that contain `project.yml`, Xcode project generation is enabled by default. If `xcodegen` is not installed, run `brew install xcodegen` or specify `--xcodegen-auto-install`.
+ -->
+
+`project.yml` があるリポジトリでは、追加オプションなしで Xcode プロジェクト生成が有効になります。`xcodegen` がない場合は `brew install xcodegen` か `--xcodegen-auto-install` を指定してください。
+
+<!-- 
+**Test Types** ([ui_test_spec.md](docs/ui_test_spec.md)):
+ -->
+
+**テストの種類** ([ui_test_spec.md](docs/ui_test_spec.md)):
+
+<!-- 
+* **Unit Tests** — Models, services, drag-and-drop, search, keyboard, etc.
+* **UI Flows** — `SourceListUserFlowTests` (selection, expansion, renaming, moving)
+* **Snapshots** — `SourceListSnapshotTests` are **GitHub Actions `macos-26` only** image comparisons. Use `XCTSkip` when running locally with `swift test` or on iOS (see the original PNG in the workflow’s **Record UI Snapshots** section)
+ -->
+
+* **ユニットテスト** — モデル・サービス・ドラッグ & ドロップ / 検索 / キーボード等
+* **UI フロー** — `SourceListUserFlowTests` (選択・展開・リネーム・移動)
+* **スナップショット** — `SourceListSnapshotTests` は **GitHub Actions `macos-26` のみ**画像比較。ローカル `swift test` と iOS 実行時は XCTSkip (参照 PNG 正本は workflow **Record UI Snapshots**)
+
+<!-- 
+Line coverage for `Sources/S2JSourceList` **70%** gate (lcov aggregation; same `scripts/check-coverage.sh` as CI):
+ -->
+
+`Sources/S2JSourceList` の行カバレッジ **70%** ゲート (lcov 集計。CI と同じ `scripts/check-coverage.sh`):
 
 ```zsh
 npm run test:coverage
 ```
 
-詳細は [docs/ui_test_spec.md](./docs/ui_test_spec.md) を参照してください。
+<!-- 
+Quality Check (Guidelines Before Committing):
+ -->
 
-DocC API Reference (HTML) のローカル生成:
+品質チェック (コミット前の目安):
+
+```zsh
+npm run lint:swift   # SwiftLint + SwiftFormat + Periphery (xcodegen 含む)
+npm run lint:docs    # README / CHANGELOG / docs
+```
+
+<!-- 
+DocC API Reference (HTML):
+ -->
+
+DocC API リファレンス (HTML):
 
 ```zsh
 npm run docs:docc
 ```
 
-出力: `.build/docs/S2JSourceList/index.html` — [devx_spec.md](./docs/devx_spec.md)
+<!-- 
+Output: `.build/docs/S2JSourceList/index.html` — [devx_spec.md](docs/devx_spec.md)
+ -->
 
-**注意**: iOS テストを実行するには、Xcode がインストールされている必要があります。
+出力: `.build/docs/S2JSourceList/index.html` — [devx_spec.md](docs/devx_spec.md)
 
-## Contributors & Developers `{@readme:s-contributors-developers}`
+<!-- 
+**Requirements**: macOS tests require the Swift v6.3+ toolchain. iPadOS tests and some `lint:swift` features require **Xcode v26.5+**.
+ -->
+
+**要件**: macOS テストは Swift v6.3+ toolchain。iPadOS テストと `lint:swift` の一部には **Xcode v26.5+** が必要です。
+
+## Contributors & Developers
+
+<!-- 
+**“S2J Source List”** is open-source software. The following individuals have contributed to this plugin:
+ -->
 
 **"S2J Source List"** はオープンソース・ソフトウェアです。以下の皆様がこのツールに貢献しています。
 
+<!-- 
+* **Developer**: Koutarou ISHIKAWA
+ -->
+
 * **開発者**: Koutarou ISHIKAWA
 
-## Acknowledgments `{@readme:s-acknowledgments}`
+## Acknowledgments
 
 <!-- 
 * Based on [PXSourceList](https://github.com/alexrozanski/PXSourceList) by Alex Rozanski
