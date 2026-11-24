@@ -251,7 +251,7 @@
     * `S2JSourceList`: 統合スキーム (macOS + iOS)
     * `S2JSourceList-macOS`: macOS 専用スキーム (macOS ターゲットのみ)
     * `S2JSourceList-iOS`: iOS 専用スキーム (iOS ターゲットのみ)
-  * **開発用 Xcode プロジェクト (署名・シミュレーター)**: 配布正本は SPM。iOS フレームワーク/iOS テストは `CODE_SIGNING_ALLOWED: NO`。`DEVELOPMENT_TEAM` は `project.yml` に書かない。詳細は [architecture.md](./architecture.md) §6。
+  * **開発用 Xcode プロジェクト (署名・シミュレーター)**: 配布正本は SPM。フレームワーク/ユニットテストは `CODE_SIGN_STYLE: Manual` と `CODE_SIGNING_ALLOWED: NO` (iOS は `supportedDestinations: [iOS]` 等で Signing UI のプラットフォーム表示も iOS にそろえる)。`DEVELOPMENT_TEAM` は `project.yml` に書かない。詳細は [architecture.md](./architecture.md) §6。
 * `SourceItem.swift`: データモデル (title、icon、badge、children、isEditable、metadata) (✅ 実装済み)
 * `SourceListService.swift`: データ供給、`moveItem` / `itemsMoved` 含む (✅ 実装済み)
 * `SourceListDragDrop.swift`: D&D 内部ペイロード (✅ 実装済み)

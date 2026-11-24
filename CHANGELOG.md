@@ -2,6 +2,20 @@
 
 ## unreleased
 
+## 2.0.25 - 2026-11-24
+
+### Fixed
+
+* `project.yml` — `xcodegen generate` 後、iOS ターゲットの Signing が macOS 行に見える問題を是正 (`supportedDestinations: [iOS]`、明示的 `SDKROOT` / `SUPPORTED_PLATFORMS`、`CODE_SIGN_STYLE: Manual`)
+
+### Changed
+
+* `project.yml` — macOS / iOS のフレームワーク・ユニットテストにシミュレーター向け署名設定を統一 (`CODE_SIGNING_ALLOWED: NO`、`CODE_SIGN_IDENTITY: ""` 等。`SampleApp` は従来どおり Automatic)
+* `docs/SPEC.md` / `docs/architecture.md` — 開発用 Xcode プロジェクトの署名方針を追記 (SPM 正本、`DEVELOPMENT_TEAM` をコミットしない、Signing UI の見え方)
+* `README.md` の `Package.swift` 依存指定を v2.0.24→ v2.0.25に更新
+* DocC `GettingStarted.md` — 同上
+* `package.json` — バージョン **2.0.25**
+
 ## 2.0.24 - 2026-11-24
 
 ### Changed
