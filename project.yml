@@ -1,4 +1,4 @@
-name: S2JSourceList
+name: s2j-source-list
 options:
   bundleIdPrefix: com.s2j
   deploymentTarget:

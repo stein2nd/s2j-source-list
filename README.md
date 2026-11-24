@@ -82,7 +82,7 @@ Add the following to your `Package.swift` file.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.23")
+    .package(url: "https://github.com/stein2nd/s2j-source-list.git", from: "2.0.24")
 ]
 ```
 

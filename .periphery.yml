@@ -1,4 +1,4 @@
-project: S2JSourceList.xcodeproj
+project: s2j-source-list.xcodeproj
 schemes:
   - SampleApp
 retain_public: true

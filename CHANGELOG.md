@@ -2,6 +2,18 @@
 
 ## unreleased
 
+## 2.0.24 - 2026-11-24
+
+### Changed
+
+* `README.md` — Features 〜ローカルテストを現行実装に同期 (D&D / 検索 / a11y、XcodeGen スキーム、`npm run test:local`、スナップショット運用、`lint:swift` 等)
+* `package-lock.json` — npm ロックファイル更新
+* `project.yml` — XcodeGen の `name` をパッケージ名 `s2j-source-list` に統一
+* `.gitignore` — ローカル用 `*.code-workspace` / `.textlintrc.backup.json` を追加
+* `README.md` の `Package.swift` 依存指定を v2.0.23→ v2.0.24に更新
+* DocC `GettingStarted.md` — 同上
+* CI / `lint:build` / Periphery — 生成 Xcode プロジェクトを `s2j-source-list.xcodeproj` に合わせて参照を更新
+
 ## 2.0.23 - 2026-11-22
 
 ### Fixed

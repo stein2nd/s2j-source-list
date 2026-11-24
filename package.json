@@ -1,6 +1,6 @@
 {
   "name": "s2j-source-list",
-  "version": "2.0.23",
+  "version": "2.0.24",
   "description": "Using SwiftUI, reimplementing the AppKit-based \"PXSourceList\".",
   "type": "module",
   "author": "Koutarou ISHIKAWA",
@@ -39,8 +39,8 @@
     "format:swift": "swiftformat .",
     "profile:swift": "xcrun xctrace",
 
-    "lint:build": "xcodegen generate && xcodebuild build -project S2JSourceList.xcodeproj -scheme S2JSourceList-macOS -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO",
-    "analyze:swift": "xcodegen generate && xcodebuild analyze -project S2JSourceList.xcodeproj -scheme S2JSourceList-macOS -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO",
+    "lint:build": "xcodegen generate && xcodebuild build -project s2j-source-list.xcodeproj -scheme S2JSourceList-macOS -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO",
+    "analyze:swift": "xcodegen generate && xcodebuild analyze -project s2j-source-list.xcodeproj -scheme S2JSourceList-macOS -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO",
 
     "test:local": "./scripts/test-local.sh",
     "test:coverage": "./scripts/check-coverage.sh",

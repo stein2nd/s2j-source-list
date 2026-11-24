@@ -194,20 +194,20 @@ jobs:
             echo "Xcode project generated successfully"
             echo ""
             echo "=== Verifying scheme configuration ==="
-            if [ -f "S2JSourceList.xcodeproj/xcshareddata/xcschemes/S2JSourceList-iOS.xcscheme" ]; then
+            if [ -f "s2j-source-list.xcodeproj/xcshareddata/xcschemes/S2JSourceList-iOS.xcscheme" ]; then
               echo "Scheme file exists, checking test destination..."
               echo "--- TestAction section ---"
-              grep -A 20 "TestAction" S2JSourceList.xcodeproj/xcshareddata/xcschemes/S2JSourceList-iOS.xcscheme | head -30 || echo "TestAction not found"
+              grep -A 20 "TestAction" s2j-source-list.xcodeproj/xcshareddata/xcschemes/S2JSourceList-iOS.xcscheme | head -30 || echo "TestAction not found"
               echo ""
               echo "--- LaunchAction section ---"
-              grep -A 20 "LaunchAction" S2JSourceList.xcodeproj/xcshareddata/xcschemes/S2JSourceList-iOS.xcscheme | head -30 || echo "LaunchAction not found"
+              grep -A 20 "LaunchAction" s2j-source-list.xcodeproj/xcshareddata/xcschemes/S2JSourceList-iOS.xcscheme | head -30 || echo "LaunchAction not found"
               echo ""
               echo "--- Full scheme file (first 100 lines) ---"
-              head -100 S2JSourceList.xcodeproj/xcshareddata/xcschemes/S2JSourceList-iOS.xcscheme
+              head -100 s2j-source-list.xcodeproj/xcshareddata/xcschemes/S2JSourceList-iOS.xcscheme
             else
               echo "Warning: Scheme file not found at expected location"
               echo "Looking for scheme files..."
-              find S2JSourceList.xcodeproj -name "*.xcscheme" -type f || echo "No scheme files found"
+              find s2j-source-list.xcodeproj -name "*.xcscheme" -type f || echo "No scheme files found"
             fi
           else
             echo "Error: project.yml not found. Cannot generate Xcode project."
@@ -320,11 +320,11 @@ jobs:
           set -e
           mkdir -p $LOG_DIR
           echo "=== showdestinations (no -sdk) ===" > $LOG_DIR/destinations.txt
-          xcodebuild -project S2JSourceList.xcodeproj -scheme S2JSourceList-iOS -showdestinations 2>&1 | tee -a $LOG_DIR/destinations.txt || true
+          xcodebuild -project s2j-source-list.xcodeproj -scheme S2JSourceList-iOS -showdestinations 2>&1 | tee -a $LOG_DIR/destinations.txt || true
           echo "=== showdestinations (with -sdk iphonesimulator) ===" >> $LOG_DIR/destinations.txt
-          xcodebuild -project S2JSourceList.xcodeproj -scheme S2JSourceList-iOS -showdestinations -sdk iphonesimulator 2>&1 | tee -a $LOG_DIR/destinations.txt || true
+          xcodebuild -project s2j-source-list.xcodeproj -scheme S2JSourceList-iOS -showdestinations -sdk iphonesimulator 2>&1 | tee -a $LOG_DIR/destinations.txt || true
           echo "=== showBuildSettings ===" >> $LOG_DIR/destinations.txt
-          xcodebuild -project S2JSourceList.xcodeproj -scheme S2JSourceList-iOS -showBuildSettings 2>&1 | tee -a $LOG_DIR/destinations.txt || true
+          xcodebuild -project s2j-source-list.xcodeproj -scheme S2JSourceList-iOS -showBuildSettings 2>&1 | tee -a $LOG_DIR/destinations.txt || true
 
       # ----- Build & Test: try multiple strategies (test-without-building / test) -----
       - name: Build + Run tests (multi-strategy)
@@ -389,18 +389,18 @@ jobs:
 
           # Debug: Check scheme information
           echo "Debug: Checking scheme information..." | tee -a $LOG_DIR/test-run.txt
-          xcodebuild -list -project S2JSourceList.xcodeproj 2>&1 | tee -a $LOG_DIR/test-run.txt || true
+          xcodebuild -list -project s2j-source-list.xcodeproj 2>&1 | tee -a $LOG_DIR/test-run.txt || true
 
           # Get available destinations from xcodebuild and find matching destination
           echo "Debug: Getting available destinations from xcodebuild (without SDK first)..." | tee -a $LOG_DIR/test-run.txt
           # Try without SDK first (xcodebuild will auto-select appropriate SDK)
-          DEST_OUTPUT=$(xcodebuild -project S2JSourceList.xcodeproj -scheme S2JSourceList-iOS -showdestinations 2>&1 || true)
+          DEST_OUTPUT=$(xcodebuild -project s2j-source-list.xcodeproj -scheme S2JSourceList-iOS -showdestinations 2>&1 || true)
           echo "$DEST_OUTPUT" | tee -a $LOG_DIR/test-run.txt
 
           # Check if we got any simulator destinations
           if [ -z "$(echo "$DEST_OUTPUT" | grep "platform=iOS Simulator")" ]; then
             echo "No simulator destinations found without SDK, trying with -sdk iphonesimulator..." | tee -a $LOG_DIR/test-run.txt
-            DEST_OUTPUT=$(xcodebuild -project S2JSourceList.xcodeproj -scheme S2JSourceList-iOS -showdestinations -sdk iphonesimulator 2>&1 || true)
+            DEST_OUTPUT=$(xcodebuild -project s2j-source-list.xcodeproj -scheme S2JSourceList-iOS -showdestinations -sdk iphonesimulator 2>&1 || true)
             echo "$DEST_OUTPUT" | tee -a $LOG_DIR/test-run.txt
           fi
 
@@ -447,7 +447,7 @@ jobs:
           # This is more reliable when SDK and runtime versions don't match exactly
           echo "Attempting xcodebuild test-without-building (without -sdk, letting xcodebuild auto-select)..." | tee -a $LOG_DIR/test-run.txt
           if xcodebuild test-without-building \
-            -project S2JSourceList.xcodeproj \
+            -project s2j-source-list.xcodeproj \
             -scheme S2JSourceList-iOS \
             -destination "$DEST" \
             -enableCodeCoverage YES \
@@ -458,7 +458,7 @@ jobs:
             rm -rf "$RESULT_BUNDLE" || true
             if [ -n "$MATCHING_SDK" ]; then
               if xcodebuild test-without-building \
-                -project S2JSourceList.xcodeproj \
+                -project s2j-source-list.xcodeproj \
                 -scheme S2JSourceList-iOS \
                 -sdk "$MATCHING_SDK" \
                 -destination "$DEST" \
@@ -470,7 +470,7 @@ jobs:
                 rm -rf "$RESULT_BUNDLE" || true
                 # Strategy B: Build & test (without SDK first)
                 if xcodebuild test \
-                  -project S2JSourceList.xcodeproj \
+                  -project s2j-source-list.xcodeproj \
                   -scheme S2JSourceList-iOS \
                   -destination "$DEST" \
                   -enableCodeCoverage YES \
@@ -481,7 +481,7 @@ jobs:
                   rm -rf "$RESULT_BUNDLE" || true
                   if [ -n "$MATCHING_SDK" ]; then
                     if xcodebuild test \
-                      -project S2JSourceList.xcodeproj \
+                      -project s2j-source-list.xcodeproj \
                       -scheme S2JSourceList-iOS \
                       -sdk "$MATCHING_SDK" \
                       -destination "$DEST" \
@@ -504,7 +504,7 @@ jobs:
               echo "test-without-building failed, falling back to xcodebuild test (build & test)..." | tee -a $LOG_DIR/test-run.txt
               rm -rf "$RESULT_BUNDLE" || true
               if xcodebuild test \
-                -project S2JSourceList.xcodeproj \
+                -project s2j-source-list.xcodeproj \
                 -scheme S2JSourceList-iOS \
                 -destination "$DEST" \
                 -enableCodeCoverage YES \
