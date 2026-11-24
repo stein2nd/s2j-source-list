@@ -86,6 +86,8 @@ Swift Package 本体 (`Sources/`) に加え、Xcode プロジェクト向けに�
 | `Tests/S2JSourceListTests/` | UT、UI フロー、スナップショット。SPM (`Package.swift`) と XcodeGen (`project.yml`) の両方で `SnapshotTesting` にリンク。画像比較は macOS CI のみ。 |
 | `scripts/build-docc.sh` | DocC HTML 生成 ([devx_spec.md](./devx_spec.md))。 |
 
+**署名方針 (シミュレーター運用)**: 配布は SPM が正本。`project.yml` に `DEVELOPMENT_TEAM` は書かない。`S2JSourceList-iOS` と `S2JSourceListTests-iOS` は `CODE_SIGNING_ALLOWED: NO`。Xcode で Signing が **Don't Code Sign** に見えるのは正常。ホストアプリへの組込み時の署名は利用側アプリの責務 ([s2j-about-window](https://github.com/stein2nd/s2j-about-window) の `docs/architecture.md` と同型)。
+
 ローカル品質チェック (`npm run lint:swift` 等)、カバレッジ (`npm run test:coverage`)、DocC (`npm run docs:docc`) は [SPEC_CICD.md](./SPEC_CICD.md)・[ui_test_spec.md](./ui_test_spec.md)・[devx_spec.md](./devx_spec.md) を参照してください。
 
 ## 7. 関連ドキュメント `{@architecture:s7}`
