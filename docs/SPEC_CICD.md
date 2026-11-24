@@ -37,12 +37,10 @@
 
 ### 1.4. ジョブ構成 `{@spec-cicd:s1-4}`
 
-本ワークフローは **2ジョブ** で構成されています。`macos-26` を **同時に2本要求** すると片方が長時間「Waiting for a runner」のままになる事例があるため、`test-ios` は `needs: test-macos` で **直列** 実行します (iOS テスト成功後、同一ジョブ内でリリースビルドを実行)。
+本ワークフローは **2ジョブ** で構成されます ([s2j-about-window](https://github.com/stein2nd/s2j-about-window) と同型)。1回の workflow あたり `macos-26` を **最大2本** 並列要求し、3本目の独立ジョブは置きません。`concurrency` で同一 ref の重複実行をキャンセルします。
 
-* **`test-macos`**: macOS 向けテスト、Codecov 送信
-* **`test-ios`**: `needs: test-macos` のち iPadOS テスト (XcodeGen / `S2JSourceList-iOS`、最小 iOS **17.6**)、続けて `swift build -c release` と Artifacts (`Package.swift` の最小 macOS **14.6** / iOS **17.6**)
-
-s2j-about-window は `test-macos` / `test-ios` 並列 + 3本目 `build-release` ですが、本リポジトリでは **ランナー割り当ての安定性** を優先し、リリースビルドは `test-ios` 末尾に統合しています (macOS / iOS の両テスト成功が前提。経緯は [1.5](#15-ジョブ統合の背景-build-release--test-macos) を参照)。
+* **`test-macos`**: macOS 向けテスト、Codecov 送信、`swift build -c release` と Artifacts
+* **`test-ios`**: iPadOS テストのみ (XcodeGen / `S2JSourceList-iOS`、最小 iOS **17.6**)。`Package.swift` の最小 macOS **14.6** / iOS **17.6**
 
 ### 1.5. ジョブ統合の背景 (build-release → test-macos) `{@spec-cicd:s1-5}`
 
@@ -63,7 +61,9 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 **トレードオフ (統合期間):** `test-macos` に統合していた間は、**macOS テストが成功した時点** でリリース・ビルドが走り、iOS テストの成否とは連動しませんでした。
 
-**現行 (v2.0.13以降):** `test-ios` に `needs: test-macos` を置き **直列**化。リリース・ビルドは `test-ios` ジョブ末尾で実行し、同時 `macos-26` 要求を **1本** に抑えます (両プラットフォームのテスト成功が前提)。
+**経過 (v2.0.13〜2.0.25):** ランナー待ち回避のため一時的に `test-ios` を `needs: test-macos` で直列化し、リリース・ビルドを `test-ios` 末尾へ移していました。
+
+**現行:** [s2j-about-window](https://github.com/stein2nd/s2j-about-window) と同様、`test-macos` / `test-ios` を **並列**、`swift build -c release` と Artifacts は **`test-macos` のみ** (iOS ジョブはテストのみ)。
 
 **付記:** macOS arm64ランナーの capacity Annotation は、ジョブが success であれば **告知** として扱い、リポジトリ側で解消する設定はありません。
 
@@ -77,7 +77,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 * **目的**: macOS 向けユニットテストとカバレッジを収集します。
 * **実行環境**: `macos-26`
-* **依存関係**: なし (`test-ios` は `needs: test-macos` で **直列**。本ジョブが先に実行される)
+* **依存関係**: なし (`test-ios` と並列)
 
 #### 2.1.2. 実行ステップ `{@spec-cicd:s2-1-2}`
 
@@ -101,21 +101,26 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
         * `files`: `.build/coverage/coverage.lcov`
         * `flags`: `macos`
         * `name`: `macos-coverage`
+* **Build release configuration**
+    * `swift build -c release` を実行します (独立 `build-release` ジョブは廃止)。
+* **Upload build artifacts**
+    * `actions/upload-artifact@v6`、アーティファクト名 `s2j-source-list-build` (`.build/release/`)
 
 #### 2.1.3. 期待される結果 `{@spec-cicd:s2-1-3}`
 
 * すべての macOS 向けテスト (UT / UI フロー / スナップショット) が成功すること。
 * `Sources/S2JSourceList` の行カバレッジが **70%** 以上であること (`check-coverage.sh`)。
 * テスト・カバレッジが Codecov に正常にアップロードされること (`.build/coverage/coverage.lcov`)。
+* リリース・ビルドが成功し、Artifacts が保存されること。
 
 ### 2.2. test-ios ジョブ `{@spec-cicd:s2-2}`
 
 #### 2.2.1. 概要 `{@spec-cicd:s2-2-1}`
 
-* **目的**: iOS/iPadOS 向けユニットテスト、カバレッジ収集、**リリース・ビルドと Artifacts 保存** (成功時)。
+* **目的**: iOS/iPadOS 向けユニットテストとカバレッジ収集 (ベストエフォート)。
 * **実行環境**: `macos-26`
-* **タイムアウト**: `90分` (シミュレーター + iOS テスト + リリースビルド)
-* **依存関係**: `needs: test-macos` (macOS テスト成功後にのみ開始。`macos-26` の同時割り当てを避ける)
+* **タイムアウト**: `60分` (シミュレーター + iOS テスト)
+* **依存関係**: なし (`test-macos` と並列)
 * **環境変数**:
     * `LOG_DIR`: `/tmp/gha-ios-logs` (出力ログ保存先)
 
@@ -262,14 +267,14 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 * **詳細なログ記録**: すべてのステップでログを記録し、アーティファクトとして保存します。
 * **診断情報の常時アップロード**: テストが失敗しても診断情報をアップロードし、問題の特定を容易にします。
 
-### 2.3. リリース・ビルド (`test-ios` ジョブ内) `{@spec-cicd:s2-3}`
+### 2.3. リリース・ビルド (`test-macos` ジョブ内) `{@spec-cicd:s2-3}`
 
-独立ジョブ `build-release` は **廃止**しています。`test-ios` の iOS テスト・ステップ成功後、同一ジョブで次を実行します。
+独立ジョブ `build-release` は **廃止**しています。macOS テストと Codecov のあと、**`test-macos`** で次を実行します。
 
-* **Build release binary**: `swift build -c release`
+* **Build release configuration**: `swift build -c release`
 * **Upload build artifacts**: `s2j-source-list-build` (`.build/release/`)
 
-**前提**: `needs: test-macos` により macOS テストが先に成功していること。
+**前提**: macOS ユニットテストが成功していること (iOS ジョブの成否とは非連動)。
 
 ## 3. ローカルテスト・スクリプト `{@spec-cicd:s3}`
 
@@ -405,7 +410,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 ### 5.1. リリース・ビルド `{@spec-cicd:s5-1}`
 
-* **生成ジョブ**: `test-ios` (末尾ステップ、`needs: test-macos`)
+* **生成ジョブ**: `test-macos` (末尾ステップ)
 * **パス**: `.build/release/`
 * **形式**: Universal Binary (Swift Package Manager が自動生成)
 * **アーティファクト名**: `s2j-source-list-build`
@@ -432,7 +437,7 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 
 ### 6.2. ビルド失敗時の動作 `{@spec-cicd:s6-2}`
 
-* **リリース・ビルド (`test-ios` 内)**: ビルドが失敗した場合、`test-ios` ジョブは失敗します。
+* **リリース・ビルド (`test-macos` 内)**: ビルドが失敗した場合、`test-macos` ジョブは失敗します。
 
 ## 7. 実装状況 `{@spec-cicd:s7}`
 
@@ -443,9 +448,8 @@ v2.0.6リリース時点まで、Swift Test は **3ジョブ**構成でした。
 * **GitHub Actions ワークフロー**:
     * `swift-test.yml`: Swift Package のテスト (macOS / iOS) とカバレッジ収集、行カバレッジ70% ゲート、macOS リリース・ビルド Artifacts (✅ UT / UI フロー / SnapshotTesting を含む)
     * `record-ui-snapshots.yml`: `workflow_dispatch` で `macos-26` 上に参照 PNG を再記録、`upload-artifact@v6` (✅ UI スナップショット正本)
-    * `test-macos` ジョブ: macOS 向けテスト、カバレッジ収集 (✅テスト成功)
-    * `test-ios` ジョブ末尾: macOS / iOS テスト成功後のリリース・ビルドと Artifacts 保存
-    * `test-ios` ジョブ: iOS/iPadOS 向けテスト実行とカバレッジ収集 (✅テスト成功)
+    * `test-macos` ジョブ: macOS 向けテスト、カバレッジ収集、リリース・ビルドと Artifacts (✅テスト成功)
+    * `test-ios` ジョブ: iOS/iPadOS 向けテスト実行とカバレッジ収集 (✅テスト成功、`test-macos` と並列)
         * ランタイム・バージョンの抽出と SDK の自動検出の機能 (✅実装完了)
         * デスティネーション構築の改善 (OS バージョンを指定せず、UDID のみを使用) (✅実装完了)
         * テスト実行の優先順位の最適化 (SDK を指定せずに実行を優先) (✅実装完了)
@@ -490,16 +494,19 @@ on:
     branches: [ main, develop ]
 ```
 
-### A.2. ジョブ依存関係 `{@spec-cicd:s-a-2}`
+### A.2. ジョブ依存関係と concurrency `{@spec-cicd:s-a-2}`
 
-`test-ios` は `needs: test-macos` で **直列**実行します (同時 `macos-26` 要求を避ける)。
+`test-macos` と `test-ios` は **並列** (相互に `needs` なし)。同一 ref の重複 workflow は `concurrency` でキャンセルします。
 
 ```yaml
+concurrency:
+  group: swift-test-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test-macos:
     runs-on: macos-26
   test-ios:
-    needs: test-macos
     runs-on: macos-26
 ```
 

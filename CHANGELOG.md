@@ -2,6 +2,16 @@
 
 ## unreleased
 
+## 2.0.26 - 2026-11-24
+
+### Changed
+
+* `.github/workflows/swift-test.yml` — [s2j-about-window](https://github.com/stein2nd/s2j-about-window) と同型に整理 (`concurrency`、`test-macos` で test + release + Artifacts、`test-ios` はテストのみ・並列)
+* `docs/SPEC_CICD.md` — 上記ジョブ構成を同期
+* `README.md` の `Package.swift` 依存指定を v2.0.25→ v2.0.26に更新
+* DocC `GettingStarted.md` — 同上
+* `package.json` — バージョン **2.0.26**
+
 ## 2.0.25 - 2026-11-24
 
 ### Fixed

@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+concurrency:
+  group: swift-test-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test-macos:
     runs-on: macos-26
@@ -69,11 +73,19 @@ jobs:
         flags: macos
         name: macos-coverage
 
+    # Release build: same job (max 2 macos-26 runners per workflow run; no 3rd job).
+    - name: Build release configuration
+      run: swift build -c release
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v6
+      with:
+        name: s2j-source-list-build
+        path: .build/release/
+
   test-ios:
     runs-on: macos-26
-    needs: test-macos
-    # macos-26 の同時割当が 2 本だと片方が長時間キュー待ちになるため、test-macos 完了後に直列実行
-    timeout-minutes: 90   # iOS テスト + リリースビルド
+    timeout-minutes: 60   # 長めに確保 (ビルド／シミュレータ起動で時間がかかる場合あり)
     env:
       # 出力ログ保存先
       LOG_DIR: /tmp/gha-ios-logs
@@ -547,15 +559,3 @@ jobs:
           flags: ios
           name: ios-coverage
           fail_ci_if_error: false
-
-      - name: Build release binary
-        run: |
-          # Package platforms: macOS 14.6 / iOS 17.6 (Package.swift)
-          # test-macos / 本ジョブの iOS テストが成功した後のみ実行 (needs: test-macos)
-          swift build -c release
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: s2j-source-list-build
-          path: .build/release/
