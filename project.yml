@@ -5,7 +5,6 @@ options:
     macOS: "14.6"
     iOS: "17.6"
   developmentLanguage: en
-  defaultLocalization: en
   usesTabs: false
   indentWidth: 4
   tabWidth: 4
@@ -26,8 +25,9 @@ targets:
       - path: Sources/S2JSourceList
         excludes:
           - "**/*.md"
-    resources:
+          - "Resources/**"
       - path: Sources/S2JSourceList/Resources
+        buildPhase: resources
     settings:
       base:
         PRODUCT_NAME: S2JSourceList
@@ -62,8 +62,9 @@ targets:
       - path: Sources/S2JSourceList
         excludes:
           - "**/*.md"
-    resources:
+          - "Resources/**"
       - path: Sources/S2JSourceList/Resources
+        buildPhase: resources
     settings:
       base:
         PRODUCT_NAME: S2JSourceList
@@ -222,11 +223,7 @@ schemes:
     test:
       targets:
         - S2JSourceListTests-iOS
-      destination:
-        platform: iOS Simulator
     run:
       config: Debug
-      destination:
-        platform: iOS Simulator
     archive:
       config: Release
