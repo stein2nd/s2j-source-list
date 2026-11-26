@@ -10,7 +10,7 @@
 * `package.json` — `@s2j/docs-linter` **1.0.34→1.0.38**、バージョン **2.0.27**
 * `package-lock.json` — 上記 devDependency 更新
 * `README.md` — GPL バッジリンク URL を調整
-* `README.md` の `Package.swift` 依存指定を v2.0.26→ v2.0.27 に更新
+* `README.md` の `Package.swift` 依存指定を v2.0.26→ v2.0.27に更新
 * DocC `GettingStarted.md` — 同上
 
 ## 2.0.26 - 2026-11-24
